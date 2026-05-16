@@ -6,7 +6,8 @@ const services = [
     number: "01",
     colClass: "md:col-span-7",
     aspectClass: "aspect-[4/5]",
-    image: "service-nails.jpg",
+    image: "/images/nails.png",
+    alt: "Luxury nail art on melanin skin",
   },
   {
     id: 2,
@@ -15,7 +16,8 @@ const services = [
     number: "02",
     colClass: "md:col-span-4 md:col-start-9 md:pt-40",
     aspectClass: "aspect-[2/3]",
-    image: "service-lashes.jpg",
+    image: "/images/lashes.png",
+    alt: "Premium lash extensions close-up",
   },
   {
     id: 3,
@@ -24,7 +26,8 @@ const services = [
     number: "03",
     colClass: "md:col-span-5 md:-mt-[10rem]",
     aspectClass: "aspect-[4/5]",
-    image: "service-pedi.jpg",
+    image: "/images/pedi.jpg",
+    alt: "Luxurious pedicure treatment",
   },
 ];
 
@@ -51,18 +54,15 @@ export default function ServiceChapter() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-y-24 md:gap-x-12">
         {services.map((service) => (
           <div key={service.id} className={`${service.colClass} group`}>
-            {/* Image Placeholder */}
+            {/* Service Image */}
             <div
-              className={`relative overflow-hidden ${service.aspectClass} bg-surface-container-high mb-8`}
+              className={`relative overflow-hidden ${service.aspectClass} bg-surface-container-low mb-8`}
             >
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                <span className="text-2xl opacity-30">📷</span>
-                <span className="text-on-surface-variant/50 text-xs font-label tracking-widest uppercase text-center px-4 leading-relaxed">
-                  {service.image}
-                </span>
-              </div>
-              {/* Hover scale overlay (for when real image is dropped in) */}
-              <div className="absolute inset-0 bg-surface-container-high transition-transform duration-700 group-hover:scale-110" />
+              <img
+                src={service.image}
+                alt={service.alt}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
             </div>
 
             {/* Service Info */}

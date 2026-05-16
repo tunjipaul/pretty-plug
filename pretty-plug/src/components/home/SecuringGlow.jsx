@@ -33,7 +33,9 @@ export default function SecuringGlow() {
               </span>
             </div>
             <div className="bg-surface p-4 rounded-lg flex-1 text-center">
-              <span className="block font-headline text-3xl font-bold">12:45</span>
+              <span className="block font-headline text-3xl font-bold">
+                12:45
+              </span>
               <span className="block text-[10px] uppercase tracking-tighter opacity-60 mt-1">
                 Next Refresh
               </span>
@@ -67,13 +69,12 @@ export default function SecuringGlow() {
         <div className="absolute -inset-4 border border-primary/20 rounded-xl transition-all duration-300 group-hover:-inset-2" />
 
         <div className="relative aspect-square bg-surface-container overflow-hidden rounded-lg">
-          {/* Image Placeholder */}
-          <div className="absolute inset-0 bg-surface-container-high flex flex-col items-center justify-center gap-2">
-            <span className="text-2xl opacity-30">📷</span>
-            <span className="text-on-surface-variant/40 text-xs font-label tracking-widest uppercase">
-              studio.jpg
-            </span>
-          </div>
+          {/* Studio Image */}
+          <img
+            src="/images/studio.jpg"
+            alt="ThePrettyPlug studio interior"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
 
           {/* Testimonial Quote Overlay */}
           <div className="absolute bottom-8 left-8 right-8 p-6 bg-surface/90 backdrop-blur-md rounded-lg">

@@ -1,9 +1,9 @@
 const galleryImages = [
-  { id: 1, file: "gallery-1.jpg" },
-  { id: 2, file: "gallery-2.jpg" },
-  { id: 3, file: "gallery-3.jpg" },
-  { id: 4, file: "gallery-4.jpg" },
-  { id: 5, file: "gallery-5.jpg" },
+  { id: 1, src: "/images/gallery-1.jpg", alt: "Portfolio shot 1" },
+  { id: 2, src: "/images/gallery-2.png", alt: "Portfolio shot 2" },
+  { id: 3, src: "/images/gallery-3.jpg", alt: "Portfolio shot 3" },
+  { id: 4, src: "/images/gallery-4.png", alt: "Portfolio shot 4" },
+  { id: 5, src: "/images/gallery-5.jpg", alt: "Portfolio shot 5" },
 ];
 
 export default function InstagramGrid() {
@@ -19,14 +19,13 @@ export default function InstagramGrid() {
         {galleryImages.map((img) => (
           <div
             key={img.id}
-            className="aspect-square bg-surface-container-high overflow-hidden hover:scale-105 transition-all duration-500 flex items-center justify-center"
+            className="aspect-square overflow-hidden hover:scale-105 transition-all duration-500"
           >
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xl opacity-30">📷</span>
-              <span className="text-on-surface-variant/40 text-[10px] font-label tracking-widest uppercase text-center px-2">
-                {img.file}
-              </span>
-            </div>
+            <img
+              src={img.src}
+              alt={img.alt}
+              className="w-full h-full object-cover"
+            />
           </div>
         ))}
       </div>
