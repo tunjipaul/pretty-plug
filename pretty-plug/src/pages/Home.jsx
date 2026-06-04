@@ -1,8 +1,11 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/home/Hero";
+import RevealSection from "../components/home/RevealSection";
+import TrustMetrics from "../components/home/TrustMetrics";
 import ServiceChapter from "../components/home/ServiceChapter";
-import StyleQuiz from "../components/home/StyleQuiz";
-import SecuringGlow from "../components/home/SecuringGlow";
+import PortfolioPreview from "../components/home/PortfolioPreview";
+import Testimonials from "../components/home/Testimonials";
+import Newsletter from "../components/home/Newsletter";
 import InstagramGrid from "../components/home/InstagramGrid";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
@@ -12,11 +15,27 @@ export default function Home() {
     <>
       <Navbar />
       <main className="pb-20 md:pb-0">
-        <Hero />
-        <ServiceChapter />
-        <StyleQuiz />
-        <SecuringGlow />
-        <InstagramGrid />
+        <RevealSection>
+          <Hero />
+        </RevealSection>
+        <RevealSection delay={80}>
+          <TrustMetrics />
+        </RevealSection>
+        <RevealSection delay={120}>
+          <ServiceChapter />
+        </RevealSection>
+        <RevealSection delay={120}>
+          <PortfolioPreview />
+        </RevealSection>
+        <RevealSection delay={120}>
+          <Testimonials />
+        </RevealSection>
+        <RevealSection delay={120}>
+          <Newsletter />
+        </RevealSection>
+        <RevealSection delay={120}>
+          <InstagramGrid />
+        </RevealSection>
       </main>
       <Footer />
       <MobileBottomNav />

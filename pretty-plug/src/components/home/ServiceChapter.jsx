@@ -1,31 +1,26 @@
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+
 const services = [
   {
-    id: 1,
-    name: "Architectural Nails",
-    subtitle: "Sculpted Extensions & Gel Art",
-    number: "01",
-    colClass: "md:col-span-7",
-    aspectClass: "aspect-[4/5]",
-    image: "/images/nails.png",
-    alt: "Luxury nail art on melanin skin",
-  },
-  {
-    id: 2,
-    name: "Velvet Lashes",
-    subtitle: "Hand-crafted Volume & Classics",
-    number: "02",
-    colClass: "md:col-span-4 md:col-start-9 md:pt-40",
-    aspectClass: "aspect-[2/3]",
+    name: "Lash Extensions",
+    description: "Volume, hybrid, and classic sets tailored to your eye shape.",
+    price: "From NGN 15,000",
     image: "/images/lashes.png",
     alt: "Premium lash extensions close-up",
   },
   {
-    id: 3,
-    name: "The Glow Pedi",
-    subtitle: "Medical Grade Aesthetics",
-    number: "03",
-    colClass: "md:col-span-5 md:-mt-[10rem]",
-    aspectClass: "aspect-[4/5]",
+    name: "Nail Artistry",
+    description: "Sculpted gels and hand-painted miniature art.",
+    price: "From NGN 12,000",
+    image: "/images/nails.png",
+    alt: "Luxury nail art on melanin skin",
+    offset: true,
+  },
+  {
+    name: "Pedi-Rituals",
+    description: "Restorative treatments focused on comfort and polish.",
+    price: "From NGN 10,000",
     image: "/images/pedi.jpg",
     alt: "Luxurious pedicure treatment",
   },
@@ -33,54 +28,62 @@ const services = [
 
 export default function ServiceChapter() {
   return (
-    <section className="py-32 px-8 md:px-20 bg-surface">
-      {/* Section Header */}
-      <div className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8">
-        <div className="max-w-xl">
-          <span className="font-label text-xs tracking-widest uppercase text-primary">
-            The Collective
-          </span>
-          <h2 className="font-headline text-5xl font-bold mt-4 leading-tight">
-            Service Chapter: <br /> The Luxury Edit
-          </h2>
-        </div>
-        <p className="max-w-sm text-on-surface-variant leading-relaxed">
-          We don't just apply; we curate. Every set of lashes and every stroke
-          of polish is tailored to your unique anatomical beauty.
-        </p>
-      </div>
-
-      {/* Asymmetric 12-col Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-y-24 md:gap-x-12">
-        {services.map((service) => (
-          <div key={service.id} className={`${service.colClass} group`}>
-            {/* Service Image */}
-            <div
-              className={`relative overflow-hidden ${service.aspectClass} bg-surface-container-low mb-8`}
-            >
-              <img
-                src={service.image}
-                alt={service.alt}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-            </div>
-
-            {/* Service Info */}
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-headline text-3xl italic mb-2">
-                  {service.name}
-                </h3>
-                <p className="font-body text-on-surface-variant text-sm tracking-widest uppercase">
-                  {service.subtitle}
-                </p>
-              </div>
-              <span className="font-headline text-2xl text-primary/40">
-                {service.number}
-              </span>
-            </div>
+    <section className="bg-surface py-24 md:py-32">
+      <div className="mx-auto max-w-[1280px] px-5 md:px-20">
+        <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="max-w-xl">
+            <h2 className="mb-6 font-headline text-4xl font-medium leading-tight text-on-surface md:text-5xl">
+              Signature Services
+            </h2>
+            <p className="font-body text-base leading-7 text-on-surface-variant md:text-lg">
+              Each treatment is a bespoke experience, blending careful
+              craftsmanship with modern beauty aesthetics.
+            </p>
           </div>
-        ))}
+          <Link
+            to="/services"
+            className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary underline underline-offset-8"
+          >
+            All Services
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+          {services.map((service) => (
+            <Link
+              key={service.name}
+              to="/services"
+              className={`group block ${service.offset ? "md:mt-20" : ""}`}
+            >
+              <div className="relative mb-6 aspect-[3/4] overflow-hidden bg-surface-container-high">
+                <img
+                  src={service.image}
+                  alt={service.alt}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-primary/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              </div>
+              <h3 className="mb-2 font-headline text-2xl font-medium text-on-surface">
+                {service.name}
+              </h3>
+              <p className="mb-4 font-body text-sm leading-5 text-on-surface-variant">
+                {service.description}
+              </p>
+              <div className="mb-4 h-px w-full overflow-hidden bg-outline-variant/30">
+                <div className="h-full w-0 bg-primary-container transition-all duration-500 group-hover:w-full" />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary">
+                  {service.price}
+                </span>
+                <ArrowRight
+                  size={18}
+                  className="text-primary-container transition-transform duration-300 group-hover:translate-x-2"
+                />
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );

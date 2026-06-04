@@ -1,33 +1,47 @@
 const galleryImages = [
-  { id: 1, src: "/images/gallery-1.jpg", alt: "Portfolio shot 1" },
-  { id: 2, src: "/images/gallery-2.png", alt: "Portfolio shot 2" },
-  { id: 3, src: "/images/gallery-3.jpg", alt: "Portfolio shot 3" },
-  { id: 4, src: "/images/gallery-4.png", alt: "Portfolio shot 4" },
-  { id: 5, src: "/images/gallery-5.jpg", alt: "Portfolio shot 5" },
+  { src: "/images/gallery-1.jpg", alt: "Detailed nail art close-up" },
+  { src: "/images/lashes.png", alt: "Editorial lash extension close-up" },
+  { src: "/images/download (2).jfif", alt: "Luxury beauty product styling" },
+  { src: "/images/poses for photo shoot, done in AI_.jfif", alt: "Beauty studio portrait" },
+  { src: "/images/studio.jpg", alt: "Softly lit studio interior" },
+  { src: "/images/nails.png", alt: "Neutral manicure detail" },
+  { src: "/images/download (6).jfif", alt: "Spa pedicure basin" },
+  { src: "/images/gallery-3.jpg", alt: "Dark editorial nail polish" },
+  { src: "/images/gallery-5.jpg", alt: "Nail artist applying detail" },
 ];
 
 export default function InstagramGrid() {
   return (
-    <section className="pb-32 px-4">
-      <div className="text-center mb-16">
-        <h2 className="font-headline text-3xl italic">
-          @ThePrettyPlug_Abeokuta
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {galleryImages.map((img) => (
-          <div
-            key={img.id}
-            className="aspect-square overflow-hidden hover:scale-105 transition-all duration-500"
+    <section className="bg-surface-container-low py-20 md:py-24">
+      <div className="mx-auto max-w-[1280px] px-5 md:px-20">
+        <div className="mb-10 flex items-center justify-between gap-4">
+          <h2 className="font-headline text-2xl font-medium text-on-surface md:text-3xl">
+            @beautyplugabeokuta
+          </h2>
+          <a
+            href="https://instagram.com"
+            className="font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-container underline underline-offset-4 md:text-xs"
           >
-            <img
-              src={img.src}
-              alt={img.alt}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
+            Follow on Instagram
+          </a>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 md:grid-cols-9">
+          {galleryImages.map((img) => (
+            <a
+              key={img.src}
+              href="https://instagram.com"
+              className="aspect-square overflow-hidden bg-surface-variant transition-opacity hover:opacity-80"
+              aria-label={img.alt}
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="h-full w-full object-cover"
+              />
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );

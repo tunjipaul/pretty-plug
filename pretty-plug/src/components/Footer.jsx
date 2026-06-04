@@ -1,57 +1,106 @@
-const collectiveLinks = [
-  { label: "Instagram", href: "#" },
-  { label: "Editorial", href: "#" },
-  { label: "Privacy", href: "#" },
-  { label: "Terms", href: "#" },
+import { Link } from "react-router-dom";
+import { Mail, Phone } from "lucide-react";
+import { FaInstagram } from "react-icons/fa";
+
+const studioLinks = [
+  { label: "Services", path: "/services" },
+  { label: "Portfolio", path: "/portfolio" },
+  { label: "FAQ", path: "/faq" },
+  { label: "Book Online", path: "/book" },
+];
+const contactLinks = [
+  {
+    label: "Instagram",
+    href: "https://instagram.com",
+    icon: FaInstagram,
+  },
+  {
+    label: "Email",
+    href: "mailto:hello@beautyplug.test",
+    icon: Mail,
+  },
+  {
+    label: "Phone",
+    href: "tel:+23412345678",
+    icon: Phone,
+  },
 ];
 
 export default function Footer() {
-  return (
-    <footer className="bg-surface-container-low w-full py-20 px-8 mt-20">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+  const currentYear = new Date().getFullYear();
 
-        {/* Col 1 — Brand */}
-        <div className="col-span-1">
-          <div className="font-headline text-3xl italic mb-4 text-primary">
-            ThePrettyPlug
+  return (
+    <footer className="border-t border-outline-variant/20 bg-surface-container-low">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-24 md:grid-cols-4 md:px-20">
+        <div className="space-y-6">
+          <div className="font-headline text-2xl font-semibold tracking-tight text-on-surface">
+            Beauty Plug
           </div>
-          <p className="font-body text-sm leading-relaxed text-primary/70 max-w-xs">
-            Curating premium beauty experiences for the modern African woman.
-            Visit our private atelier in the heart of Abeokuta.
+          <p className="max-w-xs font-body text-sm leading-6 text-on-surface-variant">
+            Elevating beauty to an editorial art form in Abeokuta. Your
+            destination for meticulous nails, lashes, and refined beauty care.
           </p>
         </div>
 
-        {/* Col 2 — The Collective Links */}
-        <div className="flex flex-col gap-4">
-          <span className="font-headline italic text-lg text-primary">
-            The Collective
-          </span>
-          {collectiveLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-primary/70 hover:translate-x-1 hover:text-primary transition-all duration-300 font-body text-sm uppercase tracking-widest"
-            >
-              {link.label}
-            </a>
-          ))}
+        <div className="space-y-6">
+          <p className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface">
+            Studio
+          </p>
+          <ul className="space-y-4 font-body text-sm text-on-surface-variant">
+            {studioLinks.map((link) => (
+              <li key={link.label}>
+                <Link
+                  className="transition-colors hover:text-primary-container"
+                  to={link.path}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Col 3 — Location */}
-        <div className="flex flex-col justify-between h-full text-primary">
-          <div>
-            <span className="font-headline italic text-lg">Location</span>
-            <p className="mt-2 text-sm font-body opacity-70">
-              Abeokuta Luxury District, Ogun State.
-            </p>
-          </div>
-          <div className="mt-8 pt-8 border-t border-primary/10">
-            <p className="text-xs font-body opacity-50">
-              © 2025 ThePrettyPlug. Crafted in Abeokuta.
-            </p>
+        <div className="space-y-6">
+          <p className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface">
+            Info
+          </p>
+          <div className="flex gap-4">
+            {contactLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <a
+                  key={link.label}
+                  className="flex h-10 w-10 items-center justify-center border border-outline-variant/40 text-on-surface-variant transition-colors hover:text-primary-container"
+                  href={link.href}
+                  aria-label={link.label}
+                >
+                  <Icon size={16} />
+                </a>
+              );
+            })}
           </div>
         </div>
 
+        <div className="space-y-6">
+          <p className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface">
+            Visit Us
+          </p>
+          <p className="font-body text-sm leading-7 text-on-surface-variant">
+            Abeokuta Luxury Suite
+            <br />
+            Ogun State, Nigeria
+            <br />
+            <br />
+            Mon - Sat: 9am - 7pm
+            <br />
+            Sun: Closed
+          </p>
+        </div>
+      </div>
+      <div className="mx-auto max-w-[1280px] border-t border-outline-variant/10 px-5 py-8 text-center md:px-20">
+        <p className="font-body text-sm text-on-surface-variant/70">
+          (c) {currentYear} Beauty Plug. All Rights Reserved.
+        </p>
       </div>
     </footer>
   );
