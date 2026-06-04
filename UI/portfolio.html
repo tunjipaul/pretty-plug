@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portfolio | ThePrettyPlug Lagos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#fddbaa",
+                    "surface-dim": "#dcdad7",
+                    "tertiary-fixed": "#eae1dd",
+                    "secondary-fixed-dim": "#e2c293",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1f1b19",
+                    "primary": "#8a4758",
+                    "inverse-primary": "#ffb1c2",
+                    "on-surface": "#1c1c1a",
+                    "on-tertiary-container": "#fffbff",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e5e2df",
+                    "surface-bright": "#fcf9f6",
+                    "surface-container-highest": "#e5e2df",
+                    "surface-container-low": "#f6f3f0",
+                    "secondary": "#735a34",
+                    "inverse-on-surface": "#f3f0ed",
+                    "on-tertiary-fixed-variant": "#4b4643",
+                    "on-primary-fixed": "#3a0719",
+                    "inverse-surface": "#31302f",
+                    "on-primary-container": "#fffbff",
+                    "primary-container": "#a75f71",
+                    "primary-fixed-dim": "#ffb1c2",
+                    "outline": "#847376",
+                    "on-background": "#1c1c1a",
+                    "surface-container": "#f0edea",
+                    "surface-tint": "#8d4a5b",
+                    "on-secondary-fixed-variant": "#59431f",
+                    "surface": "#fcf9f6",
+                    "secondary-fixed": "#ffddae",
+                    "tertiary-container": "#7a7370",
+                    "tertiary-fixed-dim": "#cec5c1",
+                    "surface-container-high": "#eae8e5",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#281800",
+                    "tertiary": "#615b58",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#ffd9e0",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#703344",
+                    "on-surface-variant": "#524346",
+                    "outline-variant": "#d7c1c4",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#fcf9f6",
+                    "on-secondary-container": "#785e38"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-desktop": "80px",
+                    "section-padding": "120px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "label-caps": ["DM Sans"],
+                    "body-sm": ["DM Sans"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-mask {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #fcf9f6;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #8a4758;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Bar -->
+<nav class="bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md border-b border-outline-variant/30 dark:border-outline/20 docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight" href="#">ThePrettyPlug</a>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-primary" onclick="toggleMenu()">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Desktop Links -->
+<div class="hidden md:flex items-center gap-10">
+<a class="font-label-caps text-label-caps text-primary dark:text-primary-fixed border-b-2 border-primary pb-1 hover:text-primary transition-colors duration-300" href="#">Portfolio</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-300" href="#">Services</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-300" href="#">Testimonials</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-300" href="#">About</a>
+<button class="bg-primary text-on-primary px-8 py-3 font-label-caps text-label-caps tracking-widest scale-95 active:opacity-80 transition-all hover:bg-primary-container">
+                    Book Now
+                </button>
+</div>
+</div>
+</nav>
+<!-- Hero Header -->
+<header class="pt-section-padding pb-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center">
+<span class="font-label-caps text-label-caps text-secondary tracking-[0.3em] uppercase mb-4 block">Curated Artistry</span>
+<h1 class="font-headline-lg text-headline-lg md:text-display-lg md:font-display-lg text-on-surface leading-tight mb-8">
+            The Portfolio of <br/><span class="text-primary italic">Victoria Island Excellence</span>
+</h1>
+<div class="w-24 h-px bg-outline-variant mx-auto"></div>
+</header>
+<!-- Filter Tabs -->
+<section class="py-unit px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16">
+<div class="flex flex-wrap justify-center gap-4 md:gap-12">
+<button class="font-label-caps text-label-caps text-primary border-b-2 border-primary pb-2 tracking-widest">ALL WORK</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors pb-2 tracking-widest">LASHES</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors pb-2 tracking-widest">NAILS</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors pb-2 tracking-widest">PEDICURE</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors pb-2 tracking-widest">TREATMENTS</button>
+</div>
+</section>
+<!-- Masonry Grid Portfolio -->
+<main class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto pb-section-padding">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start">
+<!-- Large Feature Card -->
+<div class="md:col-span-7 group relative overflow-hidden bg-surface-container-low">
+<div class="aspect-[4/5] overflow-hidden">
+<img alt="Nail Art" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up photograph of luxury nail art featuring intricate gold leaf details on a soft dusty rose base. The model's hands are elegantly posed against a minimalist, high-key white background that emphasizes a premium salon aesthetic in Lagos. Lighting is soft and editorial, highlighting the texture and high-gloss finish of the nails. The mood is sophisticated and exclusive." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB98SNO-kZsUtgI7NqikXEVf6bRqac-oPYPQYubKEgkhaU4mrSI6qUy2xbKnQI3ePnTfixXjamLpBByp6ANEkCvLwv7i_f3GIGK8rQ_NZLs3edm10uk1gHCnbW2Rv6z5hUKSw8cVGmEruIUUWJvfyIzDzdDxSC7IpdVPnOyCCkS_PT8qkh8kvrg5vEPsV1eWwo4bAgaHoq_WYxs9pt3ZI0kYB3WNUl7OOGcyC4w8q3syDsLImHgAOg8bw8L6QjtcZjuL4ezmpWpt4"/>
+</div>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-margin-mobile md:p-10 backdrop-blur-[2px]">
+<div class="bg-surface/90 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<span class="font-label-caps text-label-caps text-secondary mb-2 block">Signature Look</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">Golden Hour Manicure</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Our signature fusion of traditional Lagos gold accents with contemporary minimal silhouettes.</p>
+<button class="bg-primary text-on-primary px-8 py-3 font-label-caps text-label-caps hover:bg-primary-container transition-colors">BOOK THIS LOOK</button>
+</div>
+</div>
+</div>
+<!-- Side Cards Column -->
+<div class="md:col-span-5 flex flex-col gap-gutter">
+<div class="group relative bg-surface-container-low overflow-hidden">
+<div class="aspect-square overflow-hidden">
+<img alt="Lash Extensions" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A high-end editorial close-up of voluminous lash extensions on a model with warm skin tones. The lighting is dramatic and focused, casting soft shadows that define the delicate architecture of the lashes. The background is a muted sand color, maintaining a luxury minimalist feel consistent with a Victoria Island suite. The image emphasizes meticulous detail and professional craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibX4g6QsqnhnWBRKjNxukCh9bAfaDBdcD_3iwQi4vNBCwWFLjMxBmbvcGHR9vPUI5-nF--OA0IhqNufPOxNeuV9v_80jIA5-Ob3DONqACRIt1lF-wQuzbZmgUCPYvmBBsYXb5pqnB4HwSMxX-c4GVIux4RhRYgxhlNL1U6uSHk87Q0P_zJJBk_w3Dc-CAffE9KjKRiNwAvhvklia_c5tIAshEDCD_qGOK6MkD6ZW6_fcXEgvYTLFa3-Y3m_d9SbK1OBiR1EDBCKM"/>
+</div>
+<div class="p-6">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Volume Lash Artistry</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 uppercase tracking-widest">Expert Application • 2 Hours</p>
+</div>
+<div class="absolute top-4 right-4">
+<span class="bg-surface/80 backdrop-blur text-primary px-4 py-1 font-label-caps text-[10px] tracking-widest border border-primary/20">MOST WANTED</span>
+</div>
+</div>
+<div class="group relative bg-surface-container-low overflow-hidden">
+<div class="aspect-square overflow-hidden">
+<img alt="Luxury Pedicure" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A serene image of a luxury pedicure session in a minimalist salon setting. The composition shows elegant feet resting on a white marble pedestal with soft floral accents nearby. The color palette is composed of soft creams, whites, and subtle sand tones, reflecting a peaceful and exclusive spa atmosphere. The lighting is bright and natural, suggesting a high-end luxury environment in a metropolitan city like Lagos." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJvRljtlEOb95a6FHREWUFzAvermEAh0yRPkY7aSfhG86vlb1LIuDfqHSjUgWAPptyZWw_KdyTc19AQ4mGejsaZIxtWz8lPesMBGH77h0xtTbR_igRWGuKt5WZJPLxQvg0FsvW-Qp1-vwbwccQP54wqaQRi8PwM-9MYAkP-NYnNoTmsO0OFi-rWmDbXgbcQr41jN_bsLAODXTPN0W65MDzqBjRYlmWvYXuvSAbIS1YrYsyK4FuxBW232gwPZFve3trlOh9s2uQhsY"/>
+</div>
+<div class="p-6">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Milk &amp; Honey Pedicure</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 uppercase tracking-widest">Nourishing Therapy • 90 Mins</p>
+</div>
+</div>
+</div>
+<!-- Row 2: Before & After -->
+<div class="md:col-span-12 py-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+<div class="space-y-6">
+<span class="font-label-caps text-label-caps text-secondary tracking-widest">TRANSFORMATIONS</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">ThePrettyPlug Difference</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">We don't just apply products; we restore and enhance your natural foundation. View our restorative nail and lash journeys.</p>
+<a class="inline-flex items-center gap-4 text-primary font-label-caps text-label-caps group" href="#">
+                            VIEW FULL CASE STUDIES
+                            <span class="material-symbols-outlined transition-transform group-hover:translate-x-2">arrow_forward</span>
+</a>
+</div>
+<div class="relative bg-surface-container rounded-xl overflow-hidden shadow-2xl">
+<div class="flex">
+<div class="w-1/2 relative">
+<img alt="Before" class="w-full h-[400px] object-cover" data-alt="A side-by-side comparison showing the before state of brittle, uneven nails. The lighting is clear and professional, documenting the natural state in a clinical yet aesthetic manner. The background is a clean white to maintain focus on the subject. The style is honest and meticulous, fitting for a professional beauty portfolio in a premium market." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASxSmqu9aifZEbvTjUoK5cXLfRouBiVHF-WUG0Td68d5c4dUik4DuTj3KhmcbbH6-_2Xycjt7p1mK5eabCEe8ovOuZPyuQ1lFYRNogi6RPM4p_nLnH83l69UM1E8YLBRSjWP8I9w8AGoQFKL-7KzCDBMf28wA7BmbTqcV28dZW5I-PJRGVbRg96KlANskTujSfrouXmns1EmduaajoT-dnSVyY9Ka3mMpKKFGv41OczfjW5bO9CLlxOmkMOcbnmMkn6KIT0TH0iEc"/>
+<span class="absolute top-4 left-4 bg-black/40 text-white px-3 py-1 font-label-caps text-[10px] backdrop-blur-sm">BEFORE</span>
+</div>
+<div class="w-1/2 relative border-l-2 border-white/20">
+<img alt="After" class="w-full h-[400px] object-cover" data-alt="The after state of the previous comparison, showing perfectly shaped, healthy, and high-gloss gel nails in a deep burgundy color. The skin around the nails is perfectly manicured and moisturized, glowing under professional studio lighting. The presentation is sophisticated and editorial, showcasing the premium result of a ThePrettyPlug service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrROuwT3uBmvOeTFVLGD_izuePEWwQGGFnoZ0NUs_g4pnUBvMNsTiGGPgLImWebkICoht3VyDiKqWIfTuGRuM-KP-Lfx8sSXMmL6BA3buOyoJWJb5acp1PD8rbC48n_ASE-C9oKlA7fOJlOXF8jjBkJRi5a6beLx3Ced8ny8o4H3TtC3MzbSLGBcC9Sn80lgw123CAFc3icufCEl4x8yQl-xyKJub6rJRm8vLvjFoL0pt2CJ5MBuXBi-O2zYmjd17NpR5qa4oL0rU"/>
+<span class="absolute top-4 right-4 bg-primary/80 text-white px-3 py-1 font-label-caps text-[10px] backdrop-blur-sm">AFTER</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: More Portfolio Items -->
+<div class="md:col-span-4 group overflow-hidden bg-surface-container-low">
+<div class="aspect-[3/4] overflow-hidden">
+<img alt="Nails" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A collection of professional beauty tools and high-end nail polishes in a flat-lay composition. The items are arranged on a minimalist, textured beige surface. The lighting is soft and even, highlighting the sleek packaging and vibrant colors of the products. The mood is clean, organized, and luxury-oriented, typical of a high-end salon workspace in Victoria Island." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1uvged0_hBK_TI4c3vEY4HQXW07y1aLFIvA-y55b6QZ4bgm3-USi75JUg8dd5drWY4caz4MUvW8XIUaf08pfeWmghgBWU9Ty9NmxpbrkLD_Ikaoejv3Ebys8KXpLbSvKbykCZDJSrHGAgXSbJXPWzFHf-RSJ0BLdWlCbQ3-laID8vrHkS6hrRhH-q7-fXExd0KAb71hFPKeDdAKTRqEjWKWDrY9a640wJ2-Q2dtKCP-ByaW5-p_mOBISu2fABX1mWzRmBwgQEfr8"/>
+</div>
+<div class="p-6 border-b border-outline-variant/30">
+<h5 class="font-headline-sm text-headline-sm">Lush Chrome Set</h5>
+<p class="font-label-caps text-[10px] text-secondary mt-1">NAIL DESIGN</p>
+</div>
+</div>
+<div class="md:col-span-4 group overflow-hidden bg-surface-container-low">
+<div class="aspect-[3/4] overflow-hidden">
+<img alt="Studio" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A portrait of a serene woman receiving a premium facial treatment. Her skin is glowing under soft, diffused lighting, and her eyes are closed in relaxation. The setting is a minimalist, luxury spa suite with white linens and subtle warm accents. The aesthetic is extremely high-end, editorial, and feminine, emphasizing the results of professional beauty services in a sophisticated city environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvaDMs-L8BkTbbR1dPtcQsZnZBUJDgdualzLg8WqM--QIeqG3uD1eOhBTDMKfgcxS8LJeNCS_UNhRmKPxN0E-TLf9SelW716rjCYkjBlsCdIj_hG04KbX0KA6sL8e0WleaB0X2tdehtz_PdEToq_5WrKBItg6fdNL23MAJVx6C0zbFVwgUnjP-JdsFbTimyl_RfT4I-m-X9EFMSMgUPp95y8l6XaVOsfvMN35s7Ansq9-_lfABmAmGHE4lLLOuqVPSk6a1GF6EkMM"/>
+</div>
+<div class="p-6 border-b border-outline-variant/30">
+<h5 class="font-headline-sm text-headline-sm">Glass Skin Facial</h5>
+<p class="font-label-caps text-[10px] text-secondary mt-1">SKIN CARE</p>
+</div>
+</div>
+<div class="md:col-span-4 group overflow-hidden bg-surface-container-low">
+<div class="aspect-[3/4] overflow-hidden">
+<img alt="Details" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A macro shot of a delicate nail art detail featuring hand-painted floral motifs on a neutral base. The precision of the artistry is captured with a shallow depth of field, blurring the background into soft cream tones. The lighting is bright and editorial, showcasing the meticulous craftsmanship and the high-gloss finish of the premium topcoat. The overall feel is one of delicate luxury and artistic excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMUjl1okmEdgad8AcDeMcgnR0pGWOM1pHYl3xMBJ_O3qutbyY0qs1aoUCXpaDdeBdNbPAeixZEQLr56ft8gNIl1o7b_45G84CMzRIfF1cK6qi1TENEmjwfgMlBM5Hvwh0eGY4QL8TiVoT0T3maZbE1Cde1gA0YLYbiGrUUucOJLt8nW9TyJ1wWwqn8tzf6hpCyzZvwkaCy6OhPlHjYZitre-venZblKHpOYdeocu8UOnPyj-LaPottr-vLLsZErX83R0ZmoaJLoaM"/>
+</div>
+<div class="p-6 border-b border-outline-variant/30">
+<h5 class="font-headline-sm text-headline-sm">Artisan Florals</h5>
+<p class="font-label-caps text-[10px] text-secondary mt-1">NAIL ART</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Call to Action Section -->
+<section class="bg-primary text-on-primary py-section-padding text-center">
+<div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-8">Ready to book your transformation?</h2>
+<p class="font-body-lg text-body-lg mb-12 max-w-2xl mx-auto opacity-90">Experience the meticulous care and premium artistry that defines ThePrettyPlug signature look. Appointments available now for our Victoria Island suite.</p>
+<div class="flex flex-col md:flex-row gap-6 justify-center">
+<button class="bg-on-primary text-primary px-12 py-5 font-label-caps text-label-caps tracking-widest hover:bg-primary-fixed transition-colors">BOOK APPOINTMENT</button>
+<button class="border border-on-primary text-on-primary px-12 py-5 font-label-caps text-label-caps tracking-widest hover:bg-white/10 transition-colors">VIEW SERVICES</button>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/20 dark:border-outline/10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-section-padding max-w-container-max mx-auto">
+<div class="space-y-6">
+<div class="font-headline-sm text-headline-sm text-on-surface dark:text-on-surface font-bold tracking-tight">ThePrettyPlug</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Defining elegance in Victoria Island. High-fidelity beauty services for the meticulous woman.</p>
+<div class="flex gap-4">
+<a class="text-primary hover:scale-110 transition-transform" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-primary hover:scale-110 transition-transform" href="#"><span class="material-symbols-outlined">camera</span></a>
+</div>
+</div>
+<div class="space-y-6">
+<h5 class="font-label-caps text-label-caps text-secondary font-bold">Quick Links</h5>
+<ul class="space-y-4">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Portfolio</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Services</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</a></li>
+</ul>
+</div>
+<div class="space-y-6">
+<h5 class="font-label-caps text-label-caps text-secondary font-bold">Legal</h5>
+<ul class="space-y-4">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div class="space-y-6">
+<h5 class="font-label-caps text-label-caps text-secondary font-bold">Newsletter</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Join our private list for exclusive beauty insights and availability.</p>
+<div class="flex flex-col gap-2">
+<input class="bg-surface-container border-none p-3 font-body-sm focus:ring-1 focus:ring-primary outline-none" placeholder="Email Address" type="email"/>
+<button class="bg-primary text-on-primary p-3 font-label-caps text-label-caps tracking-widest hover:opacity-90 transition-opacity">SUBSCRIBE</button>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant/10 py-8 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center md:text-left">
+<p class="font-body-sm text-body-sm text-on-surface-variant/60">© 2024 ThePrettyPlug Lagos. All Rights Reserved.</p>
+</div>
+</footer>
+<!-- Simple Mobile Menu -->
+<div class="fixed inset-0 bg-surface z-[60] flex flex-col items-center justify-center gap-8 translate-x-full transition-transform duration-500 md:hidden" id="mobileMenu">
+<button class="absolute top-8 right-8 text-primary" onclick="toggleMenu()">
+<span class="material-symbols-outlined text-4xl">close</span>
+</button>
+<a class="font-headline-md text-headline-md text-primary" href="#">Portfolio</a>
+<a class="font-headline-md text-headline-md text-on-surface" href="#">Services</a>
+<a class="font-headline-md text-headline-md text-on-surface" href="#">Testimonials</a>
+<a class="font-headline-md text-headline-md text-on-surface" href="#">About</a>
+<button class="bg-primary text-on-primary px-12 py-4 font-label-caps text-label-caps tracking-widest mt-8">BOOK NOW</button>
+</div>
+<script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('translate-x-full');
+        }
+
+        // Atmosphere Effect: Intersection Observer for fade-in
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.group, main > div > div').forEach(el => {
+            el.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-1000', 'ease-out');
+            observer.observe(el);
+        });
+    </script>
+</body></html>

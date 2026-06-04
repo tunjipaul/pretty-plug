@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ThePrettyPlug | Premium Services &amp; Pricing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#fddbaa",
+                    "surface-dim": "#dcdad7",
+                    "tertiary-fixed": "#eae1dd",
+                    "secondary-fixed-dim": "#e2c293",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1f1b19",
+                    "primary": "#8a4758",
+                    "inverse-primary": "#ffb1c2",
+                    "on-surface": "#1c1c1a",
+                    "on-tertiary-container": "#fffbff",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e5e2df",
+                    "surface-bright": "#fcf9f6",
+                    "surface-container-highest": "#e5e2df",
+                    "surface-container-low": "#f6f3f0",
+                    "secondary": "#735a34",
+                    "inverse-on-surface": "#f3f0ed",
+                    "on-tertiary-fixed-variant": "#4b4643",
+                    "on-primary-fixed": "#3a0719",
+                    "inverse-surface": "#31302f",
+                    "on-primary-container": "#fffbff",
+                    "primary-container": "#a75f71",
+                    "primary-fixed-dim": "#ffb1c2",
+                    "outline": "#847376",
+                    "on-background": "#1c1c1a",
+                    "surface-container": "#f0edea",
+                    "surface-tint": "#8d4a5b",
+                    "on-secondary-fixed-variant": "#59431f",
+                    "surface": "#fcf9f6",
+                    "secondary-fixed": "#ffddae",
+                    "tertiary-container": "#7a7370",
+                    "tertiary-fixed-dim": "#cec5c1",
+                    "surface-container-high": "#eae8e5",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#281800",
+                    "tertiary": "#615b58",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#ffd9e0",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#703344",
+                    "on-surface-variant": "#524346",
+                    "outline-variant": "#d7c1c4",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#fcf9f6",
+                    "on-secondary-container": "#785e38"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-desktop": "80px",
+                    "section-padding": "120px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "label-caps": ["DM Sans"],
+                    "body-sm": ["DM Sans"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 30px -10px rgba(138, 71, 88, 0.1);
+        }
+        .glass-header {
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar Shell -->
+<header class="bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-outline-variant/30 dark:border-outline/20">
+<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight">ThePrettyPlug</div>
+<div class="hidden md:flex gap-8">
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">Portfolio</a>
+<a class="font-label-caps text-label-caps text-primary dark:text-primary-fixed border-b-2 border-primary pb-1" href="#">Services</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">Testimonials</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">About</a>
+</div>
+<button class="bg-[#C4788A] text-on-primary px-8 py-4 rounded-lg font-label-caps text-label-caps uppercase tracking-widest hover:opacity-90 transition-all scale-95 active:opacity-80">
+                Book Now
+            </button>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="pt-24 pb-section-padding px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center">
+<span class="font-label-caps text-label-caps text-secondary tracking-[0.2em] mb-6 block">EXCLUSIVE EXPERIENCES</span>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface max-w-3xl mx-auto mb-8">Elevated Beauty for Your Best Moments</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12">Carefully curated services designed to enhance your natural grace. From meticulous nail artistry to cinematic lash transformations.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+<div class="relative group overflow-hidden rounded-xl h-[400px]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A luxurious interior of a high-end Lagos beauty salon in Victoria Island. The space features minimalist off-white walls, gold architectural accents, and plush velvet seating. Soft sunlight streams through large windows, creating a serene and exclusive atmosphere with a focus on premium aesthetics and editorial design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6dzs6clSWTLF27VmRQqSWbz-CbODqdApvmcboY7eH6LQE_aCKJubg5QnNsA8AitqfEnKJFG_vtPiBipALUUShBm3PHq-0NPiBSbPEVXcRXbFwOvw6w5OBBle11KPTl6u3VpfHbXCxzl3u8z4OdAtMjAo7db2bZCQ-Tf6MgG8LNtuKho80vAuG_F0VJsmVTCRRPlRHVBzo2WjeCr3qKwRrXeO-Y7siOvCjuGUYwko0kB_MxCv_0QTHtEC1GVKFGHo0I80ssmuBHSM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="relative group overflow-hidden rounded-xl h-[400px]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up artistic shot of a hand with professional almond-shaped gel nails featuring a dusty rose and gold foil design. The lighting is soft and cinematic, highlighting the smooth texture and meticulous finish. The background is a soft-focus silk fabric in ivory, maintaining a high-fashion, editorial beauty mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCve8MEg58rxWhiL9wEgos1GeCHb3lAK4N3k-mQex4HJmv581bP5_l3rkAU2Yap_S6jvNZNN2i7kIouPzoUQlemcbuIJxeiL58S43PXkPwdljhPRZcLjLp6JFGet5K7kCmDKfxc-MJ_ZBQF88o4QXxZMQG2C0z_IuEtHTEz3q2schs8HKxIl-T9yVvEyTzsb_o2AUkfKmfiTOIK21zerrDl7jTpGYvbvrDvIqLRagfgjL_jrdRnR4QGB5DgCrL2Zh9IfuGGTXaQAB4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+</div>
+</section>
+<!-- Lash Services -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop bg-surface-container-low" id="lashes">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-gutter">
+<div class="max-w-lg">
+<h2 class="font-headline-lg text-headline-lg mb-4">Lash Services</h2>
+<p class="text-on-surface-variant">Our lash technicians use premium synthetic silk to create weightless, stunning eyes that last.</p>
+</div>
+<div class="hidden md:block">
+<span class="font-label-caps text-label-caps text-outline">01 / LASHES</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Service Card -->
+<div class="bg-surface p-8 rounded-lg editorial-shadow group hover:-translate-y-2 transition-all duration-300 flex flex-col h-full border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<span class="font-headline-sm text-headline-sm">Classic Set</span>
+<span class="font-label-caps text-label-caps text-primary bg-primary-fixed px-3 py-1 rounded-full">NEW</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-auto">A natural, mascara-look. One individual extension applied to each natural lash.</p>
+<div class="mt-8 pt-6 border-t border-outline-variant/30 flex justify-between items-center">
+<div>
+<div class="font-headline-sm text-headline-sm">₦25,000</div>
+<div class="font-label-caps text-label-caps text-outline">90 MINS</div>
+</div>
+<button class="w-12 h-12 rounded-full border border-secondary text-secondary flex items-center justify-center hover:bg-secondary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="bg-surface p-8 rounded-lg editorial-shadow group hover:-translate-y-2 transition-all duration-300 flex flex-col h-full border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<span class="font-headline-sm text-headline-sm">Hybrid Set</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-auto">The perfect balance of natural and volume. A mix of classic and fan extensions.</p>
+<div class="mt-8 pt-6 border-t border-outline-variant/30 flex justify-between items-center">
+<div>
+<div class="font-headline-sm text-headline-sm">₦35,000</div>
+<div class="font-label-caps text-label-caps text-outline">120 MINS</div>
+</div>
+<button class="w-12 h-12 rounded-full border border-secondary text-secondary flex items-center justify-center hover:bg-secondary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="bg-surface p-8 rounded-lg editorial-shadow group hover:-translate-y-2 transition-all duration-300 flex flex-col h-full border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<span class="font-headline-sm text-headline-sm">Volume Set</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-auto">Bold and dramatic. Multiple lightweight fans per natural lash for maximum fullness.</p>
+<div class="mt-8 pt-6 border-t border-outline-variant/30 flex justify-between items-center">
+<div>
+<div class="font-headline-sm text-headline-sm">₦45,000</div>
+<div class="font-label-caps text-label-caps text-outline">150 MINS</div>
+</div>
+<button class="w-12 h-12 rounded-full border border-secondary text-secondary flex items-center justify-center hover:bg-secondary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Lash Comparison Table Section -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<h2 class="font-headline-md text-headline-md text-center mb-16">Choose Your Level of Drama</h2>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="py-8 font-label-caps text-label-caps text-outline w-1/4">Feature</th>
+<th class="py-8 font-headline-sm text-headline-sm">Classic</th>
+<th class="py-8 font-headline-sm text-headline-sm">Hybrid</th>
+<th class="py-8 font-headline-sm text-headline-sm">Volume</th>
+<th class="py-8 font-headline-sm text-headline-sm text-primary">Mega Volume</th>
+</tr>
+</thead>
+<tbody class="font-body-md">
+<tr class="border-b border-outline-variant/30">
+<td class="py-6 font-bold">Lash Ratio</td>
+<td class="py-6">1:1</td>
+<td class="py-6">Mix 1:1 &amp; 3D</td>
+<td class="py-6">5D - 7D</td>
+<td class="py-6">10D - 15D</td>
+</tr>
+<tr class="border-b border-outline-variant/30">
+<td class="py-6 font-bold">Appearance</td>
+<td class="py-6">Natural</td>
+<td class="py-6">Textured</td>
+<td class="py-6">Full &amp; Fluffy</td>
+<td class="py-6">Dense &amp; Black</td>
+</tr>
+<tr class="border-b border-outline-variant/30">
+<td class="py-6 font-bold">Duration</td>
+<td class="py-6">90 Min</td>
+<td class="py-6">120 Min</td>
+<td class="py-6">150 Min</td>
+<td class="py-6">180 Min</td>
+</tr>
+<tr class="border-b border-outline-variant/30">
+<td class="py-6 font-bold">Maintenance</td>
+<td class="py-6">2-3 Weeks</td>
+<td class="py-6">2-3 Weeks</td>
+<td class="py-6">3-4 Weeks</td>
+<td class="py-6">3-4 Weeks</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Nail Services -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop bg-surface" id="nails">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row gap-gutter">
+<div class="w-full md:w-1/3">
+<div class="sticky top-32">
+<span class="font-label-caps text-label-caps text-secondary mb-4 block">ARTISTRY</span>
+<h2 class="font-headline-lg text-headline-lg mb-8 leading-tight">Masterful Nail Extensions &amp; Art</h2>
+<p class="font-body-md text-on-surface-variant mb-8">From minimalist nudes to architectural gel extensions, our artists treat every nail as a canvas for luxury.</p>
+<img class="rounded-xl w-full h-80 object-cover editorial-shadow" data-alt="Close up of a professional nail artist's hands using a thin brush to paint delicate gold floral details onto a nude gel polish base. The workspace is pristine white with glass organizers. The mood is meticulous and artistic, lit by a focused warm studio light that creates a sense of luxury craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjZFYPnKg9OpbV2AjzhY3VJYyGdTuGjWs7GwbuF5Oo58Z2ygxPoD_K87lDvd632e9Oac6LOSWJee8fDBWlQUu4Lff_fkcC6k7x9-5itne_J1tom0b-bdDADEuwy2-dlljjPQr38UfZa9g9J7On5j4_PPUleRifvj6SnGGxIeMH2rw5ZAW1VnKtnEo6hMF9qE_A6Vfq6Q9SFgbJ7JfBJq-k1uzG8XiXhqnlH0lppwkA7dXrZQDmofyWoww9IWtfF35fIxHzU4LbMXc"/>
+</div>
+</div>
+<div class="w-full md:w-2/3 space-y-gutter">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Nail Item -->
+<div class="p-8 border border-outline-variant/50 rounded-lg hover:border-primary transition-colors bg-surface-container-lowest">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-sm text-headline-sm">Signature Gel Manicure</h3>
+<div class="text-primary font-bold">₦15,000</div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-6">Cuticle care, shaping, and long-wear premium gel polish with 14-day shine.</p>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-outline">45 MINS</span>
+<button class="ml-auto font-label-caps text-label-caps text-primary border-b border-primary hover:text-primary-container hover:border-primary-container transition-all">BOOK</button>
+</div>
+</div>
+<div class="p-8 border border-outline-variant/50 rounded-lg hover:border-primary transition-colors bg-surface-container-lowest">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-sm text-headline-sm">Hard Gel Extensions</h3>
+<div class="text-primary font-bold">₦30,000</div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-6">Sculpted extensions using luxury builder gel for strength and natural thinness.</p>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-outline">120 MINS</span>
+<button class="ml-auto font-label-caps text-label-caps text-primary border-b border-primary transition-all">BOOK</button>
+</div>
+</div>
+<div class="p-8 border border-outline-variant/50 rounded-lg hover:border-primary transition-colors bg-surface-container-lowest">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-sm text-headline-sm">Russian E-File Mani</h3>
+<div class="text-primary font-bold">₦18,000</div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-6">The ultimate precision cuticle care using specialized drill bits for a flawless look.</p>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-outline">60 MINS</span>
+<button class="ml-auto font-label-caps text-label-caps text-primary border-b border-primary transition-all">BOOK</button>
+</div>
+</div>
+<div class="p-8 border border-outline-variant/50 rounded-lg hover:border-primary transition-colors bg-surface-container-lowest">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-sm text-headline-sm">Chrome &amp; 3D Art</h3>
+<div class="text-primary font-bold">₦5,000+</div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-6">Add-on service for premium mirror pigments or hand-sculpted 3D accents.</p>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-outline">30 MINS</span>
+<button class="ml-auto font-label-caps text-label-caps text-primary border-b border-primary transition-all">BOOK</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pedicure Services (Asymmetric Layout) -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop bg-surface-container" id="pedicure">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg">Therapeutic Pedicures</h2>
+<div class="w-24 h-px bg-secondary mx-auto mt-6"></div>
+</div>
+<div class="flex flex-col lg:flex-row gap-12 items-center">
+<div class="lg:w-1/2 relative">
+<img class="rounded-2xl editorial-shadow" data-alt="Overhead shot of a luxury pedicure station. Two copper basins are filled with warm water, pink rose petals, and citrus slices. The surroundings include white marble flooring and minimalist cream towels. The lighting is bright and airy, evoking a peaceful, spa-like experience in a high-end salon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV4_x-aKwR8ehGVsBugQIANuL1-11lgQaCB5nZSM8ACEpIwfkbRxsQATCatkmxve8xxoH9jctts7eVru4aUskouDZ4mS0egTEdshmlkYSsnDNMiHnpmflQfciv2Fw_zvVe2CskpQzdthyuVDG6Mp-lxXYkCxHwQO77Y0bz5oWkZQVX89GajHpGIrcNbr1e49Tlc5ewMrpI2cSkxyQ8DM69C-ePH4Euh2hOPx0ENNLAAx3QkcFQhgKYHY_MUrK4BK8_XTVW80gyAZY"/>
+<div class="absolute -bottom-8 -right-8 bg-primary p-8 rounded-lg text-on-primary hidden md:block">
+<div class="font-headline-sm text-headline-sm">Best of Lagos</div>
+<div class="font-label-caps text-label-caps mt-2">2023 SPA AWARD</div>
+</div>
+</div>
+<div class="lg:w-1/2 space-y-8">
+<div class="group cursor-pointer">
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant/30">
+<div>
+<h4 class="font-headline-sm text-headline-sm group-hover:text-primary transition-colors">The Rosewater Soak</h4>
+<p class="text-on-surface-variant mt-1">Himalayan salt, rose petals, and essential oil infusion.</p>
+</div>
+<div class="text-right">
+<div class="font-bold text-headline-sm">₦12,000</div>
+<button class="font-label-caps text-label-caps text-primary mt-2">BOOK NOW</button>
+</div>
+</div>
+</div>
+<div class="group cursor-pointer">
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant/30">
+<div>
+<h4 class="font-headline-sm text-headline-sm group-hover:text-primary transition-colors">Medical Grade Pedi</h4>
+<p class="text-on-surface-variant mt-1">Deep callus removal and intensive hydration therapy.</p>
+</div>
+<div class="text-right">
+<div class="font-bold text-headline-sm">₦20,000</div>
+<button class="font-label-caps text-label-caps text-primary mt-2">BOOK NOW</button>
+</div>
+</div>
+</div>
+<div class="group cursor-pointer">
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant/30">
+<div>
+<h4 class="font-headline-sm text-headline-sm group-hover:text-primary transition-colors">Paraffin Wax Spa</h4>
+<p class="text-on-surface-variant mt-1">Ultimate softness with warm wax dip and massage.</p>
+</div>
+<div class="text-right">
+<div class="font-bold text-headline-sm">₦18,000</div>
+<button class="font-label-caps text-label-caps text-primary mt-2">BOOK NOW</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop text-center bg-[#8a4758] text-on-primary">
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-8">Ready to be Pampered?</h2>
+<p class="font-body-lg text-primary-fixed mb-12 max-w-xl mx-auto">Book your appointment online and experience the meticulous standard of ThePrettyPlug.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-on-primary text-primary px-12 py-5 rounded-lg font-label-caps text-label-caps uppercase tracking-widest hover:bg-primary-fixed transition-all">Book Online</button>
+<button class="border border-on-primary px-12 py-5 rounded-lg font-label-caps text-label-caps uppercase tracking-widest hover:bg-white/10 transition-all">View All Services</button>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/20 dark:border-outline/10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-section-padding max-w-container-max mx-auto">
+<div class="md:col-span-1">
+<div class="font-headline-sm text-headline-sm text-on-surface dark:text-on-surface font-bold mb-6">ThePrettyPlug</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lagos' most exclusive boutique for nails, lashes, and meticulous care. Victoria Island Suite.</p>
+</div>
+<div>
+<h5 class="font-label-caps text-label-caps font-bold mb-6">Quick Links</h5>
+<ul class="space-y-4 font-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Portfolio</a></li>
+<li><a class="hover:text-primary transition-colors text-primary font-bold" href="#">Services</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-caps text-label-caps font-bold mb-6">Connect</h5>
+<ul class="space-y-4 font-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Instagram</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">TikTok</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Pinterest</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-caps text-label-caps font-bold mb-6">Legal</h5>
+<ul class="space-y-4 font-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-outline-variant/10 py-8 px-margin-mobile md:px-margin-desktop text-center">
+<p class="font-label-caps text-label-caps text-outline">© 2024 ThePrettyPlug Lagos. All Rights Reserved.</p>
+</div>
+</footer>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Smooth fade-in on scroll for service cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.editorial-shadow').forEach(el => {
+            el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+            observer.observe(el);
+        });
+    </script>
+</body></html>

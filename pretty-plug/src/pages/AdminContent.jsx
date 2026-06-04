@@ -21,6 +21,9 @@ const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { label: "Website", icon: FileText, path: "/admin/content", active: true },
   { label: "Services", icon: Scissors, path: "/admin/services" },
+  { label: "Gallery", icon: Image, path: "/admin/gallery" },
+  { label: "Reviews", icon: MessageSquareQuote, path: "/admin/testimonials" },
+  { label: "FAQ", icon: HelpCircle, path: "/admin/faq" },
   { label: "Bookings", icon: CalendarDays, path: "/admin/bookings" },
   { label: "Clients", icon: Users, path: "/admin/clients" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },
@@ -44,18 +47,28 @@ const contentSections = [
     description: "Selected public gallery images and categories.",
     status: "Needs media",
     icon: Image,
+    path: "/admin/gallery",
   },
   {
     title: "Testimonials",
     description: "Featured quotes, client names, services, and avatars.",
     status: "Ready",
     icon: MessageSquareQuote,
+    path: "/admin/testimonials",
+  },
+  {
+    title: "FAQ",
+    description: "Public questions, answers, categories, and display order.",
+    status: "Ready",
+    icon: HelpCircle,
+    path: "/admin/faq",
   },
   {
     title: "Footer & Contact",
     description: "Studio address, social links, email, phone, and opening copy.",
     status: "Ready",
     icon: LinkIcon,
+    path: "/admin/settings",
   },
 ];
 
@@ -238,9 +251,12 @@ export default function AdminContent() {
                     <p className="mt-2 font-body text-sm leading-6 text-on-surface-variant">
                       {section.description}
                     </p>
-                    <button className="mt-6 font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container">
+                    <Link
+                      to={section.path ?? "/admin/content"}
+                      className="mt-6 inline-block font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container"
+                    >
                       Edit Section
-                    </button>
+                    </Link>
                   </article>
                 );
               })}
@@ -284,7 +300,11 @@ export default function AdminContent() {
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 px-1 py-3 backdrop-blur-md lg:hidden">
         {navItems
-          .filter((item) => item.label !== "Clients")
+          .filter((item) =>
+            ["Dashboard", "Website", "Services", "Gallery", "Settings"].includes(
+              item.label,
+            ),
+          )
           .map((item) => {
             const Icon = item.icon;
             return (

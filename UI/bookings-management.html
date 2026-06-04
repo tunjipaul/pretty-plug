@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bookings Management | ThePrettyPlug Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        /* Custom Scrollbar for the editorial look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcf9f6; }
+        ::-webkit-scrollbar-thumb { background: #d7c1c4; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1c1c1a",
+                        "on-secondary-fixed-variant": "#59431f",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#1f1b19",
+                        "inverse-surface": "#31302f",
+                        "tertiary-fixed": "#eae1dd",
+                        "surface-container": "#f0edea",
+                        "secondary-container": "#fddbaa",
+                        "primary-fixed": "#ffd9e0",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#703344",
+                        "surface-bright": "#fcf9f6",
+                        "surface-container-high": "#eae8e5",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#ffb1c2",
+                        "on-primary-container": "#fffbff",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#d7c1c4",
+                        "surface-dim": "#dcdad7",
+                        "outline": "#847376",
+                        "surface": "#fcf9f6",
+                        "on-secondary-container": "#785e38",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#7a7370",
+                        "on-primary-fixed": "#3a0719",
+                        "tertiary": "#615b58",
+                        "primary": "#8a4758",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f3f0ed",
+                        "secondary-fixed-dim": "#e2c293",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#cec5c1",
+                        "background": "#fcf9f6",
+                        "surface-variant": "#e5e2df",
+                        "secondary": "#735a34",
+                        "on-tertiary-fixed-variant": "#4b4643",
+                        "surface-container-low": "#f6f3f0",
+                        "secondary-fixed": "#ffddae",
+                        "on-surface": "#1c1c1a",
+                        "surface-tint": "#8d4a5b",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e5e2df",
+                        "primary-fixed-dim": "#ffb1c2",
+                        "on-secondary-fixed": "#281800",
+                        "primary-container": "#a75f71",
+                        "on-surface-variant": "#524346"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-desktop": "80px",
+                        "section-padding": "120px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "body-sm": ["DM Sans"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "label-caps": ["DM Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<div class="flex min-h-screen">
+<!-- SideNavBar Component -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 bg-surface-container dark:bg-inverse-surface border-r border-outline-variant/20 z-50">
+<div class="flex flex-col h-full p-unit pt-10">
+<!-- Brand Identity -->
+<div class="px-4 mb-10">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed tracking-tight">ThePrettyPlug Admin</h1>
+<div class="mt-2 flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/30">
+<img alt="Admin User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a confident woman in a modern minimalist office setting. She has a polished appearance, soft lighting illuminating her features, and a neutral background. The photography style is high-end editorial with shallow depth of field, reflecting the luxury beauty brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdXjMA8wcSL78Qduh0DAOXhAVVnAwG7tPFGVbOS23EKWQ0i9nST8f-NnP3jeTwhskmldcXdvtkJ9SvTYtq7LRYeS5e_qtKvLAOICR1lznkDcUB5p87rnuggzvD8oHCITdcqnw-2MrQLAd3lfAlRAhgeGLeXb27a83Ui6EnbduoHcpGWfnuog4sts1V9hDiOY_vxb_yAuV5UB0l3z2SNyethG6vw9-C5XXBzS8yToRheFx0j6xnh4sFQ2r0TePHFpPHI_LVI6QlASQ"/>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Admin User</p>
+<p class="font-body-sm text-body-sm text-on-surface truncate">Victoria Island Suite</p>
+</div>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-primary">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-lg font-bold transition-opacity" href="#">
+<span class="material-symbols-outlined mr-3" data-weight="fill">calendar_month</span>
+<span class="font-label-caps text-label-caps">Bookings</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-label-caps text-label-caps">Clients</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3">content_cut</span>
+<span class="font-label-caps text-label-caps">Services</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<!-- CTA -->
+<div class="px-4 py-6">
+<button class="w-full bg-primary text-on-primary py-4 px-6 rounded-lg font-label-caps text-label-caps tracking-widest hover:opacity-90 active:scale-95 transition-all">
+                        New Appointment
+                    </button>
+</div>
+<!-- Footer Nav -->
+<div class="px-2 pb-8 space-y-1 border-t border-outline-variant/30 pt-4">
+<a class="flex items-center px-4 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">help</span>
+<span class="font-label-caps text-label-caps">Help</span>
+</a>
+<a class="flex items-center px-4 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">logout</span>
+<span class="font-label-caps text-label-caps">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="sticky top-0 bg-surface/90 backdrop-blur-md z-40 px-margin-mobile md:px-margin-desktop py-8 border-b border-outline-variant/30 flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-[40px] md:text-headline-lg text-on-surface">Bookings Management</h2>
+<p class="text-on-surface-variant font-body-md mt-2">Oversee your daily salon schedule and appointments.</p>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 border border-outline px-6 py-2.5 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">print</span>
+<span class="font-label-caps text-label-caps">Print Schedule</span>
+</button>
+<button class="flex items-center gap-2 border border-outline px-6 py-2.5 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">ios_share</span>
+<span class="font-label-caps text-label-caps">Export CSV</span>
+</button>
+</div>
+</header>
+<!-- Filters & Search Bar -->
+<section class="px-margin-mobile md:px-margin-desktop py-8 bg-surface-container-low">
+<div class="flex flex-col md:flex-row gap-6 items-center justify-between">
+<div class="relative w-full md:w-96 group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-white border-b-2 border-outline-variant focus:border-primary focus:ring-0 outline-none transition-all font-body-md" placeholder="Search client or specialist..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
+<button class="px-6 py-2 rounded-full border border-primary bg-primary text-on-primary font-label-caps text-label-caps transition-all">All</button>
+<button class="px-6 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-container-high transition-all">Confirmed</button>
+<button class="px-6 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-container-high transition-all">Pending</button>
+<button class="px-6 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-container-high transition-all">Completed</button>
+<button class="px-6 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-container-high transition-all">Cancelled</button>
+</div>
+</div>
+</section>
+<!-- Data Table Section -->
+<section class="flex-1 px-margin-mobile md:px-margin-desktop py-unit">
+<div class="bg-white shadow-sm border border-outline-variant/30 overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant">
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Client Name</th>
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Service</th>
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Date/Time</th>
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Specialist</th>
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Status</th>
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Amount</th>
+<th class="p-6 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold">FA</div>
+<div>
+<p class="font-headline-sm text-[16px] text-on-surface">Folake Adeyemi</p>
+<p class="text-[12px] text-on-surface-variant">folake.a@gmail.com</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-caps text-[10px] rounded">GEL MANICURE</span>
+</td>
+<td class="p-6">
+<p class="font-body-md text-on-surface">Oct 24, 2024</p>
+<p class="text-[12px] text-on-surface-variant">02:30 PM</p>
+</td>
+<td class="p-6 font-body-md">Zainab O.</td>
+<td class="p-6">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-label-caps uppercase">Confirmed</span>
+</div>
+</td>
+<td class="p-6 font-body-md font-bold">₦25,000</td>
+<td class="p-6 text-right">
+<div class="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:underline font-label-caps text-label-caps">Edit</button>
+<button class="text-error hover:underline font-label-caps text-label-caps">Cancel</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">CO</div>
+<div>
+<p class="font-headline-sm text-[16px] text-on-surface">Chidinma Okafor</p>
+<p class="text-[12px] text-on-surface-variant">chichi.o@yahoo.com</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-caps text-[10px] rounded">SILK PRESS</span>
+</td>
+<td class="p-6">
+<p class="font-body-md text-on-surface">Oct 24, 2024</p>
+<p class="text-[12px] text-on-surface-variant">04:00 PM</p>
+</td>
+<td class="p-6 font-body-md">Blessing E.</td>
+<td class="p-6">
+<div class="flex items-center gap-1.5 text-outline">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-label-caps text-label-caps uppercase">Pending</span>
+</div>
+</td>
+<td class="p-6 font-body-md font-bold">₦45,000</td>
+<td class="p-6 text-right">
+<div class="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:underline font-label-caps text-label-caps">Edit</button>
+<button class="text-error hover:underline font-label-caps text-label-caps">Cancel</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-surface-variant flex items-center justify-center text-on-surface-variant font-bold">TM</div>
+<div>
+<p class="font-headline-sm text-[16px] text-on-surface">Tiwa Makun</p>
+<p class="text-[12px] text-on-surface-variant">t.makun@icloud.com</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-caps text-[10px] rounded">LASH REFILL</span>
+</td>
+<td class="p-6">
+<p class="font-body-md text-on-surface">Oct 23, 2024</p>
+<p class="text-[12px] text-on-surface-variant">11:00 AM</p>
+</td>
+<td class="p-6 font-body-md">Zainab O.</td>
+<td class="p-6">
+<div class="flex items-center gap-1.5 text-on-tertiary-container">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span class="font-label-caps text-label-caps uppercase text-tertiary">Completed</span>
+</div>
+</td>
+<td class="p-6 font-body-md font-bold">₦18,500</td>
+<td class="p-6 text-right">
+<div class="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:underline font-label-caps text-label-caps">Details</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group opacity-60">
+<td class="p-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-error-container flex items-center justify-center text-on-error-container font-bold">SB</div>
+<div>
+<p class="font-headline-sm text-[16px] text-on-surface line-through">Sandra Bello</p>
+<p class="text-[12px] text-on-surface-variant">sbello@gmail.com</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="px-3 py-1 bg-surface-variant text-on-surface-variant font-label-caps text-[10px] rounded">FULL SET NAILS</span>
+</td>
+<td class="p-6 text-error">
+<p class="font-body-md">Oct 23, 2024</p>
+<p class="text-[12px]">Cancelled</p>
+</td>
+<td class="p-6 font-body-md">Zainab O.</td>
+<td class="p-6">
+<div class="flex items-center gap-1.5 text-error">
+<span class="material-symbols-outlined text-[14px]">close</span>
+<span class="font-label-caps text-label-caps uppercase">Cancelled</span>
+</div>
+</td>
+<td class="p-6 font-body-md font-bold">₦0</td>
+<td class="p-6 text-right">
+<div class="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:underline font-label-caps text-label-caps">Restore</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="mt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<p class="text-on-surface-variant font-body-sm">Showing <span class="font-bold text-on-surface">1 - 10</span> of <span class="font-bold text-on-surface">128</span> appointments</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center border border-outline-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-on-primary font-label-caps text-label-caps">1</button>
+<button class="w-10 h-10 flex items-center justify-center border border-outline-variant hover:bg-surface-container-high transition-colors font-label-caps text-label-caps">2</button>
+<button class="w-10 h-10 flex items-center justify-center border border-outline-variant hover:bg-surface-container-high transition-colors font-label-caps text-label-caps">3</button>
+<span class="px-2 text-outline">...</span>
+<button class="w-10 h-10 flex items-center justify-center border border-outline-variant hover:bg-surface-container-high transition-colors font-label-caps text-label-caps">13</button>
+<button class="w-10 h-10 flex items-center justify-center border border-outline-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Footer Component -->
+<footer class="mt-auto bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-2">
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-4">ThePrettyPlug</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs">Elevating the luxury beauty experience in Lagos through seamless technology and exceptional service.</p>
+</div>
+<div>
+<h5 class="font-label-caps text-label-caps text-secondary mb-4">Quick Links</h5>
+<ul class="space-y-2">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</a></li>
+</ul>
+</div>
+<div class="flex flex-col justify-end">
+<p class="font-body-sm text-body-sm text-on-surface-variant text-right">
+                            © 2024 ThePrettyPlug Lagos. All Rights Reserved.
+                        </p>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Floating UI Decorations -->
+<div class="fixed bottom-10 right-10 z-[60]">
+<button class="w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+</div>
+<script>
+        // Simple search highlighting simulation
+        document.querySelector('input[type="text"]').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if(text.includes(query)) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Hover animation for table rows
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'scale(1.005)';
+                row.style.zIndex = '10';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'scale(1)';
+                row.style.zIndex = '1';
+            });
+        });
+    </script>
+</body></html>

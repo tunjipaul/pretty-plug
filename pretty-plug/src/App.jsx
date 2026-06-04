@@ -12,6 +12,9 @@ import AdminClients from "./pages/AdminClients";
 import AdminServices from "./pages/AdminServices";
 import AdminSettings from "./pages/AdminSettings";
 import AdminContent from "./pages/AdminContent";
+import AdminGallery from "./pages/AdminGallery";
+import AdminTestimonials from "./pages/AdminTestimonials";
+import AdminFAQ from "./pages/AdminFAQ";
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
       <Route path="/book/confirm" element={<BookingConfirmation />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/content" element={<AdminContent />} />
+      <Route path="/admin/gallery" element={<AdminGallery />} />
+      <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+      <Route path="/admin/faq" element={<AdminFAQ />} />
       <Route path="/admin/bookings" element={<AdminBookings />} />
       <Route path="/admin/clients" element={<AdminClients />} />
       <Route path="/admin/services" element={<AdminServices />} />

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ThePrettyPlug Admin | Client CRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1c1c1a",
+                        "on-secondary-fixed-variant": "#59431f",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#1f1b19",
+                        "inverse-surface": "#31302f",
+                        "tertiary-fixed": "#eae1dd",
+                        "surface-container": "#f0edea",
+                        "secondary-container": "#fddbaa",
+                        "primary-fixed": "#ffd9e0",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#703344",
+                        "surface-bright": "#fcf9f6",
+                        "surface-container-high": "#eae8e5",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#ffb1c2",
+                        "on-primary-container": "#fffbff",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#d7c1c4",
+                        "surface-dim": "#dcdad7",
+                        "outline": "#847376",
+                        "surface": "#fcf9f6",
+                        "on-secondary-container": "#785e38",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#7a7370",
+                        "on-primary-fixed": "#3a0719",
+                        "tertiary": "#615b58",
+                        "primary": "#8a4758",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f3f0ed",
+                        "secondary-fixed-dim": "#e2c293",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#cec5c1",
+                        "background": "#fcf9f6",
+                        "surface-variant": "#e5e2df",
+                        "secondary": "#735a34",
+                        "on-tertiary-fixed-variant": "#4b4643",
+                        "surface-container-low": "#f6f3f0",
+                        "secondary-fixed": "#ffddae",
+                        "on-surface": "#1c1c1a",
+                        "surface-tint": "#8d4a5b",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e5e2df",
+                        "primary-fixed-dim": "#ffb1c2",
+                        "on-secondary-fixed": "#281800",
+                        "primary-container": "#a75f71",
+                        "on-surface-variant": "#524346"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-desktop": "80px",
+                        "section-padding": "120px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "body-sm": ["DM Sans"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "label-caps": ["DM Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-surface-container dark:bg-inverse-surface shadow-sm dark:shadow-none docked left-0 flex-shrink-0 z-20 transition-all duration-300">
+<div class="flex flex-col h-full p-unit pt-10">
+<!-- Header -->
+<div class="px-4 mb-10">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed tracking-tight">ThePrettyPlug Admin</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant/70 mt-1 uppercase">Victoria Island Suite</p>
+</div>
+<!-- Main Nav -->
+<nav class="flex-1 space-y-1 px-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                        Bookings
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-lg font-bold transition-all font-label-caps text-label-caps shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+                        Clients
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+                        Services
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-all rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</nav>
+<!-- Footer Nav -->
+<div class="mt-auto border-t border-outline-variant/20 pt-4 px-2 space-y-1">
+<button class="flex items-center gap-3 w-full px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 rounded-lg font-label-caps text-label-caps transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                        Help
+                    </button>
+<button class="flex items-center gap-3 w-full px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 rounded-lg font-label-caps text-label-caps transition-all">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                        Logout
+                    </button>
+<div class="flex items-center gap-3 px-4 py-6 mt-2">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary/10">
+<img alt="Admin User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female salon administrator with a warm, confident expression. She is in a high-end Lagos salon setting with soft, warm interior lighting that complements the dusty rose and gold brand colors. The atmosphere is upscale, clean, and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlYzfPJ55-oE9cTj0XHvQnubYQvPZQEPGBeVeMnrce5_4Hyw_IxBLa8SvSBfd-o4qBRk5DjxrqpvXj3aHfTkfDf1Vt8y6pB-qgYOEsTC8uVvlDevB-b4lf0J3fYaIjB_lxTDI2ab8Par7vdli2R51qoF4Em9ceB1GdVt5UJfPQBUfJuwSRIcjI7OmWdluXz3hc86zY9HFi6iQ3jZSYL0gNLbK-yxy5Bo0lLT9SgQ94TaR16hZ5btGwT-imILIC-HLrcO6W27AlRr8"/>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-bold text-on-surface">Tola A.</p>
+<p class="text-[10px] text-on-surface-variant/60 uppercase tracking-widest">Admin Lead</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface-bright overflow-hidden">
+<!-- Top App Bar -->
+<header class="h-16 flex items-center justify-between px-6 border-b border-outline-variant/30 bg-surface/90 backdrop-blur-md sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-sm text-headline-sm text-primary tracking-tight">Client Directory</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2.5 bg-primary text-on-primary rounded-full font-label-caps text-label-caps hover:opacity-90 active:scale-95 transition-all shadow-md">
+                        New Appointment
+                    </button>
+</div>
+</header>
+<!-- CRM View: Split Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Column: Directory List -->
+<div class="w-full md:w-80 lg:w-96 flex flex-col border-r border-outline-variant/30 bg-surface-container-low">
+<!-- Search Bar -->
+<div class="p-4 border-b border-outline-variant/20">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant/40 rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all text-body-sm placeholder:text-muted-text" placeholder="Search clients..." type="text"/>
+</div>
+</div>
+<!-- Directory List -->
+<div class="flex-1 overflow-y-auto no-scrollbar py-2">
+<!-- Active Client -->
+<div class="px-4 py-4 mb-1 mx-2 bg-white rounded-2xl border-l-4 border-primary shadow-sm cursor-pointer transition-all">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a stylish young woman with glowing skin and elegant makeup, posing in a high-fashion Lagos studio. The background is a soft beige tone that emphasizes her natural beauty and professional lash extensions. The lighting is editorial and soft, creating a luxury portrait vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqkAICF412B81pSjHbYMkTGFTja2-GncRpClWV5F0gNXB6msbgszYEAdzI2l28-bvJFuAC_Z8xzrlQnjAC6vdf94J2uD8HMu7gX11z7GIOzmLCCr7sEP5aQw5GuRDuJoJ4-cPBMmQZamUph3ZxU26tfSEXchPwxsRj5-gx65RVkKBGnCRdF1uCFi2w9sWdrOvHVk6rNYHQ9Ls_h2bsb9LIdwVyW7gXpw7uoRPfXMJRYj6lqKBd0jKAaxE5cygSCsB1Nysu6wKYZ6Q"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-display-lg text-[16px] font-semibold text-on-surface truncate">Chinwe Okoro</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70">Lashes &amp; Brows • Active</p>
+</div>
+<div class="flex flex-col items-end">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<p class="text-[10px] text-on-surface-variant/50 mt-1 uppercase tracking-tighter">VIP</p>
+</div>
+</div>
+</div>
+<!-- Other Clients -->
+<div class="px-4 py-4 mx-2 hover:bg-surface-container-high rounded-2xl cursor-pointer transition-all">
+<div class="flex items-center gap-3 opacity-80">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional studio headshot of a Lagos professional woman with a clean and minimal aesthetic. She has beautifully manicured nails visible near her face. The mood is high-end editorial, with soft shadows and a pristine white background that feels luxurious and light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZXPc7wCi9gNoyC6rKACDUbFfkbBRcSfhaLOZ_x3KY-D8BgEztOk1IwCk9QBsYzDUFmvI6_ejG70wqv_0kigYRRnGKw0qWIFJWZOOfHPuTE_AVhFGQwVboDgJtZzyntyzlutRU4IijNtvnrrCXcx3SLAR87JqqTLrc3EStpDljkLG7_1WC2O0V6UKrPrxi87FDAXtqFQHWPTdlxGPc1I48U4t-0vl_mWt7IbmiYQsyk624jQ2pzNdE-6y5YRjXX2FZRMp9DgapHak"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-display-lg text-[16px] font-medium text-on-surface truncate">Amina Bello</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70">Nail Art • Last seen 2w ago</p>
+</div>
+</div>
+</div>
+<div class="px-4 py-4 mx-2 hover:bg-surface-container-high rounded-2xl cursor-pointer transition-all">
+<div class="flex items-center gap-3 opacity-80">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Editorial portrait of a woman with braided hair and high-gloss makeup in a minimalist Lagos interior. The lighting is natural and bright, showcasing her facial features and hair texture. The overall aesthetic is clean, modern, and aligned with luxury beauty services." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYV2wZKKPhxYG9fpfDszOMwfr98Uvgoe5AS0ca0s5Y-S2VIKYH_tF42IK6_WsyjoXTIarf6h7IAJcV41YX1GA0SRSPTw6rZqdk1p551v21VLJ8nZL5af2y_U2p0zLTwrhX6wpo9yZJKdPrS1iZcpG2e_5zZ71w_HTE4YtWOFA4n1SKnwwOkowFq18iu_PaoLrlH0-X0BL21RK3LyPcRIdoo-cEYkZlmCudhcmnDZVso_44fXDGokjLo9Ozxkoq9t7jZuUBsX-53RI"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-display-lg text-[16px] font-medium text-on-surface truncate">Emeka Nwosu</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70">Grooming • Last seen 1m ago</p>
+</div>
+</div>
+</div>
+<div class="px-4 py-4 mx-2 hover:bg-surface-container-high rounded-2xl cursor-pointer transition-all">
+<div class="flex items-center gap-3 opacity-80">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Minimalist headshot of a woman with sleek, modern hair and soft-focus skin. The image is captured in a high-end salon environment with subtle golden accents in the background. The lighting is diffused and professional, emphasizing a premium beauty treatment outcome." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBD3X8l4EdZTLBJiFk2m40Yy5OrQlxkGFDObHHb_4FfkEmNki2REY-Hvjs7Xll6qyuGVX_eGp4ogiLjr1UFUlIPvelXbbFD812QjNZMjWtyy5X0-C-tqrrgjMocEEKic7EdYecNJWu-JY1SNgawp0sZVM0o23wai8BDjK9rYBm2vzQycpNf2XNSqv5wVlwJdwca8G6huRIqJzOSBnHyJBlY6IWVxXk37c3eZkZZ8p-aWP-pV3uq_eSSNJ4P7La6haeDrJJ3i74NAI"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-display-lg text-[16px] font-medium text-on-surface truncate">Zainab Yusuf</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70">Signature Facial • Pending</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Detail View -->
+<div class="hidden md:flex flex-1 flex-col overflow-y-auto no-scrollbar bg-surface-bright">
+<!-- Profile Header Hero -->
+<div class="p-8 lg:p-12">
+<div class="flex flex-col lg:flex-row gap-10 items-start">
+<!-- Large Profile Photo -->
+<div class="relative">
+<div class="w-48 h-48 rounded-2xl overflow-hidden shadow-2xl rotate-1">
+<img class="w-full h-full object-cover" data-alt="Detailed close-up portrait of Chinwe Okoro, a client at ThePrettyPlug. She is captured in a soft, high-key studio setting that highlights her flawless makeup and professional lash extensions. The atmosphere is sophisticated and editorial, echoing a premium fashion magazine look with soft dusty rose tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuvlZ-eoVrwbLk-8pE4ONTGY7ABvaZcCJ2ymm-gPVRhLd7sAxpuhBK0lmOTq7oJaui8ckkJBKVf67ostp-3uOPexU1ZWwAk0W0kFKSL0-sm_rPH_Nj6-W3cE7bxMwjXk7IpCU1eE1ffZ_QusuzJXZjzQAYOV1OCYqnFa7yQ89VUkBJfjS7RDmNbQ4YenQNUAVA2GhNBTMk_m7OuXrUNutS-sqN4yABHX2q_ZEcWPWp7ksV_B_mf3ddPEvKZwO832M6PQPh9WcSqpo"/>
+</div>
+<div class="absolute -bottom-4 -right-4 bg-secondary text-on-secondary px-4 py-2 rounded-full font-label-caps text-label-caps shadow-lg uppercase">
+                                    Loyalty: Gold
+                                </div>
+</div>
+<!-- Identity & Info -->
+<div class="flex-1 space-y-6">
+<div>
+<div class="flex items-center gap-4 mb-2">
+<h3 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Chinwe Okoro</h3>
+<button class="p-2 rounded-full border border-outline-variant/30 hover:bg-surface-variant/30 transition-all">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-4 text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+<span class="text-body-sm">chinwe.okoro@outlook.com</span>
+</div>
+<div class="flex items-center gap-2 border-l border-outline-variant/30 pl-4">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span class="text-body-sm">+234 812 345 6789</span>
+</div>
+<div class="flex items-center gap-2 border-l border-outline-variant/30 pl-4">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="text-body-sm">Ikoyi, Lagos</span>
+</div>
+</div>
+</div>
+<!-- Stats Bento -->
+<div class="grid grid-cols-3 gap-gutter">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase mb-2">Total Spend</p>
+<p class="font-headline-md text-headline-md text-primary">₦450,000</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase mb-2">Visits</p>
+<p class="font-headline-md text-headline-md text-on-surface">14 <span class="text-body-sm font-normal text-on-surface-variant">total</span></p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase mb-2">Frequency</p>
+<p class="font-headline-md text-headline-md text-secondary">Bi-weekly</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-16">
+<!-- Left: History -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Appointment History</h4>
+<button class="text-primary font-label-caps text-label-caps hover:underline">View All</button>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4 items-start p-4 bg-white rounded-xl border border-outline-variant/10 hover:shadow-md transition-all">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">visibility</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-bold text-on-surface">Classic Lash Refill + Brow Tint</p>
+<p class="text-body-sm text-on-surface-variant">Oct 24, 2023 • 14:00 • Victoria Island Suite</p>
+</div>
+<p class="font-display-lg text-[16px] font-semibold text-primary">₦32,000</p>
+</div>
+<div class="flex gap-4 items-start p-4 bg-white rounded-xl border border-outline-variant/10 hover:shadow-md transition-all">
+<div class="w-12 h-12 rounded-lg bg-secondary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary">brush</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-bold text-on-surface">Luxury Gel Manicure (Ombre)</p>
+<p class="text-body-sm text-on-surface-variant">Oct 10, 2023 • 10:30 • Victoria Island Suite</p>
+</div>
+<p class="font-display-lg text-[16px] font-semibold text-primary">₦25,000</p>
+</div>
+<div class="flex gap-4 items-start p-4 bg-white rounded-xl border border-outline-variant/10 opacity-70">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">face</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-bold text-on-surface">Hydra-Radiance Facial</p>
+<p class="text-body-sm text-on-surface-variant">Sep 28, 2023 • 16:15 • Victoria Island Suite</p>
+</div>
+<p class="font-display-lg text-[16px] font-semibold text-primary">₦55,000</p>
+</div>
+</div>
+</section>
+<!-- Right: Notes & Prefs -->
+<section>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-6">Client Notes &amp; Preferences</h4>
+<div class="bg-tertiary-fixed p-8 rounded-3xl relative overflow-hidden">
+<!-- Atmospheric glow decoration -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="space-y-6 relative z-10">
+<div>
+<p class="font-label-caps text-label-caps text-on-tertiary-fixed-variant uppercase mb-2">Medical &amp; Sensitivities</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-1.5 bg-error-container text-on-error-container rounded-full text-body-sm font-medium border border-error/20">Allergic to specific lash adhesive (Latex-based)</span>
+<span class="px-4 py-1.5 bg-surface-container-highest text-on-surface rounded-full text-body-sm font-medium">Sensitive eye area</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-tertiary-fixed-variant uppercase mb-2">Style Preferences</p>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 text-body-md text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+                                                    Prefers French tips (Thin line)
+                                                </li>
+<li class="flex items-center gap-3 text-body-md text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+                                                    Natural mapping for lash extensions
+                                                </li>
+<li class="flex items-center gap-3 text-body-md text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+                                                    Loves high-gloss finish on everything
+                                                </li>
+</ul>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-tertiary-fixed-variant uppercase mb-2">Salon Experience</p>
+<div class="bg-white/50 backdrop-blur-sm p-4 rounded-xl border border-white/20 italic text-body-sm text-on-surface-variant">
+                                                "Prefers a quiet appointment—no background music near station. Usually enjoys a ginger tea with honey upon arrival."
+                                            </div>
+</div>
+</div>
+<button class="mt-8 w-full py-3 bg-tertiary-container text-on-tertiary-container rounded-xl font-label-caps text-label-caps hover:bg-tertiary transition-all">
+                                        Update Preferences
+                                    </button>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Mobile Navigation (Suppressed per task guidelines as this is a focused task view, but showing logic) -->
+<!-- The Sidebar is the primary anchor for this Admin CRM tool -->
+<script>
+        // Simple logic for interactive states (demo purposes)
+        document.querySelectorAll('.cursor-pointer').forEach(item => {
+            item.addEventListener('click', () => {
+                // In a real app, this would trigger content loading
+                console.log('Client selected:', item.innerText);
+            });
+        });
+    </script>
+</body></html>

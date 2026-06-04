@@ -1,6 +1,6 @@
 # ThePrettyPlug 💅
 
-> Premium personal brand & booking platform for a Lagos-based lash, nail, and pedicure technician. A professional digital presence that replaces Instagram DM bookings with a fully automated, AI-enhanced experience.
+> Premium personal brand & booking platform for a Lagos-based lash, nail, and pedicure technician. A polished online presence that replaces Instagram DM bookings with a focused booking flow and admin tools.
 
 ---
 
@@ -56,11 +56,11 @@ ThePrettyPlug is a full-stack web application built for a solo beauty technician
 ### Backend (Server)
 | Technology | Purpose |
 |---|---|
-| Express.js | REST API server |
-| PostgreSQL | Primary database |
-| Prisma | ORM |
-| JWT | Authentication (admin) |
-| bcrypt | Password hashing |
+| Express.js | REST API server (or serverless functions) |
+| Supabase (Postgres) | Hosted backend: database, auth, storage, realtime and row-level security |
+| @supabase/supabase-js | Official client for server and browser interactions |
+| JWT / Supabase Auth | Authentication (admin & clients) — prefer Supabase Auth where possible |
+| bcrypt | Password hashing (only if using custom auth flows)
 
 ### External APIs
 | Service | Purpose |
@@ -156,13 +156,15 @@ The UI follows the **"Editorial Melanin Intuition"** design language — a high-
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 15+
+- PostgreSQL 15+ (only required for the server/back-end)
 - npm or yarn
 
-### Frontend Setup
+### Quick Start (frontend)
+
+From the repository root run:
 
 ```bash
-# Navigate to the client folder
+# Enter the client folder
 cd pretty-plug
 
 # Install dependencies
@@ -172,16 +174,27 @@ npm install
 npm run dev
 ```
 
-### Environment Variables
+Notes:
+- The frontend client lives in the `pretty-plug` folder relative to this README.
+- Backend and admin areas are planned but not present in this repository snapshot.
 
-Create a `.env` file in the `server/` directory (never commit this):
+### Available npm scripts (client)
+
+- `npm run dev` — Starts Vite dev server
+- `npm run build` — Builds production assets with Vite
+- `npm run preview` — Serves the built assets locally
+- `npm run lint` — Runs ESLint across the project
+
+### Environment Variables (Supabase)
+
+Create a `.env` file in the `server/` directory (never commit service role keys):
 
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/prettyplug
-
-# Auth
-JWT_SECRET=your_jwt_secret_here
+# Supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=public-anon-key
+# Use the SERVICE_ROLE key only on trusted server environments — never expose it to the browser
+SUPABASE_SERVICE_ROLE_KEY=service-role-key
 
 # Anthropic
 ANTHROPIC_API_KEY=sk-ant-xxx
@@ -193,7 +206,7 @@ PAYSTACK_WEBHOOK_SECRET=xxx
 
 # Termii (SMS)
 TERMII_API_KEY=xxx
-TERMII_SENDER_ID=BEAUTYPLUG
+TERMII_SENDER_ID=THEPRETTYPLUG
 
 # WhatsApp
 WHATSAPP_TOKEN=xxx
@@ -218,6 +231,8 @@ GOOGLE_PLACE_ID=xxx
 ---
 
 ## Database Schema (Key Tables)
+
+Note: The database is hosted in Supabase (Postgres). You can create tables via the Supabase dashboard, SQL editor, or run migrations from your preferred migration tool.
 
 | Table | Purpose |
 |---|---|

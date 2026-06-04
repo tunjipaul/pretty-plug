@@ -4,11 +4,13 @@ import {
   CreditCard,
   FileText,
   HelpCircle,
+  Image,
   LayoutDashboard,
   Link as LinkIcon,
   Lock,
   LogOut,
   Mail,
+  MessageSquareQuote,
   MapPin,
   MessageSquare,
   Save,
@@ -26,6 +28,9 @@ const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { label: "Website", icon: FileText, path: "/admin/content" },
   { label: "Services", icon: Scissors, path: "/admin/services" },
+  { label: "Gallery", icon: Image, path: "/admin/gallery" },
+  { label: "Reviews", icon: MessageSquareQuote, path: "/admin/testimonials" },
+  { label: "FAQ", icon: HelpCircle, path: "/admin/faq" },
   { label: "Bookings", icon: CalendarDays, path: "/admin/bookings" },
   { label: "Clients", icon: Users, path: "/admin/clients" },
   { label: "Settings", icon: Settings, path: "/admin/settings", active: true },
@@ -62,7 +67,11 @@ function AdminSidebar() {
 
       <nav className="flex-1 space-y-1 px-2">
         {navItems
-          .filter((item) => item.label !== "Clients")
+          .filter((item) =>
+            ["Dashboard", "Website", "Services", "Gallery", "Settings"].includes(
+              item.label,
+            ),
+          )
           .map((item) => {
           const Icon = item.icon;
           return (

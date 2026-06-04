@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Testimonials | ThePrettyPlug Lagos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#fddbaa",
+                    "surface-dim": "#dcdad7",
+                    "tertiary-fixed": "#eae1dd",
+                    "secondary-fixed-dim": "#e2c293",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1f1b19",
+                    "primary": "#8a4758",
+                    "inverse-primary": "#ffb1c2",
+                    "on-surface": "#1c1c1a",
+                    "on-tertiary-container": "#fffbff",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e5e2df",
+                    "surface-bright": "#fcf9f6",
+                    "surface-container-highest": "#e5e2df",
+                    "surface-container-low": "#f6f3f0",
+                    "secondary": "#735a34",
+                    "inverse-on-surface": "#f3f0ed",
+                    "on-tertiary-fixed-variant": "#4b4643",
+                    "on-primary-fixed": "#3a0719",
+                    "inverse-surface": "#31302f",
+                    "on-primary-container": "#fffbff",
+                    "primary-container": "#a75f71",
+                    "primary-fixed-dim": "#ffb1c2",
+                    "outline": "#847376",
+                    "on-background": "#1c1c1a",
+                    "surface-container": "#f0edea",
+                    "surface-tint": "#8d4a5b",
+                    "on-secondary-fixed-variant": "#59431f",
+                    "surface": "#fcf9f6",
+                    "secondary-fixed": "#ffddae",
+                    "tertiary-container": "#7a7370",
+                    "tertiary-fixed-dim": "#cec5c1",
+                    "surface-container-high": "#eae8e5",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#281800",
+                    "tertiary": "#615b58",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#ffd9e0",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#703344",
+                    "on-surface-variant": "#524346",
+                    "outline-variant": "#d7c1c4",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#fcf9f6",
+                    "on-secondary-container": "#785e38"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-desktop": "80px",
+                    "section-padding": "120px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "label-caps": ["DM Sans"],
+                    "body-sm": ["DM Sans"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .serif-italic { font-family: 'Playfair Display'; font-style: italic; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .mask-curved { mask-image: radial-gradient(circle at bottom right, transparent 0%, black 100%); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Bar -->
+<nav class="bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md border-b border-outline-variant/30 dark:border-outline/20 docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight" href="#">ThePrettyPlug</a>
+<!-- Desktop Links -->
+<div class="hidden md:flex items-center gap-10">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Portfolio</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Services</a>
+<a class="font-label-caps text-label-caps text-primary border-b-2 border-primary pb-1" href="#">Testimonials</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">About</a>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 font-label-caps text-label-caps tracking-widest hover:bg-primary-container transition-all scale-95 active:opacity-80">
+                Book Now
+            </button>
+</div>
+</nav>
+<main>
+<!-- Hero Section: Editorial Header -->
+<section class="relative pt-20 pb-section-padding px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto overflow-hidden">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-end">
+<div class="lg:col-span-7">
+<span class="font-label-caps text-label-caps text-secondary mb-6 block uppercase tracking-[0.2em]">Kind Words from Lagos</span>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary leading-tight mb-8">
+                        Where <span class="serif-italic font-light">Elegance</span> Meets <br/> Endless Appreciation.
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-12">
+                        Discover why ThePrettyPlug is the most coveted sanctuary for sophisticated women in Victoria Island. Our commitment to meticulous detail is mirrored in the stories of our clients.
+                    </p>
+</div>
+<div class="lg:col-span-5 relative">
+<div class="aspect-[4/5] bg-surface-container overflow-hidden rounded-sm relative">
+<img class="w-full h-full object-cover" data-alt="A sophisticated woman with a sleek, polished look relaxing in a high-end salon suite in Victoria Island, Lagos. The lighting is warm and cinematic, casting soft shadows across the ivory walls and marble surfaces. She is wearing a modern silk dress in dusty rose, embodying the luxurious and meticulous aesthetic of ThePrettyPlug brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASaZmPfYcmdO62-8l_sr8Btwqx8kg01CXcGzmvRCBTEW1JYjy9dKeras-Te9AzqQtdAz8vrVpjYMqIWsKoSJf7oxWJYrt5vo0nlY2oUKGVyRBL1R0q0Y4xEOLhRfLcIWnePW--R7iMS3dou8r_BhkLXPDUrqkpCgb5rfWDJ1LX2_eYLS8LI2Ikup5JE2rW7lJ2g_UGh1kEb1VGnpdawylK8a9npMzqbrAClds1Eu5Gr7NCB0FAQSNM-zZ9b61hojf8FczhW2j4ZJA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Review: Large Quote Section -->
+<section class="bg-surface-container-low py-section-padding">
+<div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="order-2 lg:order-1">
+<span class="material-symbols-outlined text-primary text-6xl mb-8 opacity-40" data-icon="format_quote">format_quote</span>
+<blockquote class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface leading-snug mb-10">
+                            "First time trying it out, I loved the cleanliness. Great customer service and affordable. First time trying it out, I loved the cleanliness. The meticulous attention to detail at ThePrettyPlug is unmatched in all of Lagos."
+                        </blockquote>
+<div class="flex items-center gap-4">
+<div class="w-16 h-px bg-outline-variant"></div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface tracking-widest uppercase">Layrena Meglio</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">The Signature Gel Manicure</p>
+</div>
+</div>
+</div>
+<div class="order-1 lg:order-2 flex justify-center">
+<div class="relative w-full max-w-md aspect-square rounded-full overflow-hidden border-8 border-white shadow-2xl shadow-primary/10">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a radiant African woman with flawless skin and elegant makeup, smiling softly. The background is a blurred high-end interior with hints of gold and cream. The image conveys high-key, professional editorial lighting that highlights her natural beauty and sophistication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_lv5e3HnBSqBUrgJ-b-num-Wk3mAYsJwiGAKD1xWcdOj9ZPwBEzARPREIBuwklea7RYQ2TlwebXBjAv3UxWFiBMByt2PK3GxdHe4lsV1ebH3m0h-L9YIzv6QVXswwnCDvYfiFgoeDdRsIcn7YkSCFNIiPJpiNIR09_haNyRKhf7Hs8uqjv0Fds2BtIvDlMwauWd9RgDjxqiBYoGjjTq6e8JlRjz7CchEZozVwBG11BPkvcqEq3glVqnuLn7UDW3UCnQQZDxNvR4g"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Video Testimonials: Reels Grid -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center mb-20">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4 uppercase tracking-tighter">The Studio Vibe</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Step inside our sanctuary through the eyes of our guests.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Video Card 1 -->
+<div class="group relative aspect-[9/16] overflow-hidden rounded-xl bg-surface-container-highest cursor-pointer">
+<img class="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" data-alt="A short portrait video frame showing a close-up of a client's hands featuring vibrant blue sapphire gloss nail polish. The hands are moving gracefully under a warm studio light in a minimalist Victoria Island salon environment. The mood is aspirational and fashion-forward." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDac9v8_OPvKon7PQch0UNy-hRroBt_DWhjZAyQhC6bVyIo2FHMkAYiLa7-s9YbLuKH8EFmSbGNe-iOHRL_UPi0i24jUs_nV0T0pSZUrkCBjksaHrL2Ks5SNhoI3ZEExoCTJUbPrrxZKglyzp0bGNhGbSQAIvy0i2wlfoqvLaSqrxNHsCekoFl8vCkP3orDd6W2K-ndwRmPCNXkdmmrv-CgyyY7rkzbYIcikylG_NM5eM7A_ycW-le4px7bSXUfjP2LNy9_2dfgCk0"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full glass-card border border-white/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<p class="font-label-caps text-label-caps text-white drop-shadow-md">Tosin A. • 15k views</p>
+</div>
+</div>
+<!-- Video Card 2 -->
+<div class="group relative aspect-[9/16] overflow-hidden rounded-xl bg-surface-container-highest cursor-pointer translate-y-8">
+<img class="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" data-alt="Cinematic vertical video still of a client having a relaxing lash extension session at a luxury beauty spa in Lagos. Soft, hazy lighting creates a serene atmosphere. The color palette features warm creams, tans, and deep rose accents, reflecting a modern minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzq9thpoFS55TyWlbH1Xfh_03P32mZ1IufaV-9a3rWD9VCATiJKTsdo6Xv9Y4ATxoDF3pypq_q8nShj8f2IW05l8BZ84vPpHpguz9sAz4iyZOWUd_6orz4gFmt24vEn8AM3rlKeET3SDd8hJ35udZkQbvz_DcXJDFzBfwTQGPA9tZefWoP58D17HYEtLCalunS4h1HZbbJCofRoNtEZJRFcusb_Eqh4WuxUb7lmeQMdc77ztbzq3v0jQdskzOc_Lt8PSgUhcgSrQQ"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full glass-card border border-white/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<p class="font-label-caps text-label-caps text-white drop-shadow-md">Bisi O. • 8k views</p>
+</div>
+</div>
+<!-- Video Card 3 -->
+<div class="group relative aspect-[9/16] overflow-hidden rounded-xl bg-surface-container-highest cursor-pointer">
+<img class="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" data-alt="Vertical video frame of an elegant workspace in a boutique nail studio. High-end tools and glass polish bottles are neatly arranged on a white marble desk. Bright, clean light pours in from a window, emphasizing a pristine and clinical yet luxurious workspace environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjy4cT3Y2fehs3orLyInrRUCgFYvJ7R5oBdL4_B_-p7PxfjRfY73EbafxOCmPIIIpIZIinOAvmPTFeEj_MFFf4hDXRFwvsuFEWZn1qy8MHwzEtH9y4THTVznaIcjf4InvDW2CsUVh_PE2kocH_49VLGoheGIWP6l4Is7FCr82FGuggfYd7aISAoxgDNawcI4YsNAMP-gSfHBDguOENOynQw2bF0TY1ORDZWX2G3nvnAemsxvLNzyFD1f6qmMs3Ei02Rc4KlZHHtBM"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full glass-card border border-white/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<p class="font-label-caps text-label-caps text-white drop-shadow-md">Amaka J. • 22k views</p>
+</div>
+</div>
+<!-- Video Card 4 -->
+<div class="group relative aspect-[9/16] overflow-hidden rounded-xl bg-surface-container-highest cursor-pointer translate-y-8">
+<img class="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" data-alt="Editorial-style vertical video of a client admiring her new manicure in a large ornate mirror. The lighting is soft and golden hour, catching the subtle glow on the walls. The scene is refined, focused on quiet luxury and personal satisfaction within a high-end ThePrettyPlug environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB6sd22y0-M4wxiRda5Qamvno_JXVXhwgI1db2WSDoRV9bQ5xxv9PnM-oFKBQ-7RO4dTaNsU1UIZSX1ziXgqDSHSl-QkRHpiKWFGvMNrief0Tgex3L0xzGVWqnP8lNOBxG5D9DsOW8itoApIkVmRZzT68D4pMWkDCOMkOXNpWMO6bJpe-g6Juch4lDURNcNLqrAVgwiztwgPnJeyuWe-FVyfMj060otj3TBDObZTxdvcwXRsFbKB_atxrJ5xGuBrDwDMeErnq9MHw"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full glass-card border border-white/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<p class="font-label-caps text-label-caps text-white drop-shadow-md">Zainab L. • 12k views</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Review Grid: Detailed Cards -->
+<section class="py-section-padding bg-surface">
+<div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+<div>
+<span class="font-label-caps text-label-caps text-secondary mb-2 block uppercase">Verified Experiences</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">The Gallery of Joy</h2>
+</div>
+<div class="flex gap-4">
+<button class="p-4 border border-outline hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">west</span>
+</button>
+<button class="p-4 border border-outline bg-primary text-on-primary hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined">east</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+<!-- Review Card 1 -->
+<div class="group">
+<div class="aspect-video mb-8 overflow-hidden bg-surface-container-low rounded-sm relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A macro photograph of impeccably manicured nails featuring a minimalist French tip in dusty rose. The hands are posed elegantly against a light sand-colored background. Soft editorial lighting emphasizes the clean cuticles and professional finish typical of a premium Lagos beauty service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_78TamkDKV3GueeXp8enYOkNRFEUZaxSHbUhY9z3jNqw_nwJMKYQIuwxWohnRNOjGQTZdTZLjAWTRTU3tBLob7Wl8ZH5hsXh0_0caaC-Pl0VKizusQzH3h6B2BbMpwtGQ9XXhNrMrWhmqVJceRuQwxoGZoSpgDpC9i90gjLSAcbY5nUomtJAsuxk5xjb6Yfjst8NYob11gJ8cOK9zUo85ldC_HxiS7iP58XV-6a8G1zVdWkseEg_qQmuObeWmswH5Ilq4_U9QSQ4"/>
+<div class="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-caps text-label-caps">5.0</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Luxury Gel Mani</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">by Anita Ochei</p>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                                "Anita was incredibly patient with my design choice. The studio is so quiet and peaceful—a true escape from the Lagos traffic."
+                            </p>
+<span class="font-label-caps text-label-caps text-secondary/60 pt-4 border-t border-outline-variant/30 uppercase tracking-widest">2 Days Ago</span>
+</div>
+</div>
+<!-- Review Card 2 -->
+<div class="group">
+<div class="aspect-video mb-8 overflow-hidden bg-surface-container-low rounded-sm relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A clean, minimalist product shot of high-quality nail varnish bottles lined up on a reflective glass surface. The lighting is bright and high-key, creating a professional studio look with soft shadows and sharp highlights. The color palette centers on gold, white, and dusty pink." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRZ_-IJvbmTpGYo2QAN_ehMXRx-JNAtlEZcqlqw2CoRlroZa94-wX74W08ObF92UHBlHn6sTbGyTpk5O9RC8I6O6EDYZdVsQbb-1n53w4WILnjhQx_QEvOHgt7sBRbC9RiUNwcqdjHwKcj25zD60difiVjLYz9VUS13qSv4jPKq9t9vpYERfvVaxYZdf5CQVSIl-K-vWpoOzCMOQ3FCMZo4NM3FgHfbZ3g4drWJiYVLC0rKW_wIAn_Y5rLU2EB6DFBkTIw55NW9rA"/>
+<div class="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-caps text-label-caps">5.0</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Acrylic Extensions</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">by Sharon Peter</p>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                                "The shape of these extensions is perfection. I've never had acrylics that look this natural and slim. Highly recommend for any VI resident."
+                            </p>
+<span class="font-label-caps text-label-caps text-secondary/60 pt-4 border-t border-outline-variant/30 uppercase tracking-widest">1 Week Ago</span>
+</div>
+</div>
+<!-- Review Card 3 -->
+<div class="group">
+<div class="aspect-video mb-8 overflow-hidden bg-surface-container-low rounded-sm relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Detailed shot of a beauty treatment involving soft gold leaf accents on a client's fingernails. The hands are resting on a white plush towel. Lighting is soft and diffuse, creating a luxury spa aesthetic with a focus on premium materials and high-end artistic service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWKcQ7EafZl9MbbQhMCFfb4M3TzvJmSlej65VP8-bytGzeL0OspOYFXUN0sjmHEtpLKGSIipAQaLYHzGOs9v9ULNAXErAScST__plRFvyC3qHfPWkSfrRgDH9kHFT-9nqLMgG8qNIuBkHHpJDu-jglixJ2DGSr5dicawSmE09gxblWLwZymn0G0aTpQWDBnEr-nvpj-erATMMJ5RKLTOhAETPph-banneUmveLHaz87x1lpSQU6CFEzHvTw5XWBHV7NZjQvwJTFjQ"/>
+<div class="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-caps text-label-caps">4.9</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Classic Manicure</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">by Kemi Balogun</p>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                                "Quick, efficient, and clean. Exactly what I need for a lunch break service. The booking process via WhatsApp was also seamless."
+                            </p>
+<span class="font-label-caps text-label-caps text-secondary/60 pt-4 border-t border-outline-variant/30 uppercase tracking-widest">2 Weeks Ago</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action Section -->
+<section class="py-section-padding px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="bg-primary py-24 px-10 md:px-24 text-center rounded-sm relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 left-0 w-96 h-96 bg-white blur-3xl -translate-x-1/2 -translate-y-1/2 rounded-full"></div>
+<div class="absolute bottom-0 right-0 w-96 h-96 bg-secondary blur-3xl translate-x-1/2 translate-y-1/2 rounded-full"></div>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-primary mb-8 relative z-10">Experience the Plug.</h2>
+<p class="font-body-lg text-body-lg text-on-primary/80 max-w-2xl mx-auto mb-12 relative z-10">
+                    Join the league of Lagos’s most sophisticated women. Secure your suite appointment today for a meticulous beauty experience.
+                </p>
+<div class="flex flex-col sm:flex-row justify-center items-center gap-6 relative z-10">
+<button class="bg-white text-primary px-12 py-5 font-label-caps text-label-caps uppercase tracking-widest hover:bg-surface-container transition-all">
+                        Book Your Service
+                    </button>
+<button class="border border-white/50 text-white px-12 py-5 font-label-caps text-label-caps uppercase tracking-widest hover:bg-white/10 transition-all">
+                        View Price List
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/20 dark:border-outline/10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-section-padding max-w-container-max mx-auto">
+<div class="md:col-span-1">
+<span class="font-headline-sm text-headline-sm text-on-surface dark:text-on-surface font-bold block mb-6">ThePrettyPlug</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
+                    Victoria Island’s premier destination for high-end nail and lash services. Poised, exclusive, meticulous.
+                </p>
+<div class="flex gap-4 mt-8">
+<a class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="share">share</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="photo_camera">photo_camera</span>
+</a>
+</div>
+</div>
+<div>
+<h4 class="font-label-caps text-label-caps text-secondary mb-8 uppercase tracking-widest">Our Services</h4>
+<ul class="flex flex-col gap-4">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Gel Manicures</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Acrylic Extensions</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Lash Artistry</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Studio Rentals</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-caps text-label-caps text-secondary mb-8 uppercase tracking-widest">Company</h4>
+<ul class="flex flex-col gap-4">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-caps text-label-caps text-secondary mb-8 uppercase tracking-widest">Studio Hours</h4>
+<ul class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<li class="flex justify-between"><span>Mon - Fri</span> <span>09:00 - 19:00</span></li>
+<li class="flex justify-between"><span>Saturday</span> <span>10:00 - 18:00</span></li>
+<li class="flex justify-between"><span>Sunday</span> <span class="italic">Closed</span></li>
+</ul>
+<div class="mt-8 pt-8 border-t border-outline-variant/30">
+<p class="font-label-caps text-label-caps text-secondary mb-2">Location</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Suite 402, Victoria Island, Lagos</p>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 py-8 px-margin-mobile md:px-margin-desktop text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-60">
+                © 2024 ThePrettyPlug Lagos. All Rights Reserved.
+            </p>
+</div>
+</footer>
+<script>
+        // Micro-interaction for quote hover
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.group');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Slight elevation effect logic can be added here
+                });
+            });
+        });
+    </script>
+</body></html>
