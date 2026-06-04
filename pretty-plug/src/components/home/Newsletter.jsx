@@ -1,15 +1,15 @@
 export default function Newsletter() {
   return (
-    <section className="bg-primary-container py-24 text-on-primary md:py-28">
-      <div className="mx-auto max-w-2xl px-5 text-center">
-        <h2 className="mb-6 font-headline text-4xl font-medium md:text-5xl">
+    <section className="bg-primary-container py-16 text-on-primary md:py-20 lg:py-28">
+      <div className="mx-auto max-w-2xl px-5 text-center sm:px-6">
+        <h2 className="mb-6 font-headline text-3xl font-medium sm:text-4xl lg:text-5xl">
           Stay Polished
         </h2>
-        <p className="mb-10 font-body text-base leading-7 text-white/90 md:text-lg">
+        <p className="mb-8 font-body text-base leading-7 text-white/90 lg:mb-10 lg:text-lg">
           Join our inner circle for priority booking, seasonal trends, and
           exclusive beauty notes.
         </p>
-        <form className="flex flex-col sm:flex-row">
+        <form className="flex flex-col gap-3 sm:flex-row sm:gap-0">
           <label htmlFor="newsletter-email" className="sr-only">
             Email address
           </label>

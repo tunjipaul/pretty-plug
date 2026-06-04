@@ -1,7 +1,7 @@
 import {
-  Banknote,
   Bell,
   CalendarDays,
+  FileText,
   HelpCircle,
   LayoutDashboard,
   LogOut,
@@ -15,39 +15,56 @@ import {
 import { Link } from "react-router-dom";
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, active: true },
-  { label: "Bookings", icon: CalendarDays },
-  { label: "Clients", icon: Users },
-  { label: "Services", icon: Scissors },
-  { label: "Settings", icon: Settings },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/admin", active: true },
+  { label: "Website", icon: FileText, path: "/admin/content" },
+  { label: "Services", icon: Scissors, path: "/admin/services" },
+  { label: "Bookings", icon: CalendarDays, path: "/admin/bookings" },
+  { label: "Clients", icon: Users, path: "/admin/clients" },
+  { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 
 const statCards = [
   {
-    label: "Total Revenue",
-    value: "NGN 2.4M",
-    icon: Banknote,
-    trend: "12%",
+    label: "Homepage Sections",
+    value: "7",
+    icon: FileText,
     accent: "bg-primary-container/20 text-primary-container",
   },
   {
-    label: "Total Bookings",
-    value: "142",
-    icon: CalendarDays,
+    label: "Public Services",
+    value: "8",
+    icon: Scissors,
     accent: "bg-secondary-container/35 text-secondary",
   },
   {
-    label: "New Clients",
-    value: "38",
-    icon: UserPlus,
-    trend: "8%",
+    label: "Client Stories",
+    value: "2",
+    icon: Star,
     accent: "bg-tertiary-container/25 text-tertiary",
   },
   {
-    label: "Avg Review",
-    value: "4.9",
-    icon: Star,
+    label: "Pending Bookings",
+    value: "1",
+    icon: CalendarDays,
     accent: "bg-primary-container/20 text-primary-container",
+  },
+];
+
+const cmsShortcuts = [
+  {
+    title: "Website Content",
+    text: "Edit homepage copy, hero CTAs, metrics, testimonials, and footer blocks.",
+    path: "/admin/content",
+  },
+  {
+    title: "Services Catalog",
+    text: "Update public prices, durations, featured services, and booking availability.",
+    path: "/admin/services",
+  },
+  {
+    title: "Business Settings",
+    text: "Control contact details, opening hours, deposits, and notification rules.",
+    path: "/admin/settings",
   },
 ];
 
@@ -125,7 +142,7 @@ const activities = [
 
 function AdminSidebar() {
   return (
-    <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm md:flex">
+    <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm lg:flex">
       <div className="mb-10 px-4">
         <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-container">
           ThePrettyPlug Admin
@@ -136,12 +153,14 @@ function AdminSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 px-2">
-        {navItems.map((item) => {
+        {navItems
+          .filter((item) => item.label !== "Clients")
+          .map((item) => {
           const Icon = item.icon;
           return (
-            <button
+            <Link
               key={item.label}
-              type="button"
+              to={item.path}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-all ${
                 item.active
                   ? "bg-primary-container font-bold text-on-primary"
@@ -152,7 +171,7 @@ function AdminSidebar() {
               <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
                 {item.label}
               </span>
-            </button>
+            </Link>
           );
         })}
       </nav>
@@ -220,14 +239,14 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-background text-on-background">
       <AdminSidebar />
 
-      <main className="min-h-screen md:ml-64">
+      <main className="min-h-screen pb-24 lg:ml-64 lg:pb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b border-outline-variant/30 bg-surface/90 px-5 py-4 backdrop-blur-md md:px-8">
           <div>
             <h2 className="font-headline text-3xl font-medium text-on-surface">
-              Overview
+              CMS Overview
             </h2>
             <p className="font-body text-sm text-on-surface-variant md:text-base">
-              Welcome back, ThePrettyPlug Admin.
+              Manage the public website first, then operations.
             </p>
           </div>
 
@@ -259,6 +278,26 @@ export default function AdminDashboard() {
         </header>
 
         <div className="mx-auto max-w-7xl space-y-10 p-5 md:p-10">
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            {cmsShortcuts.map((shortcut) => (
+              <Link
+                key={shortcut.title}
+                to={shortcut.path}
+                className="border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-sm transition-colors hover:border-primary-container/40 hover:bg-surface-container-low"
+              >
+                <h2 className="font-headline text-2xl font-medium text-on-surface">
+                  {shortcut.title}
+                </h2>
+                <p className="mt-3 font-body text-sm leading-6 text-on-surface-variant">
+                  {shortcut.text}
+                </p>
+                <span className="mt-6 inline-block font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container">
+                  Open
+                </span>
+              </Link>
+            ))}
+          </section>
+
           <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {statCards.map((stat) => (
               <StatCard key={stat.label} stat={stat} />
@@ -422,13 +461,13 @@ export default function AdminDashboard() {
         </footer>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 py-3 backdrop-blur-md md:hidden">
-        {navItems.slice(0, 4).map((item) => {
+      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 py-3 backdrop-blur-md lg:hidden">
+        {navItems.map((item) => {
           const Icon = item.icon;
           return (
-            <button
+            <Link
               key={item.label}
-              type="button"
+              to={item.path}
               className={`flex flex-col items-center gap-1 ${
                 item.active ? "text-primary-container" : "text-on-surface-variant"
               }`}
@@ -437,7 +476,7 @@ export default function AdminDashboard() {
               <span className="font-label text-[10px] uppercase tracking-[0.08em]">
                 {item.label}
               </span>
-            </button>
+            </Link>
           );
         })}
       </nav>

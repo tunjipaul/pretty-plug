@@ -28,14 +28,14 @@ const services = [
 
 export default function ServiceChapter() {
   return (
-    <section className="bg-surface py-24 md:py-32">
-      <div className="mx-auto max-w-[1280px] px-5 md:px-20">
-        <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+    <section className="bg-surface py-16 md:py-20 lg:py-32">
+      <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
+        <div className="mb-10 flex flex-col justify-between gap-6 md:mb-14 lg:mb-16 lg:flex-row lg:items-end">
           <div className="max-w-xl">
-            <h2 className="mb-6 font-headline text-4xl font-medium leading-tight text-on-surface md:text-5xl">
+            <h2 className="mb-5 font-headline text-3xl font-medium leading-tight text-on-surface sm:text-4xl lg:text-5xl">
               Signature Services
             </h2>
-            <p className="font-body text-base leading-7 text-on-surface-variant md:text-lg">
+            <p className="font-body text-base leading-7 text-on-surface-variant lg:text-lg">
               Each treatment is a bespoke experience, blending careful
               craftsmanship with modern beauty aesthetics.
             </p>
@@ -48,14 +48,14 @@ export default function ServiceChapter() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => (
             <Link
               key={service.name}
               to="/services"
-              className={`group block ${service.offset ? "md:mt-20" : ""}`}
+              className={`group block ${service.offset ? "lg:mt-20" : ""}`}
             >
-              <div className="relative mb-6 aspect-[3/4] overflow-hidden bg-surface-container-high">
+              <div className="relative mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high sm:aspect-[3/4]">
                 <img
                   src={service.image}
                   alt={service.alt}

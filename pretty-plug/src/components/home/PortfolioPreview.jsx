@@ -12,7 +12,7 @@ const works = [
     src: "/images/gallery-2.png",
     alt: "Soft lash portfolio work",
     category: "Lashes",
-    offset: "md:mt-12",
+    offset: "lg:mt-12",
   },
   {
     src: "/images/gallery-3.jpg",
@@ -28,7 +28,7 @@ const works = [
     src: "/images/gallery-5.jpg",
     alt: "Nail technician applying detail",
     category: "Nails",
-    offset: "md:-mt-12",
+    offset: "lg:-mt-12",
   },
   {
     src: "/images/download (6).jfif",
@@ -45,10 +45,10 @@ export default function PortfolioPreview() {
       : works.filter((work) => work.category === activeFilter);
 
   return (
-    <section className="bg-surface-container-low py-24 md:py-32">
-      <div className="mx-auto max-w-[1280px] px-5 md:px-20">
-        <div className="mb-14 text-center">
-          <h2 className="mb-8 font-headline text-4xl font-medium text-on-surface md:text-5xl">
+    <section className="bg-surface-container-low py-16 md:py-20 lg:py-32">
+      <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
+        <div className="mb-10 text-center md:mb-14">
+          <h2 className="mb-6 font-headline text-3xl font-medium text-on-surface sm:text-4xl lg:text-5xl">
             Selected Works
           </h2>
           <div className="flex flex-wrap justify-center gap-3">
@@ -72,7 +72,7 @@ export default function PortfolioPreview() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-8">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:gap-8">
           {visibleWorks.map((work) => (
             <figure
               key={`${work.src}-${work.category}`}

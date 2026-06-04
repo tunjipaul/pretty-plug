@@ -14,7 +14,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-outline-variant/30 bg-surface/90 backdrop-blur-md">
-      <nav className="mx-auto flex w-full max-w-[1280px] items-center justify-between px-5 py-4 md:px-20">
+      <nav className="mx-auto flex w-full max-w-[1280px] items-center justify-between px-5 py-4 sm:px-6 lg:px-20">
         <Link
           to="/"
           className="font-headline text-xl font-semibold tracking-tight text-primary-container"
@@ -22,7 +22,7 @@ export default function Navbar() {
           ThePrettyPlug
         </Link>
 
-        <div className="hidden items-center gap-10 md:flex">
+        <div className="hidden items-center gap-10 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.label}
@@ -50,7 +50,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsOpen((open) => !open)}
-            className="p-2 text-primary-container md:hidden"
+            className="p-2 text-primary-container lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={isOpen}
           >
@@ -60,7 +60,7 @@ export default function Navbar() {
       </nav>
 
       <div
-        className={`overflow-hidden border-t border-outline-variant/20 bg-surface/95 transition-all duration-300 md:hidden ${
+        className={`overflow-hidden border-t border-outline-variant/20 bg-surface/95 transition-all duration-300 lg:hidden ${
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -71,10 +71,10 @@ export default function Navbar() {
               to={link.path}
               onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `font-label text-xs font-semibold uppercase tracking-[0.14em] ${
+                `border-l-2 px-3 py-2 font-label text-xs font-semibold uppercase tracking-[0.14em] transition-colors hover:border-primary-container hover:bg-primary-fixed/35 hover:text-primary-container focus-visible:border-primary-container focus-visible:bg-primary-fixed/35 focus-visible:text-primary-container focus-visible:outline-none ${
                   isActive
-                    ? "text-primary-container"
-                    : "text-on-surface-variant"
+                    ? "border-primary-container bg-primary-fixed/35 text-primary-container"
+                    : "border-transparent text-on-surface-variant"
                 }`
               }
             >

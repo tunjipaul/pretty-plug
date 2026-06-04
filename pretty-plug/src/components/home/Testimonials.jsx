@@ -17,14 +17,14 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-surface py-24 md:py-32">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-14 px-5 md:grid-cols-2 md:px-20">
+    <section className="bg-surface py-16 md:py-20 lg:py-32">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-20">
         <div>
           <span className="mb-4 block font-label text-xs font-semibold uppercase tracking-[0.14em] text-primary-container">
             Client Experiences
           </span>
-          <h2 className="mb-10 font-headline text-4xl font-medium leading-tight text-on-surface md:text-5xl">
-            Hear What Our <br /> Customers Say
+          <h2 className="mb-8 font-headline text-3xl font-medium leading-tight text-on-surface sm:text-4xl lg:mb-10 lg:text-5xl">
+            Hear What Our Customers Say
           </h2>
           <div className="space-y-10">
             {testimonials.map((testimonial, index) => (
@@ -36,7 +36,7 @@ export default function Testimonials() {
                     : "border-outline-variant/30 opacity-70"
                 }`}
               >
-                <p className="mb-6 font-body text-base italic leading-7 text-on-surface md:text-lg">
+                <p className="mb-6 font-body text-base italic leading-7 text-on-surface lg:text-lg">
                   "{testimonial.quote}"
                 </p>
                 <div className="flex items-center gap-4">
@@ -59,8 +59,8 @@ export default function Testimonials() {
           </div>
         </div>
 
-        <div className="hidden md:block">
-          <div className="relative h-[600px] w-full rotate-2 overflow-hidden rounded-full border-8 border-white bg-surface-container-high shadow-2xl">
+        <div className="hidden lg:block">
+          <div className="relative h-[520px] w-full rotate-2 overflow-hidden rounded-full border-8 border-white bg-surface-container-high shadow-2xl xl:h-[600px]">
             <img
               src="/images/studio.jpg"
               alt="ThePrettyPlug studio interior"

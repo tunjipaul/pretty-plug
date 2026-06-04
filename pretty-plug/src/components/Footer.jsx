@@ -31,7 +31,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-outline-variant/20 bg-surface-container-low">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-24 md:grid-cols-4 md:px-20">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 py-16 sm:grid-cols-2 sm:px-6 md:gap-12 lg:grid-cols-4 lg:px-20 lg:py-24">
         <div className="space-y-6">
           <div className="font-headline text-2xl font-semibold tracking-tight text-on-surface">
             ThePrettyPlug
@@ -97,7 +97,7 @@ export default function Footer() {
           </p>
         </div>
       </div>
-      <div className="mx-auto max-w-[1280px] border-t border-outline-variant/10 px-5 py-8 text-center md:px-20">
+      <div className="mx-auto max-w-[1280px] border-t border-outline-variant/10 px-5 py-8 text-center sm:px-6 lg:px-20">
         <p className="font-body text-sm text-on-surface-variant/70">
           (c) {currentYear} ThePrettyPlug. All Rights Reserved.
         </p>

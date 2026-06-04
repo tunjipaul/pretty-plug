@@ -2,38 +2,38 @@ import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-[calc(100vh-73px)] items-center overflow-hidden bg-surface">
-      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-12 px-5 py-14 md:grid-cols-12 md:px-20 md:py-20">
-        <div className="z-10 flex flex-col justify-center space-y-8 md:col-span-6">
+    <section className="relative flex min-h-[auto] items-center overflow-hidden bg-surface lg:min-h-[calc(100vh-73px)]">
+      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-5 py-12 sm:px-6 md:py-16 lg:grid-cols-12 lg:px-20 lg:py-20">
+        <div className="z-10 flex flex-col justify-center space-y-6 lg:col-span-6 lg:space-y-8">
           <span className="font-label text-xs font-semibold uppercase tracking-[0.3em] text-secondary">
             Abeokuta Luxury Suite
           </span>
-          <h1 className="font-display text-[42px] font-semibold leading-[1.08] tracking-tight text-on-surface sm:text-6xl md:text-[64px]">
+          <h1 className="font-display text-[40px] font-semibold leading-[1.08] tracking-tight text-on-surface sm:text-[56px] lg:text-[64px]">
             Best Nails for <br />
             <span className="italic text-primary-container">Best Moments</span>
           </h1>
-          <p className="max-w-md font-body text-lg leading-7 text-on-surface-variant">
+          <p className="max-w-md font-body text-base leading-7 text-on-surface-variant sm:text-lg">
             Loved by beauty minimalists and curated for the meticulous. Step
             into an era of editorial beauty where every finish is personal.
           </p>
           <div className="flex flex-col gap-4 pt-2 sm:flex-row">
             <Link
               to="/book"
-              className="inline-flex h-14 items-center justify-center bg-primary-container px-10 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-transform duration-300 hover:-translate-y-0.5"
+              className="inline-flex h-14 items-center justify-center bg-primary-container px-6 text-center font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-transform duration-300 hover:-translate-y-0.5 sm:px-10"
             >
               Book Appointment
             </Link>
             <Link
               to="/portfolio"
-              className="inline-flex h-14 items-center justify-center border border-secondary px-10 font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary transition-colors duration-300 hover:bg-secondary/10"
+              className="inline-flex h-14 items-center justify-center border border-secondary px-6 text-center font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary transition-colors duration-300 hover:bg-secondary/10 sm:px-10"
             >
               View Portfolio
             </Link>
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center md:col-span-6">
-          <div className="group relative aspect-[4/5] w-full overflow-hidden bg-surface-container-high">
+        <div className="relative flex items-center justify-center lg:col-span-6">
+          <div className="group relative aspect-[4/5] max-h-[620px] w-full overflow-hidden bg-surface-container-high sm:aspect-[5/4] lg:aspect-[4/5]">
             <img
               src="/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"
               alt="Luxury nude manicure with soft neutral styling"

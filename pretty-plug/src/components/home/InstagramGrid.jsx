@@ -12,10 +12,10 @@ const galleryImages = [
 
 export default function InstagramGrid() {
   return (
-    <section className="bg-surface-container-low py-20 md:py-24">
-      <div className="mx-auto max-w-[1280px] px-5 md:px-20">
-        <div className="mb-10 flex items-center justify-between gap-4">
-          <h2 className="font-headline text-2xl font-medium text-on-surface md:text-3xl">
+    <section className="bg-surface-container-low py-16 md:py-20 lg:py-24">
+      <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
+        <div className="mb-8 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center lg:mb-10">
+          <h2 className="break-all font-headline text-2xl font-medium text-on-surface md:text-3xl">
             @theprettyplugabeokuta
           </h2>
           <a
@@ -26,7 +26,7 @@ export default function InstagramGrid() {
           </a>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 md:grid-cols-9">
+        <div className="grid grid-cols-3 gap-2 md:grid-cols-6 lg:grid-cols-9">
           {galleryImages.map((img) => (
             <a
               key={img.src}

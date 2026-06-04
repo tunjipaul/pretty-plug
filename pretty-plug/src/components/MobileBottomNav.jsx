@@ -1,16 +1,16 @@
 import { NavLink } from "react-router-dom";
-import { Home, Sparkles, Calendar, User } from "lucide-react";
+import { Home, Sparkles, Calendar, Images } from "lucide-react";
 
 const navItems = [
   { label: "Home", icon: Home, path: "/" },
   { label: "Services", icon: Sparkles, path: "/services" },
   { label: "Book", icon: Calendar, path: "/book" },
-  { label: "Profile", icon: User, path: "/profile" },
+  { label: "Portfolio", icon: Images, path: "/portfolio" },
 ];
 
 export default function MobileBottomNav() {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 w-full bg-surface-container/90 backdrop-blur-xl z-50 flex justify-around items-center py-4 border-t border-outline-variant/10">
+    <div className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-outline-variant/10 bg-surface-container/90 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
       {navItems.map((item) => {
         const Icon = item.icon;
         return (
