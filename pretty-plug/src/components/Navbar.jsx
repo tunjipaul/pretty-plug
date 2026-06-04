@@ -19,7 +19,7 @@ export default function Navbar() {
           to="/"
           className="font-headline text-xl font-semibold tracking-tight text-primary-container"
         >
-          Beauty Plug
+          ThePrettyPlug
         </Link>
 
         <div className="hidden items-center gap-10 md:flex">

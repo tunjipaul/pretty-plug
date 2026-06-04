@@ -97,7 +97,7 @@ function BookingHeader() {
           to="/"
           className="font-headline text-3xl font-semibold tracking-tight text-primary-container"
         >
-          Beauty Plug
+          ThePrettyPlug
         </Link>
         <Link
           to="/"
@@ -508,7 +508,7 @@ export default function Booking() {
                         updateClient("email", event.target.value)
                       }
                       className="border-0 border-b border-outline-variant bg-transparent py-3 font-body text-base outline-none focus:border-primary-container"
-                      placeholder="bertie@beautyplug.com"
+                      placeholder="bertie@theprettyplug.com"
                     />
                   </label>
                 </div>

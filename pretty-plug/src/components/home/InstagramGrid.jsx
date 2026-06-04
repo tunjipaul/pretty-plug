@@ -16,7 +16,7 @@ export default function InstagramGrid() {
       <div className="mx-auto max-w-[1280px] px-5 md:px-20">
         <div className="mb-10 flex items-center justify-between gap-4">
           <h2 className="font-headline text-2xl font-medium text-on-surface md:text-3xl">
-            @beautyplugabeokuta
+            @theprettyplugabeokuta
           </h2>
           <a
             href="https://instagram.com"

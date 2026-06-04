@@ -16,7 +16,7 @@ const contactLinks = [
   },
   {
     label: "Email",
-    href: "mailto:hello@beautyplug.test",
+    href: "mailto:hello@theprettyplug.test",
     icon: Mail,
   },
   {
@@ -34,7 +34,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-24 md:grid-cols-4 md:px-20">
         <div className="space-y-6">
           <div className="font-headline text-2xl font-semibold tracking-tight text-on-surface">
-            Beauty Plug
+            ThePrettyPlug
           </div>
           <p className="max-w-xs font-body text-sm leading-6 text-on-surface-variant">
             Elevating beauty to an editorial art form in Abeokuta. Your
@@ -99,7 +99,7 @@ export default function Footer() {
       </div>
       <div className="mx-auto max-w-[1280px] border-t border-outline-variant/10 px-5 py-8 text-center md:px-20">
         <p className="font-body text-sm text-on-surface-variant/70">
-          (c) {currentYear} Beauty Plug. All Rights Reserved.
+          (c) {currentYear} ThePrettyPlug. All Rights Reserved.
         </p>
       </div>
     </footer>

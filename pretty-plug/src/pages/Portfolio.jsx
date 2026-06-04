@@ -89,7 +89,7 @@ export default function Portfolio() {
             <h1 className="mb-8 font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
               The Portfolio of <br />
               <span className="italic text-primary-container">
-                Beauty Plug Excellence
+                ThePrettyPlug Excellence
               </span>
             </h1>
             <div className="mx-auto h-px w-24 bg-outline-variant" />
@@ -192,7 +192,7 @@ export default function Portfolio() {
                         Transformations
                       </span>
                       <h2 className="font-headline text-4xl font-medium leading-tight text-on-surface md:text-5xl">
-                        The Beauty Plug Difference
+                        ThePrettyPlug Difference
                       </h2>
                       <p className="max-w-lg font-body text-base leading-7 text-on-surface-variant md:text-lg">
                         We do not just apply products; we restore and enhance
@@ -278,7 +278,7 @@ export default function Portfolio() {
               </h2>
               <p className="mx-auto mb-12 max-w-2xl font-body text-base leading-7 opacity-90 md:text-lg">
                 Experience the meticulous care and premium artistry that defines
-                the Beauty Plug signature look.
+                ThePrettyPlug signature look.
               </p>
               <div className="flex flex-col justify-center gap-4 md:flex-row">
                 <Link

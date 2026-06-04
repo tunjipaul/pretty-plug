@@ -316,7 +316,7 @@ export default function Services() {
                 />
                 <div className="absolute -bottom-8 right-6 hidden bg-primary-container p-8 text-on-primary md:block">
                   <div className="font-headline text-2xl font-medium">
-                    Best of Lagos
+                    Best of Abeokuta
                   </div>
                   <div className="mt-2 font-label text-xs font-semibold uppercase tracking-[0.12em]">
                     2023 Spa Awards
@@ -361,7 +361,7 @@ export default function Services() {
           </h2>
           <p className="mx-auto mb-12 max-w-xl font-body text-base leading-7 text-primary-fixed md:text-lg">
             Book your appointment online and experience the meticulous standard
-            of Beauty Plug.
+            of ThePrettyPlug.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link

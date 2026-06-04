@@ -88,7 +88,7 @@ export default function TestimonialsPage() {
                 Meets Endless Appreciation.
               </h1>
               <p className="max-w-xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
-                Discover why Beauty Plug is a coveted sanctuary for refined
+                Discover why ThePrettyPlug is a coveted sanctuary for refined
                 beauty care. Our commitment to meticulous detail is mirrored in
                 the stories of our clients.
               </p>
@@ -117,7 +117,7 @@ export default function TestimonialsPage() {
               <blockquote className="mb-10 font-headline text-3xl font-medium leading-tight text-on-surface md:text-5xl">
                 "First time trying it out, I loved the cleanliness. Great
                 customer service and affordable. The meticulous attention to
-                detail at Beauty Plug is unmatched."
+                detail at ThePrettyPlug is unmatched."
               </blockquote>
               <div className="flex items-center gap-4">
                 <div className="h-px w-16 bg-outline-variant" />
@@ -136,7 +136,7 @@ export default function TestimonialsPage() {
               <div className="relative aspect-square w-full max-w-md overflow-hidden rounded-full border-8 border-white shadow-2xl shadow-primary/10">
                 <img
                   src="/images/avatar-1.png"
-                  alt="Radiant Beauty Plug client"
+                  alt="Radiant ThePrettyPlug client"
                   className="h-full w-full object-cover"
                 />
               </div>

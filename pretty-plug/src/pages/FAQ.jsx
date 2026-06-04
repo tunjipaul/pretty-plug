@@ -280,7 +280,7 @@ export default function FAQ() {
                   <div className="relative min-h-[340px]">
                     <img
                       src="/images/studio.jpg"
-                      alt="Beauty Plug studio interior"
+                      alt="ThePrettyPlug studio interior"
                       className="absolute inset-0 h-full w-full object-cover grayscale opacity-55 contrast-125"
                     />
                   </div>

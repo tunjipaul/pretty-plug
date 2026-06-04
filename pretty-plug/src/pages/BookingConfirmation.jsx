@@ -17,7 +17,7 @@ export default function BookingConfirmation() {
     },
     selectedDate: state?.selectedDate ?? "Nov 11, 2026",
     selectedTime: state?.selectedTime ?? "06:00 PM",
-    client: state?.client ?? { name: "Beauty Plug Client" },
+    client: state?.client ?? { name: "ThePrettyPlug Client" },
     deposit: state?.deposit ?? 3000,
   };
 
@@ -36,7 +36,7 @@ export default function BookingConfirmation() {
             Booking Confirmed
           </h1>
           <p className="mx-auto mb-10 max-w-xl font-body text-lg leading-7 text-on-surface-variant">
-            You are all set, {booking.client.name || "Beauty Plug Client"}. A
+            You are all set, {booking.client.name || "ThePrettyPlug Client"}. A
             confirmation email and digital receipt will be sent once payment is
             processed by the live system.
           </p>

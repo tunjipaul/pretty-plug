@@ -1,7 +1,7 @@
 const testimonials = [
   {
     quote:
-      "The attention to detail at Beauty Plug is unmatched. My lashes lasted for weeks and looked incredibly natural.",
+      "The attention to detail at ThePrettyPlug is unmatched. My lashes lasted for weeks and looked incredibly natural.",
     name: "Ifeoma Adeyemi",
     service: "Hybrid Lash Set",
     avatar: "/images/avatar-1.png",
@@ -63,7 +63,7 @@ export default function Testimonials() {
           <div className="relative h-[600px] w-full rotate-2 overflow-hidden rounded-full border-8 border-white bg-surface-container-high shadow-2xl">
             <img
               src="/images/studio.jpg"
-              alt="Beauty Plug studio interior"
+              alt="ThePrettyPlug studio interior"
               className="h-full w-full -rotate-2 scale-110 object-cover"
             />
           </div>

@@ -72,7 +72,7 @@ const appointments = [
     period: "AM",
     client: "Adesua Wellington",
     service: "Full Set Mink Lashes",
-    location: "Victoria",
+    location: "Abeokuta",
     status: "Confirmed",
     statusClass: "bg-primary-fixed text-on-primary-fixed",
   },
@@ -128,7 +128,7 @@ function AdminSidebar() {
     <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm md:flex">
       <div className="mb-10 px-4">
         <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-container">
-          Beauty Plug Admin
+          ThePrettyPlug Admin
         </h1>
         <p className="mt-2 font-label text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
           Abeokuta Suite
@@ -211,6 +211,10 @@ function StatCard({ stat }) {
 
 export default function AdminDashboard() {
   const currentYear = new Date().getFullYear();
+  const todayLabel = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(new Date());
 
   return (
     <div className="min-h-screen bg-background text-on-background">
@@ -223,7 +227,7 @@ export default function AdminDashboard() {
               Overview
             </h2>
             <p className="font-body text-sm text-on-surface-variant md:text-base">
-              Welcome back, Beauty Plug Admin.
+              Welcome back, ThePrettyPlug Admin.
             </p>
           </div>
 
@@ -236,11 +240,12 @@ export default function AdminDashboard() {
               <Bell size={24} />
             </button>
             <div className="flex items-center gap-3 border-l border-outline-variant/30 pl-4">
-              <img
-                src="/images/avatar-2.jpg"
-                alt="Admin user"
-                className="h-10 w-10 object-cover"
-              />
+              <div
+                className="flex h-10 w-10 items-center justify-center bg-primary-container font-label text-xs font-bold uppercase tracking-[0.08em] text-on-primary"
+                aria-hidden="true"
+              >
+                AU
+              </div>
               <div className="hidden sm:block">
                 <p className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface">
                   Admin User
@@ -327,7 +332,7 @@ export default function AdminDashboard() {
                   Upcoming Appointments
                 </h2>
                 <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-primary-container">
-                  Today, Oct 24
+                  Today, {todayLabel}
                 </span>
               </div>
 
@@ -401,10 +406,10 @@ export default function AdminDashboard() {
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
             <div className="text-center md:text-left">
               <h2 className="font-headline text-2xl text-on-surface">
-                Beauty Plug
+                ThePrettyPlug
               </h2>
               <p className="mt-2 font-body text-sm text-on-surface-variant">
-                (c) {currentYear} Beauty Plug. Admin dashboard.
+                (c) {currentYear} ThePrettyPlug. Admin dashboard.
               </p>
             </div>
             <Link

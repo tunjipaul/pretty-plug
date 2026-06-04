@@ -44,7 +44,7 @@ export default function Hero() {
                 Summer Collection
               </p>
               <p className="mb-4 font-body text-sm leading-5 text-on-surface-variant">
-                Limited edition hand-painted finishes inspired by soft Lagos
+                Limited edition hand-painted finishes inspired by soft Abeokuta
                 evenings.
               </p>
               <Link
