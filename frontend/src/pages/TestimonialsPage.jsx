@@ -79,7 +79,7 @@ export default function TestimonialsPage() {
       <main className="pb-20 md:pb-0">
         <PageSection className="relative mx-auto max-w-[1280px] overflow-hidden px-5 pb-24 pt-20 md:px-20 md:pb-32 md:pt-24">
           <div className="grid grid-cols-1 items-end gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-7">
+            <div className="order-2 lg:order-1 lg:col-span-7">
               <span className="mb-6 block font-label text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
                 Kind Words From Abeokuta
               </span>
@@ -94,7 +94,7 @@ export default function TestimonialsPage() {
               </p>
             </div>
 
-            <div className="lg:col-span-5">
+            <div className="order-1 lg:order-2 lg:col-span-5">
               <div className="relative aspect-[4/5] overflow-hidden bg-surface-container">
                 <img
                   src="/images/poses for photo shoot, done in AI_.jfif"

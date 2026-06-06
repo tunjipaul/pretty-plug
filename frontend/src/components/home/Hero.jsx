@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section className="relative flex min-h-[auto] items-center overflow-hidden bg-surface lg:min-h-[calc(100vh-73px)]">
       <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-5 py-12 sm:px-6 md:py-16 lg:grid-cols-12 lg:px-20 lg:py-20">
-        <div className="z-10 flex flex-col justify-center space-y-6 lg:col-span-6 lg:space-y-8">
+        <div className="order-2 z-10 flex flex-col justify-center space-y-6 lg:order-1 lg:col-span-6 lg:space-y-8">
           <span className="font-label text-xs font-semibold uppercase tracking-[0.3em] text-secondary">
             Abeokuta Luxury Suite
           </span>
@@ -32,7 +32,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center lg:col-span-6">
+        <div className="order-1 relative flex items-center justify-center lg:order-2 lg:col-span-6">
           <div className="group relative aspect-[4/5] max-h-[620px] w-full overflow-hidden bg-surface-container-high sm:aspect-[5/4] lg:aspect-[4/5]">
             <img
               src="/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"

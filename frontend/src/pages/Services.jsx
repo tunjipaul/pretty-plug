@@ -101,18 +101,20 @@ export default function Services() {
     <>
       <Navbar />
       <main className="pb-20 md:pb-0">
-        <ServiceShell className="mx-auto max-w-[1280px] px-5 pb-24 pt-20 text-center md:px-20 md:pb-32 md:pt-24">
-          <span className="mb-6 block font-label text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
-            Exclusive Experiences
-          </span>
-          <h1 className="mx-auto mb-8 max-w-3xl font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
-            Elevated Beauty for Your Best Moments
-          </h1>
-          <p className="mx-auto mb-12 max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
-            Carefully curated services designed to enhance your natural grace.
-            From meticulous nail artistry to cinematic lash transformations.
-          </p>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <ServiceShell className="mx-auto flex max-w-[1280px] flex-col px-5 pb-24 pt-20 text-center md:px-20 md:pb-32 md:pt-24">
+          <div className="order-2 lg:order-1">
+            <span className="mb-6 block font-label text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+              Exclusive Experiences
+            </span>
+            <h1 className="mx-auto mb-8 max-w-3xl font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
+              Elevated Beauty for Your Best Moments
+            </h1>
+            <p className="mx-auto mb-12 max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
+              Carefully curated services designed to enhance your natural grace.
+              From meticulous nail artistry to cinematic lash transformations.
+            </p>
+          </div>
+          <div className="order-1 mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:order-2 lg:mb-0">
             <div className="group relative h-[320px] overflow-hidden bg-surface-container-high md:h-[400px]">
               <img
                 src="/images/studio.jpg"
