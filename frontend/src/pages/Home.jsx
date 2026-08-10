@@ -42,7 +42,6 @@ export default function Home() {
   useEffect(() => {
     getContent()
       .then((data) => {
-        console.log("HOME DEBUG: Received content:", data);
         if (data) setContent(data);
       })
       .catch((err) => console.error("HOME DEBUG: Content load failed:", err))
