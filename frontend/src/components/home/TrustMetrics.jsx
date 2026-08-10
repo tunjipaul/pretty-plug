@@ -1,16 +1,16 @@
-const metrics = [
-  { value: "500+", label: "Happy Clients" },
-  { value: "3+", label: "Years Excellence" },
-  { value: "5", label: "Star Reviews" },
-  { value: "1", label: "Certified Master" },
-];
+export default function TrustMetrics({ content }) {
+  const items = content?.items || [
+    { value: "500+", label: "Happy Clients" },
+    { value: "3+", label: "Years Excellence" },
+    { value: "5", label: "Star Reviews" },
+    { value: "1", label: "Certified Master" },
+  ];
 
-export default function TrustMetrics() {
   return (
     <section className="border-y border-outline-variant/20 bg-surface-container-low py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
         <div className="grid grid-cols-2 gap-y-8 text-center lg:grid-cols-4">
-          {metrics.map((metric, index) => (
+          {items.map((metric, index) => (
             <div
               key={metric.label}
               className={`flex flex-col gap-2 ${

@@ -1,32 +1,32 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
-const services = [
-  {
-    name: "Lash Extensions",
-    description: "Volume, hybrid, and classic sets tailored to your eye shape.",
-    price: "From NGN 15,000",
-    image: "/images/lashes.png",
-    alt: "Premium lash extensions close-up",
-  },
-  {
-    name: "Nail Artistry",
-    description: "Sculpted gels and hand-painted miniature art.",
-    price: "From NGN 12,000",
-    image: "/images/nails.png",
-    alt: "Luxury nail art on melanin skin",
-    offset: true,
-  },
-  {
-    name: "Pedi-Rituals",
-    description: "Restorative treatments focused on comfort and polish.",
-    price: "From NGN 10,000",
-    image: "/images/pedi.jpg",
-    alt: "Luxurious pedicure treatment",
-  },
-];
+export default function ServiceChapter({ services: dynamicServices }) {
+  const displayServices = dynamicServices?.length > 0 ? dynamicServices : [
+    {
+      name: "Lash Extensions",
+      description: "Volume, hybrid, and classic sets tailored to your eye shape.",
+      price: "From NGN 15,000",
+      image: "/images/lashes.png",
+      alt: "Premium lash extensions close-up",
+    },
+    {
+      name: "Nail Artistry",
+      description: "Sculpted gels and hand-painted miniature art.",
+      price: "From NGN 12,000",
+      image: "/images/nails.png",
+      alt: "Luxury nail art on melanin skin",
+      offset: true,
+    },
+    {
+      name: "Pedi-Rituals",
+      description: "Restorative treatments focused on comfort and polish.",
+      price: "From NGN 10,000",
+      image: "/images/pedi.jpg",
+      alt: "Luxurious pedicure treatment",
+    },
+  ];
 
-export default function ServiceChapter() {
   return (
     <section className="bg-surface py-16 md:py-20 lg:py-32">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
@@ -49,16 +49,16 @@ export default function ServiceChapter() {
         </div>
 
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
+          {displayServices.map((service, idx) => (
             <Link
               key={service.name}
               to="/services"
-              className={`group block ${service.offset ? "lg:mt-20" : ""}`}
+              className={`group block ${service.offset || (idx === 1 && dynamicServices?.length > 0) ? "lg:mt-20" : ""}`}
             >
               <div className="relative mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high sm:aspect-[3/4]">
                 <img
-                  src={service.image}
-                  alt={service.alt}
+                  src={service.image_path || service.image}
+                  alt={service.alt || service.name}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-primary/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -74,7 +74,7 @@ export default function ServiceChapter() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary">
-                  {service.price}
+                  {service.price && typeof service.price === 'number' ? `From NGN ${service.price.toLocaleString()}` : service.price}
                 </span>
                 <ArrowRight
                   size={18}

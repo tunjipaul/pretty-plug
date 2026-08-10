@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
 import {
   CalendarDays,
   CheckCircle2,
@@ -133,69 +134,6 @@ const clients = [
 
 function formatPrice(value) {
   return `NGN ${value.toLocaleString()}`;
-}
-
-function AdminSidebar() {
-  return (
-    <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm lg:flex">
-      <div className="mb-10 px-4">
-        <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-container">
-          ThePrettyPlug Admin
-        </h1>
-        <p className="mt-2 font-label text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-          Abeokuta Suite
-        </p>
-      </div>
-
-      <nav className="flex-1 space-y-1 px-2">
-        {navItems
-          .filter((item) =>
-            ["Dashboard", "Website", "Services", "Gallery", "Settings"].includes(
-              item.label,
-            ),
-          )
-          .map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-all ${
-                item.active
-                  ? "bg-primary-container font-bold text-on-primary"
-                  : "text-on-surface-variant hover:translate-x-1 hover:bg-surface-variant/50"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="space-y-1 px-2 pb-8">
-        <div className="border-t border-outline-variant/30 pt-4">
-          <button className="flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50">
-            <HelpCircle size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Help
-            </span>
-          </button>
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50"
-          >
-            <LogOut size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Logout
-            </span>
-          </Link>
-        </div>
-      </div>
-    </aside>
-  );
 }
 
 function ClientListItem({ client, isActive, onSelect }) {
@@ -469,25 +407,7 @@ export default function AdminClients() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 px-1 py-3 backdrop-blur-md lg:hidden">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex flex-col items-center gap-1 ${
-                item.active ? "text-primary-container" : "text-on-surface-variant"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-[10px] uppercase tracking-[0.08em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
+      <MobileAdminNav />
     </div>
   );
 }

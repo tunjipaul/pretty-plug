@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import TestimonialsPage from "./pages/TestimonialsPage";
@@ -15,6 +15,19 @@ import AdminContent from "./pages/AdminContent";
 import AdminGallery from "./pages/AdminGallery";
 import AdminTestimonials from "./pages/AdminTestimonials";
 import AdminFAQ from "./pages/AdminFAQ";
+import AdminLogin from "./pages/AdminLogin";
+
+function RequireAdmin({ children }) {
+  const location = useLocation();
+  const isAuthenticated =
+    window.localStorage.getItem("theprettyplug_admin_session") === "active";
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace state={{ from: location }} />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
@@ -26,15 +39,16 @@ function App() {
       <Route path="/faq" element={<FAQ />} />
       <Route path="/book" element={<Booking />} />
       <Route path="/book/confirm" element={<BookingConfirmation />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/content" element={<AdminContent />} />
-      <Route path="/admin/gallery" element={<AdminGallery />} />
-      <Route path="/admin/testimonials" element={<AdminTestimonials />} />
-      <Route path="/admin/faq" element={<AdminFAQ />} />
-      <Route path="/admin/bookings" element={<AdminBookings />} />
-      <Route path="/admin/clients" element={<AdminClients />} />
-      <Route path="/admin/services" element={<AdminServices />} />
-      <Route path="/admin/settings" element={<AdminSettings />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+      <Route path="/admin/content" element={<RequireAdmin><AdminContent /></RequireAdmin>} />
+      <Route path="/admin/gallery" element={<RequireAdmin><AdminGallery /></RequireAdmin>} />
+      <Route path="/admin/testimonials" element={<RequireAdmin><AdminTestimonials /></RequireAdmin>} />
+      <Route path="/admin/faq" element={<RequireAdmin><AdminFAQ /></RequireAdmin>} />
+      <Route path="/admin/bookings" element={<RequireAdmin><AdminBookings /></RequireAdmin>} />
+      <Route path="/admin/clients" element={<RequireAdmin><AdminClients /></RequireAdmin>} />
+      <Route path="/admin/services" element={<RequireAdmin><AdminServices /></RequireAdmin>} />
+      <Route path="/admin/settings" element={<RequireAdmin><AdminSettings /></RequireAdmin>} />
     </Routes>
   );
 }

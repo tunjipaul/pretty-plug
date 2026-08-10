@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
+import { ApiErrorDisplay } from "../components/ApiErrorBoundary";
 import {
   CalendarDays,
   FileText,
@@ -7,7 +10,6 @@ import {
   Link as LinkIcon,
   LogOut,
   MessageSquareQuote,
-  Plus,
   Scissors,
   Settings,
   Sparkles,
@@ -16,18 +18,7 @@ import {
   Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-  { label: "Website", icon: FileText, path: "/admin/content", active: true },
-  { label: "Services", icon: Scissors, path: "/admin/services" },
-  { label: "Gallery", icon: Image, path: "/admin/gallery" },
-  { label: "Reviews", icon: MessageSquareQuote, path: "/admin/testimonials" },
-  { label: "FAQ", icon: HelpCircle, path: "/admin/faq" },
-  { label: "Bookings", icon: CalendarDays, path: "/admin/bookings" },
-  { label: "Clients", icon: Users, path: "/admin/clients" },
-  { label: "Settings", icon: Settings, path: "/admin/settings" },
-];
+import { getContent, saveContent } from "../lib/content";
 
 const contentSections = [
   {
@@ -35,12 +26,14 @@ const contentSections = [
     description: "Headline, subtitle, CTA labels, and hero image.",
     status: "Ready",
     icon: Sparkles,
+    anchor: "#hero-section",
   },
   {
     title: "Trust Metrics",
     description: "Happy clients, years of excellence, reviews, and certifications.",
     status: "Ready",
     icon: Star,
+    anchor: "#trust-metrics-section",
   },
   {
     title: "Portfolio Preview",
@@ -73,90 +66,181 @@ const contentSections = [
 ];
 
 const draftContent = {
-  eyebrow: "Abeokuta Luxury Suite",
-  headline: "Best Nails for Best Moments",
-  highlight: "Best Moments",
-  body:
-    "Loved by beauty minimalists and curated for the meticulous. Step into an era of editorial beauty where every finish is personal.",
-  primaryCta: "Book Appointment",
-  secondaryCta: "View Portfolio",
+  hero: {
+    eyebrow: "Abeokuta Luxury Suite",
+    headline: "Best Nails for Best Moments",
+    highlight: "Best Moments",
+    body:
+      "Loved by beauty minimalists and curated for the meticulous. Step into an era of editorial beauty where every finish is personal.",
+    primaryCta: "Book Appointment",
+    secondaryCta: "View Portfolio",
+  },
+  trustMetrics: {
+    items: [
+      { value: "500+", label: "Happy Clients" },
+      { value: "3+", label: "Years Excellence" },
+      { value: "5", label: "Star Reviews" },
+      { value: "1", label: "Certified Master" },
+    ],
+  },
 };
 
-function AdminSidebar() {
-  return (
-    <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm lg:flex">
-      <div className="mb-10 px-4">
-        <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-container">
-          ThePrettyPlug Admin
-        </h1>
-        <p className="mt-2 font-label text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-          CMS Console
-        </p>
-      </div>
-
-      <nav className="flex-1 space-y-1 px-2">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-all ${
-                item.active
-                  ? "bg-primary-container font-bold text-on-primary"
-                  : "text-on-surface-variant hover:translate-x-1 hover:bg-surface-variant/50"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="space-y-1 px-2 pb-8">
-        <div className="border-t border-outline-variant/30 pt-4">
-          <button className="flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50">
-            <HelpCircle size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Help
-            </span>
-          </button>
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50"
-          >
-            <LogOut size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Logout
-            </span>
-          </Link>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-function Field({ label, value }) {
+function Field({ label, value, onChange }) {
   return (
     <label className="block">
       <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
         {label}
       </span>
       <input
-        defaultValue={value}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
         className="mt-2 h-12 w-full border border-outline-variant/40 bg-surface-container-lowest px-4 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
       />
     </label>
   );
 }
 
+function AdminContentSkeleton() {
+  return (
+    <main className="min-h-screen pb-28 lg:ml-64 lg:pb-0">
+      <div className="sticky top-0 z-40 border-b border-outline-variant/30 bg-surface/90 px-4 py-4 backdrop-blur-md sm:px-5 md:px-8">
+        <div className="flex flex-col gap-4">
+          <div className="h-5 w-40 rounded-full bg-surface-container-highest animate-pulse" />
+          <div className="h-6 w-3/4 rounded-full bg-surface-container-highest animate-pulse" />
+          <div className="h-4 w-full max-w-2xl rounded-full bg-surface-container-highest animate-pulse" />
+        </div>
+      </div>
+
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 p-4 sm:p-5 md:p-8 xl:grid-cols-[minmax(0,1fr)_360px] xl:p-10">
+        <section className="space-y-6">
+          <div className="space-y-4 rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-sm">
+            <div className="h-6 w-72 rounded-full bg-surface-container-highest animate-pulse" />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="h-16 rounded-3xl bg-surface-container-highest animate-pulse" />
+              <div className="h-16 rounded-3xl bg-surface-container-highest animate-pulse" />
+            </div>
+            <div className="space-y-3">
+              <div className="h-40 rounded-3xl bg-surface-container-highest animate-pulse" />
+              <div className="h-24 rounded-3xl bg-surface-container-highest animate-pulse" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-sm"
+              >
+                <div className="h-5 w-32 rounded-full bg-surface-container-highest animate-pulse" />
+                <div className="mt-4 space-y-3">
+                  <div className="h-4 w-full rounded-full bg-surface-container-highest animate-pulse" />
+                  <div className="h-4 w-5/6 rounded-full bg-surface-container-highest animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <aside className="space-y-6">
+          {Array.from({ length: 2 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-sm"
+            >
+              <div className="h-6 w-40 rounded-full bg-surface-container-highest animate-pulse" />
+              <div className="mt-4 space-y-3">
+                <div className="h-4 w-full rounded-full bg-surface-container-highest animate-pulse" />
+                <div className="h-4 w-5/6 rounded-full bg-surface-container-highest animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </aside>
+      </div>
+    </main>
+  );
+}
+
 export default function AdminContent() {
+  const [draft, setDraft] = useState(draftContent);
+  const [status, setStatus] = useState("Saved");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getContent()
+      .then((data) => {
+        console.log("CMS DEBUG: Received content:", data);
+        if (data) {
+          setDraft((current) => ({
+            ...current,
+            ...data,
+            hero: {
+              ...current.hero,
+              ...(data.hero || {}),
+            },
+            trustMetrics: {
+              items: data.trustMetrics?.items || current.trustMetrics.items,
+            },
+          }));
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load content:", err);
+        setError(err.message || "Failed to load content from server");
+        setLoading(false);
+      });
+  }, []);
+
+  function updateHeroField(field, value) {
+    setDraft((current) => ({
+      ...current,
+      hero: { ...current.hero, [field]: value },
+    }));
+    setStatus("Unsaved");
+    setError(null);
+  }
+
+  function updateMetric(index, field, value) {
+    setDraft((current) => {
+      const newItems = [...current.trustMetrics.items];
+      newItems[index] = { ...newItems[index], [field]: value };
+      return {
+        ...current,
+        trustMetrics: { ...current.trustMetrics, items: newItems },
+      };
+    });
+    setStatus("Unsaved");
+  }
+
+  async function handleSave() {
+    setStatus("Saving...");
+    setError(null);
+    try {
+      await saveContent(draft);
+      setStatus("Saved");
+    } catch (err) {
+      console.error("Save failed:", err);
+      const errMsg = err.message || "Failed to save content to server";
+      setError(errMsg);
+      setStatus("Error saving");
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-on-background">
+        <AdminSidebar />
+        <AdminContentSkeleton />
+        <MobileAdminNav />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-on-background">
       <AdminSidebar />
+      <ApiErrorDisplay error={error} onDismiss={() => setError(null)} />
 
       <main className="min-h-screen pb-28 lg:ml-64 lg:pb-0">
         <header className="sticky top-0 z-40 border-b border-outline-variant/30 bg-surface/90 px-4 py-4 backdrop-blur-md sm:px-5 md:px-8">
@@ -173,19 +257,14 @@ export default function AdminContent() {
               </p>
             </div>
 
-            <button
-              type="button"
-              className="inline-flex h-11 items-center justify-center gap-2 bg-primary-container px-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
-            >
-              <Plus size={17} />
-              Add Content Block
-            </button>
+
           </div>
         </header>
 
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 p-4 sm:p-5 md:p-8 xl:grid-cols-[minmax(0,1fr)_360px] xl:p-10">
-          <section className="space-y-6">
-            <div className="border border-outline-variant/20 bg-surface-container-lowest p-5 md:p-6">
+          <section className="space-y-10">
+            {/* HERO SECTION */}
+            <div id="hero-section" className="border border-outline-variant/20 bg-surface-container-lowest p-5 md:p-6">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <h2 className="font-headline text-2xl font-medium text-on-surface">
@@ -202,17 +281,34 @@ export default function AdminContent() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <Field label="Eyebrow" value={draftContent.eyebrow} />
-                <Field label="Highlight Text" value={draftContent.highlight} />
-                <Field label="Primary CTA" value={draftContent.primaryCta} />
-                <Field label="Secondary CTA" value={draftContent.secondaryCta} />
+                <Field
+                  label="Eyebrow"
+                  value={draft.hero.eyebrow}
+                  onChange={(value) => updateHeroField("eyebrow", value)}
+                />
+                <Field
+                  label="Highlight Text"
+                  value={draft.hero.highlight}
+                  onChange={(value) => updateHeroField("highlight", value)}
+                />
+                <Field
+                  label="Primary CTA"
+                  value={draft.hero.primaryCta}
+                  onChange={(value) => updateHeroField("primaryCta", value)}
+                />
+                <Field
+                  label="Secondary CTA"
+                  value={draft.hero.secondaryCta}
+                  onChange={(value) => updateHeroField("secondaryCta", value)}
+                />
               </div>
               <label className="mt-4 block">
                 <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
                   Headline
                 </span>
                 <textarea
-                  defaultValue={draftContent.headline}
+                  value={draft.hero.headline}
+                  onChange={(event) => updateHeroField("headline", event.target.value)}
                   rows={2}
                   className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
                 />
@@ -222,11 +318,54 @@ export default function AdminContent() {
                   Body Copy
                 </span>
                 <textarea
-                  defaultValue={draftContent.body}
+                  value={draft.hero.body}
+                  onChange={(event) => updateHeroField("body", event.target.value)}
                   rows={4}
                   className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
                 />
               </label>
+            </div>
+
+            {/* TRUST METRICS SECTION */}
+            <div id="trust-metrics-section" className="border border-outline-variant/20 bg-surface-container-lowest p-5 md:p-6">
+              <div className="mb-6">
+                <h2 className="font-headline text-2xl font-medium text-on-surface">
+                  Trust Metrics
+                </h2>
+                <p className="mt-1 font-body text-sm text-on-surface-variant">
+                  Stats and highlights shown after the hero section.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {draft.trustMetrics.items.map((metric, idx) => (
+                  <div key={idx} className="space-y-3">
+                    <Field
+                      label={`Value ${idx + 1}`}
+                      value={metric.value}
+                      onChange={(val) => updateMetric(idx, "value", val)}
+                    />
+                    <Field
+                      label={`Label ${idx + 1}`}
+                      value={metric.label}
+                      onChange={(val) => updateMetric(idx, "label", val)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                onClick={handleSave}
+                className="inline-flex h-14 items-center justify-center rounded-full bg-primary-container px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
+              >
+                Save All Changes
+              </button>
+              <span className="font-body text-sm text-on-surface-variant">
+                Status: {status}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -251,80 +390,38 @@ export default function AdminContent() {
                     <p className="mt-2 font-body text-sm leading-6 text-on-surface-variant">
                       {section.description}
                     </p>
-                    <Link
-                      to={section.path ?? "/admin/content"}
-                      className="mt-6 inline-block font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container"
-                    >
-                      Edit Section
-                    </Link>
+                    {section.anchor ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const el = document.getElementById(section.anchor.replace('#', ''));
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }}
+                        className="mt-6 inline-block font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container hover:text-primary"
+                      >
+                        Edit Section ↑
+                      </button>
+                    ) : (
+                      <Link
+                        to={section.path ?? "/admin/content"}
+                        className="mt-6 inline-block font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container"
+                      >
+                        Edit Section
+                      </Link>
+                    )}
                   </article>
                 );
               })}
             </div>
           </section>
 
-          <aside className="space-y-6">
-            <section className="border border-outline-variant/20 bg-surface-container-lowest p-5">
-              <h2 className="font-headline text-2xl font-medium text-on-surface">
-                CMS Priority
-              </h2>
-              <div className="mt-5 space-y-4">
-                {[
-                  ["1", "Homepage content"],
-                  ["2", "Services and pricing"],
-                  ["3", "Portfolio/gallery media"],
-                  ["4", "Testimonials and FAQ"],
-                  ["5", "Footer and business settings"],
-                ].map(([step, label]) => (
-                  <div key={step} className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center bg-primary-container font-label text-xs font-bold text-on-primary">
-                      {step}
-                    </div>
-                    <p className="font-body text-sm text-on-surface">{label}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
 
-            <section className="border border-outline-variant/20 bg-tertiary-fixed p-5">
-              <h2 className="font-headline text-2xl font-medium text-on-surface">
-                How This Connects Later
-              </h2>
-              <p className="mt-3 font-body text-sm leading-6 text-on-surface-variant">
-                Backend work should replace hardcoded page arrays with CMS records. These controls are structured to map directly into homepage, services, portfolio, testimonials, FAQ, and footer content.
-              </p>
-            </section>
-          </aside>
+
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 px-1 py-3 backdrop-blur-md lg:hidden">
-        {navItems
-          .filter((item) =>
-            ["Dashboard", "Website", "Services", "Gallery", "Settings"].includes(
-              item.label,
-            ),
-          )
-          .map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.label}
-                to={item.path}
-                className={`flex flex-col items-center gap-1 ${
-                  item.active
-                    ? "text-primary-container"
-                    : "text-on-surface-variant"
-                }`}
-              >
-                <Icon size={20} />
-                <span className="font-label text-[10px] uppercase tracking-[0.08em]">
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-      </nav>
+      <MobileAdminNav />
     </div>
   );
 }

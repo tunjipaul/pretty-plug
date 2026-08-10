@@ -1,21 +1,21 @@
-const testimonials = [
-  {
-    quote:
-      "The attention to detail at ThePrettyPlug is unmatched. My lashes lasted for weeks and looked incredibly natural.",
-    name: "Ifeoma Adeyemi",
-    service: "Hybrid Lash Set",
-    avatar: "/images/avatar-1.png",
-  },
-  {
-    quote:
-      "Finally found a studio that understands editorial nail art. The environment is serene, precise, and professional.",
-    name: "Sarah Cole",
-    service: "Signature Gel Manicure",
-    avatar: "/images/avatar-2.jpg",
-  },
-];
+export default function Testimonials({ testimonials: dynamicTestimonials }) {
+  const displayTestimonials = dynamicTestimonials?.length > 0 ? dynamicTestimonials : [
+    {
+      quote:
+        "The attention to detail at ThePrettyPlug is unmatched. My lashes lasted for weeks and looked incredibly natural.",
+      name: "Ifeoma Adeyemi",
+      service: "Hybrid Lash Set",
+      avatar: "/images/avatar-1.png",
+    },
+    {
+      quote:
+        "Finally found a studio that understands editorial nail art. The environment is serene, precise, and professional.",
+      name: "Sarah Cole",
+      service: "Signature Gel Manicure",
+      avatar: "/images/avatar-2.jpg",
+    },
+  ];
 
-export default function Testimonials() {
   return (
     <section className="bg-surface py-16 md:py-20 lg:py-32">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-5 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-20">
@@ -27,9 +27,9 @@ export default function Testimonials() {
             Hear What Our Customers Say
           </h2>
           <div className="space-y-10">
-            {testimonials.map((testimonial, index) => (
+            {displayTestimonials.map((testimonial, index) => (
               <article
-                key={testimonial.name}
+                key={testimonial.name || testimonial.client_name}
                 className={`relative border-l-2 pl-8 ${
                   index === 0
                     ? "border-primary-container"
@@ -41,16 +41,16 @@ export default function Testimonials() {
                 </p>
                 <div className="flex items-center gap-4">
                   <img
-                    src={testimonial.avatar}
-                    alt={`${testimonial.name} portrait`}
+                    src={testimonial.avatar_path || testimonial.avatar || "https://i.pravatar.cc/100"}
+                    alt={`${testimonial.client_name || testimonial.name} portrait`}
                     className="h-12 w-12 rounded-full object-cover"
                   />
                   <div>
                     <p className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface">
-                      {testimonial.name}
+                      {testimonial.client_name || testimonial.name}
                     </p>
                     <p className="font-body text-sm text-on-surface-variant">
-                      {testimonial.service}
+                      {testimonial.service_label || testimonial.service}
                     </p>
                   </div>
                 </div>

@@ -1,4 +1,6 @@
-const galleryImages = [
+import { useMemo } from "react";
+
+const fallbackImages = [
   { src: "/images/gallery-1.jpg", alt: "Detailed nail art close-up" },
   { src: "/images/lashes.png", alt: "Editorial lash extension close-up" },
   { src: "/images/download (2).jfif", alt: "Luxury beauty product styling" },
@@ -10,7 +12,36 @@ const galleryImages = [
   { src: "/images/gallery-5.jpg", alt: "Nail artist applying detail" },
 ];
 
-export default function InstagramGrid() {
+function resolveImageUrl(p) {
+  if (!p) return "";
+  if (typeof p === "string") return p;
+  if (typeof p === "object") {
+    return (
+      p.publicUrl || p.publicURL || p.public_url || p.url ||
+      Object.values(p).find((v) => typeof v === "string" && v.startsWith("http")) ||
+      ""
+    );
+  }
+  return "";
+}
+
+export default function InstagramGrid({ gallery = [] }) {
+  const displayImages = useMemo(() => {
+    // Map dynamic gallery items to the expected structure
+    const dynamicItems = gallery.slice(0, 9).map((g) => ({
+      src: resolveImageUrl(g.image_path),
+      alt: g.title || "Gallery image",
+    }));
+
+    // If we have less than 9 dynamic images, fill the rest with fallbacks
+    if (dynamicItems.length < 9) {
+      const needed = 9 - dynamicItems.length;
+      return [...dynamicItems, ...fallbackImages.slice(0, needed)];
+    }
+
+    return dynamicItems;
+  }, [gallery]);
+
   return (
     <section className="bg-surface-container-low py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
@@ -27,10 +58,12 @@ export default function InstagramGrid() {
         </div>
 
         <div className="grid grid-cols-3 gap-2 md:grid-cols-6 lg:grid-cols-9">
-          {galleryImages.map((img) => (
+          {displayImages.map((img, index) => (
             <a
-              key={img.src}
+              key={img.src + index}
               href="https://instagram.com"
+              target="_blank"
+              rel="noreferrer"
               className="aspect-square overflow-hidden bg-surface-variant transition-opacity hover:opacity-80"
               aria-label={img.alt}
             >

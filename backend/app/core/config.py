@@ -12,12 +12,20 @@ class Settings(BaseSettings):
 
     app_name: str = "ThePrettyPlug API"
     frontend_url: str = "http://localhost:5173"
+    jwt_secret_key: str = "change-this-dev-secret"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60 * 24
 
     supabase_url: str | None = None
     supabase_publishable_key: str | None = None
+    supabase_service_role_key: str | None = None
 
     vite_supabase_url: str | None = None
     vite_supabase_publishable_key: str | None = None
+
+    first_admin_email: str | None = None
+    first_admin_password: str | None = None
+    first_admin_name: str = "Admin User"
 
     @property
     def resolved_supabase_url(self) -> str:
@@ -34,8 +42,18 @@ class Settings(BaseSettings):
         return key
 
     @property
+    def resolved_supabase_service_role_key(self) -> str:
+        if not self.supabase_service_role_key:
+            raise RuntimeError("Missing SUPABASE_SERVICE_ROLE_KEY in backend/.env")
+        return self.supabase_service_role_key
+
+    @property
     def allowed_origins(self) -> list[str]:
-        return [self.frontend_url]
+        origins = [self.frontend_url]
+        # Add common local variations
+        if "localhost" in self.frontend_url:
+            origins.append(self.frontend_url.replace("localhost", "127.0.0.1"))
+        return origins
 
 
 @lru_cache
@@ -44,4 +62,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-

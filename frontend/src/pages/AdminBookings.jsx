@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
 import {
   Bell,
   CalendarDays,
@@ -23,6 +24,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getBookings } from "../lib/content";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -36,78 +38,7 @@ const navItems = [
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 
-const bookings = [
-  {
-    id: "TPP-1048",
-    client: "Folake Adeyemi",
-    email: "folake.a@gmail.com",
-    phone: "+234 810 443 2941",
-    initials: "FA",
-    service: "Gel Extensions",
-    date: "Jun 05, 2026",
-    time: "10:30 AM",
-    specialist: "Tomi A.",
-    status: "Confirmed",
-    amount: 25000,
-    deposit: 5000,
-  },
-  {
-    id: "TPP-1047",
-    client: "Chidinma Okafor",
-    email: "chichi.o@yahoo.com",
-    phone: "+234 803 221 1004",
-    initials: "CO",
-    service: "The Full Glam Plug",
-    date: "Jun 05, 2026",
-    time: "12:00 PM",
-    specialist: "Tomi A.",
-    status: "Pending",
-    amount: 45000,
-    deposit: 9000,
-  },
-  {
-    id: "TPP-1046",
-    client: "Teniola Apata",
-    email: "teni.apata@icloud.com",
-    phone: "+234 907 302 4418",
-    initials: "TA",
-    service: "Silk Lash Lift",
-    date: "Jun 04, 2026",
-    time: "03:00 PM",
-    specialist: "Aisha B.",
-    status: "In Progress",
-    amount: 18000,
-    deposit: 3600,
-  },
-  {
-    id: "TPP-1045",
-    client: "Sandra Bello",
-    email: "sbello@gmail.com",
-    phone: "+234 809 778 1190",
-    initials: "SB",
-    service: "Classic Manicure",
-    date: "Jun 04, 2026",
-    time: "04:30 PM",
-    specialist: "Tomi A.",
-    status: "Completed",
-    amount: 15000,
-    deposit: 3000,
-  },
-  {
-    id: "TPP-1044",
-    client: "Amaka Nwosu",
-    email: "amaka.nwosu@gmail.com",
-    phone: "+234 802 660 9182",
-    initials: "AN",
-    service: "Luxury Pedi",
-    date: "Jun 03, 2026",
-    time: "01:30 PM",
-    specialist: "Aisha B.",
-    status: "Cancelled",
-    amount: 12000,
-    deposit: 0,
-  },
-];
+
 
 const filters = ["All", "Confirmed", "Pending", "In Progress", "Completed", "Cancelled"];
 
@@ -127,72 +58,6 @@ function statusStyles(status) {
   return styles[status] ?? "bg-surface-container text-on-surface-variant";
 }
 
-function AdminSidebar() {
-  return (
-    <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm lg:flex">
-      <div className="mb-10 px-4">
-        <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-container">
-          ThePrettyPlug Admin
-        </h1>
-        <p className="mt-2 font-label text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-          Abeokuta Suite
-        </p>
-      </div>
-
-      <nav className="flex-1 space-y-1 px-2">
-        {navItems
-          .filter((item) =>
-            ["Dashboard", "Website", "Services", "Gallery", "Settings"].includes(
-              item.label,
-            ),
-          )
-          .map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-all ${
-                item.active
-                  ? "bg-primary-container font-bold text-on-primary"
-                  : "text-on-surface-variant hover:translate-x-1 hover:bg-surface-variant/50"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="space-y-1 px-2 pb-8">
-        <div className="border-t border-outline-variant/30 pt-4">
-          <button
-            type="button"
-            className="flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50"
-          >
-            <HelpCircle size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Help
-            </span>
-          </button>
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50"
-          >
-            <LogOut size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Logout
-            </span>
-          </Link>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
 function StatusBadge({ status }) {
   return (
     <span
@@ -207,9 +72,20 @@ function StatusBadge({ status }) {
 }
 
 export default function AdminBookings() {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    getBookings()
+      .then((data) => {
+        if (data) setBookings(data);
+      })
+      .catch((err) => console.error("Failed to load bookings:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filteredBookings = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -217,12 +93,20 @@ export default function AdminBookings() {
     return bookings.filter((booking) => {
       const matchesFilter =
         activeFilter === "All" || booking.status === activeFilter;
+      // Support both API field names (client_name, service_name) and legacy (client, service)
+      const clientName = booking.client_name || booking.client || "";
+      const serviceName = booking.service_name || booking.service || "";
+      const initials = clientName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
       const searchableText = [
         booking.id,
-        booking.client,
+        clientName,
         booking.email,
         booking.phone,
-        booking.service,
+        serviceName,
         booking.specialist,
         booking.status,
       ]
@@ -231,7 +115,7 @@ export default function AdminBookings() {
 
       return matchesFilter && searchableText.includes(normalizedQuery);
     });
-  }, [activeFilter, query]);
+  }, [activeFilter, query, bookings]);
 
   const confirmedCount = bookings.filter(
     (booking) => booking.status === "Confirmed",
@@ -240,9 +124,24 @@ export default function AdminBookings() {
     .length;
   const projectedRevenue = bookings.reduce(
     (total, booking) =>
-      booking.status === "Cancelled" ? total : total + booking.amount,
+      booking.status === "Cancelled" ? total : total + (booking.amount || 0),
     0,
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-on-background">
+        <AdminSidebar />
+        <main className="flex min-h-screen items-center justify-center lg:ml-64">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-outline-variant border-t-primary-container" />
+            <p className="font-body text-sm text-on-surface-variant">Loading bookings…</p>
+          </div>
+        </main>
+        <MobileAdminNav />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-on-background">
@@ -385,7 +284,23 @@ export default function AdminBookings() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/10">
-                  {filteredBookings.map((booking) => (
+                  {filteredBookings.map((booking) => {
+                    const clientName = booking.client_name || booking.client || "—";
+                    const serviceName = booking.service_name || booking.service || "—";
+                    const initials = clientName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2);
+                    const dateLabel = booking.appointment_date
+                      ? new Date(booking.appointment_date + "T00:00:00").toLocaleDateString(
+                          "en-US",
+                          { month: "short", day: "numeric", year: "numeric" },
+                        )
+                      : booking.date || "—";
+                    const timeLabel = booking.appointment_time || booking.time || "—";
+                    return (
                     <tr
                       key={booking.id}
                       className="group transition-colors hover:bg-surface-container-low"
@@ -393,45 +308,45 @@ export default function AdminBookings() {
                       <td className="p-5">
                         <div className="flex items-center gap-3">
                           <div className="flex h-11 w-11 items-center justify-center bg-primary-fixed font-label text-xs font-bold text-on-primary-fixed">
-                            {booking.initials}
+                            {initials}
                           </div>
                           <div>
                             <p className="font-body font-bold text-on-surface">
-                              {booking.client}
+                              {clientName}
                             </p>
                             <p className="text-xs text-on-surface-variant">
-                              {booking.email}
+                              {booking.email || "—"}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="p-5">
                         <p className="font-body font-semibold text-on-surface">
-                          {booking.service}
+                          {serviceName}
                         </p>
                         <p className="mt-1 text-xs text-on-surface-variant">
-                          {booking.id}
+                          {String(booking.id).slice(0, 8).toUpperCase()}
                         </p>
                       </td>
                       <td className="p-5">
-                        <p className="font-body text-on-surface">{booking.date}</p>
+                        <p className="font-body text-on-surface">{dateLabel}</p>
                         <p className="mt-1 flex items-center gap-1 text-xs text-on-surface-variant">
                           <Clock size={13} />
-                          {booking.time}
+                          {timeLabel}
                         </p>
                       </td>
                       <td className="p-5 font-body text-on-surface">
-                        {booking.specialist}
+                        {booking.specialist || "—"}
                       </td>
                       <td className="p-5">
                         <StatusBadge status={booking.status} />
                       </td>
                       <td className="p-5">
                         <p className="font-body font-bold text-on-surface">
-                          {formatPrice(booking.amount)}
+                          {formatPrice(booking.amount || 0)}
                         </p>
                         <p className="mt-1 text-xs text-on-surface-variant">
-                          Deposit {formatPrice(booking.deposit)}
+                          Deposit {formatPrice(booking.deposit || 0)}
                         </p>
                       </td>
                       <td className="p-5">
@@ -448,25 +363,34 @@ export default function AdminBookings() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
 
             <div className="divide-y divide-outline-variant/10 xl:hidden">
-              {filteredBookings.map((booking) => (
+              {filteredBookings.map((booking) => {
+                const clientName = booking.client_name || booking.client || "—";
+                const serviceName = booking.service_name || booking.service || "—";
+                const initials = clientName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+                const dateLabel = booking.appointment_date
+                  ? new Date(booking.appointment_date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+                  : booking.date || "—";
+                const timeLabel = booking.appointment_time || booking.time || "—";
+                return (
                 <article key={booking.id} className="p-4 sm:p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex min-w-0 items-center gap-3">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center bg-primary-fixed font-label text-xs font-bold text-on-primary-fixed">
-                        {booking.initials}
+                        {initials}
                       </div>
                       <div className="min-w-0">
                         <h2 className="truncate font-body font-bold text-on-surface">
-                          {booking.client}
+                          {clientName}
                         </h2>
                         <p className="truncate text-xs text-on-surface-variant">
-                          {booking.email}
+                          {booking.email || "—"}
                         </p>
                       </div>
                     </div>
@@ -476,51 +400,34 @@ export default function AdminBookings() {
                   </div>
                   <div className="mt-5 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
                     <div>
-                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                        Service
-                      </p>
-                      <p className="mt-1 font-body font-semibold text-on-surface">
-                        {booking.service}
-                      </p>
+                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Service</p>
+                      <p className="mt-1 font-body font-semibold text-on-surface">{serviceName}</p>
                     </div>
                     <div>
-                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                        Date
-                      </p>
-                      <p className="mt-1 font-body text-on-surface">
-                        {booking.date}
-                      </p>
-                      <p className="text-xs text-on-surface-variant">
-                        {booking.time}
-                      </p>
+                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Date</p>
+                      <p className="mt-1 font-body text-on-surface">{dateLabel}</p>
+                      <p className="text-xs text-on-surface-variant">{timeLabel}</p>
                     </div>
                     <div>
-                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                        Amount
-                      </p>
-                      <p className="mt-1 font-body font-bold text-on-surface">
-                        {formatPrice(booking.amount)}
-                      </p>
+                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Amount</p>
+                      <p className="mt-1 font-body font-bold text-on-surface">{formatPrice(booking.amount || 0)}</p>
                     </div>
                     <div>
-                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                        Specialist
-                      </p>
-                      <p className="mt-1 font-body text-on-surface">
-                        {booking.specialist}
-                      </p>
+                      <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Specialist</p>
+                      <p className="mt-1 font-body text-on-surface">{booking.specialist || "—"}</p>
                     </div>
                   </div>
                   <div className="mt-5 flex items-center justify-between border-t border-outline-variant/10 pt-4">
                     <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                      {booking.id}
+                      {String(booking.id).slice(0, 8).toUpperCase()}
                     </span>
                     <button className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container">
                       Edit
                     </button>
                   </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
 
             {filteredBookings.length === 0 ? (
@@ -544,20 +451,6 @@ export default function AdminBookings() {
               of <span className="font-bold text-on-surface">{bookings.length}</span>{" "}
               appointments
             </p>
-            <div className="flex items-center gap-2">
-              <button className="flex h-10 w-10 items-center justify-center border border-outline-variant text-on-surface-variant hover:bg-surface-container-high">
-                <ChevronLeft size={18} />
-              </button>
-              <button className="flex h-10 w-10 items-center justify-center bg-primary-container font-label text-xs font-bold text-on-primary">
-                1
-              </button>
-              <button className="flex h-10 w-10 items-center justify-center border border-outline-variant font-label text-xs font-bold text-on-surface-variant hover:bg-surface-container-high">
-                2
-              </button>
-              <button className="flex h-10 w-10 items-center justify-center border border-outline-variant text-on-surface-variant hover:bg-surface-container-high">
-                <ChevronRight size={18} />
-              </button>
-            </div>
           </div>
         </div>
 
@@ -576,25 +469,7 @@ export default function AdminBookings() {
         </footer>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 px-1 py-3 backdrop-blur-md lg:hidden">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex flex-col items-center gap-1 ${
-                item.active ? "text-primary-container" : "text-on-surface-variant"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-[10px] uppercase tracking-[0.08em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
+      <MobileAdminNav />
     </div>
   );
 }

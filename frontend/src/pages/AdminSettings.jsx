@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
+import { ApiErrorDisplay } from "../components/ApiErrorBoundary";
 import {
   Bell,
   CalendarDays,
@@ -23,6 +26,22 @@ import {
 } from "lucide-react";
 import { createElement } from "react";
 import { Link } from "react-router-dom";
+import { getSetting, saveSetting } from "../lib/content";
+
+const defaultSettings = {
+  business: {
+    name: "ThePrettyPlug",
+    location: "Abeokuta Suite",
+    email: "hello@theprettyplug.test",
+    whatsapp: "+234 800 000 0000",
+    address: "Abeokuta, Ogun State, Nigeria",
+  },
+  socials: {
+    instagram: "https://instagram.com/theprettyplug",
+    twitter: "",
+    facebook: "",
+  },
+};
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -53,70 +72,7 @@ const notificationRules = [
   ["Review request", "2 hours after completion"],
 ];
 
-function AdminSidebar() {
-  return (
-    <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-outline-variant/20 bg-surface-container p-2 pt-10 shadow-sm lg:flex">
-      <div className="mb-10 px-4">
-        <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-container">
-          ThePrettyPlug Admin
-        </h1>
-        <p className="mt-2 font-label text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-          Abeokuta Suite
-        </p>
-      </div>
-
-      <nav className="flex-1 space-y-1 px-2">
-        {navItems
-          .filter((item) =>
-            ["Dashboard", "Website", "Services", "Gallery", "Settings"].includes(
-              item.label,
-            ),
-          )
-          .map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-all ${
-                item.active
-                  ? "bg-primary-container font-bold text-on-primary"
-                  : "text-on-surface-variant hover:translate-x-1 hover:bg-surface-variant/50"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="space-y-1 px-2 pb-8">
-        <div className="border-t border-outline-variant/30 pt-4">
-          <button className="flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50">
-            <HelpCircle size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Help
-            </span>
-          </button>
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-variant/50"
-          >
-            <LogOut size={20} />
-            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
-              Logout
-            </span>
-          </Link>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-function Field({ label, value, type = "text" }) {
+function Field({ label, value, type = "text", onChange }) {
   return (
     <label className="block">
       <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
@@ -124,7 +80,8 @@ function Field({ label, value, type = "text" }) {
       </span>
       <input
         type={type}
-        defaultValue={value}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="mt-2 h-12 w-full border border-outline-variant/40 bg-surface-container-lowest px-4 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
       />
     </label>
@@ -173,9 +130,49 @@ function ToggleRow({ label, description, enabled = true }) {
 }
 
 export default function AdminSettings() {
+  const [settings, setSettings] = useState(defaultSettings);
+  const [status, setStatus] = useState("Ready");
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getSetting("global_settings")
+      .then((data) => {
+        if (data && Object.keys(data).length > 0) {
+          setSettings(data);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load settings:", err);
+        setError(err.message || "Failed to load settings");
+      });
+  }, []);
+
+  function updateBusiness(field, value) {
+    setSettings((prev) => ({
+      ...prev,
+      business: { ...prev.business, [field]: value },
+    }));
+    setError(null);
+  }
+
+  async function handleSave() {
+    setStatus("Saving...");
+    setError(null);
+    try {
+      await saveSetting("global_settings", settings);
+      setStatus("Saved");
+    } catch (err) {
+      console.error("Save failed:", err);
+      const errMsg = err.message || "Failed to save settings";
+      setError(errMsg);
+      setStatus("Error");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background text-on-background">
       <AdminSidebar />
+      <ApiErrorDisplay error={error} onDismiss={() => setError(null)} />
 
       <main className="min-h-screen pb-28 lg:ml-64 lg:pb-0">
         <header className="sticky top-0 z-40 border-b border-outline-variant/30 bg-surface/90 px-4 py-4 backdrop-blur-md sm:px-5 md:px-8">
@@ -192,14 +189,17 @@ export default function AdminSettings() {
               </p>
             </div>
 
-            <button
-              type="button"
-              aria-label="Save settings changes"
-              className="inline-flex h-11 items-center justify-center gap-2 bg-primary-container px-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
-            >
-              <Save size={17} />
-              Save Changes
-            </button>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-on-surface-variant">{status}</span>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="inline-flex h-11 items-center justify-center gap-2 bg-primary-container px-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
+              >
+                <Save size={17} />
+                Save Changes
+              </button>
+            </div>
           </div>
         </header>
 
@@ -211,17 +211,35 @@ export default function AdminSettings() {
               description="Public brand and contact details shown across the website and booking flow."
             >
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <Field label="Business Name" value="ThePrettyPlug" />
-                <Field label="Location Label" value="Abeokuta Suite" />
-                <Field label="Contact Email" value="hello@theprettyplug.test" type="email" />
-                <Field label="WhatsApp Number" value="+234 800 000 0000" />
+                <Field
+                  label="Business Name"
+                  value={settings.business.name}
+                  onChange={(val) => updateBusiness("name", val)}
+                />
+                <Field
+                  label="Location Label"
+                  value={settings.business.location}
+                  onChange={(val) => updateBusiness("location", val)}
+                />
+                <Field
+                  label="Contact Email"
+                  value={settings.business.email}
+                  type="email"
+                  onChange={(val) => updateBusiness("email", val)}
+                />
+                <Field
+                  label="WhatsApp Number"
+                  value={settings.business.whatsapp}
+                  onChange={(val) => updateBusiness("whatsapp", val)}
+                />
               </div>
               <label className="mt-4 block">
                 <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
                   Studio Address
                 </span>
                 <textarea
-                  defaultValue="Abeokuta, Ogun State, Nigeria"
+                  value={settings.business.address}
+                  onChange={(e) => updateBusiness("address", e.target.value)}
                   rows={3}
                   className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
                 />
@@ -394,25 +412,7 @@ export default function AdminSettings() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-outline-variant/30 bg-surface/90 px-1 py-3 backdrop-blur-md lg:hidden">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`flex flex-col items-center gap-1 ${
-                item.active ? "text-primary-container" : "text-on-surface-variant"
-              }`}
-            >
-              <Icon size={20} />
-              <span className="font-label text-[10px] uppercase tracking-[0.08em]">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
+      <MobileAdminNav />
     </div>
   );
 }

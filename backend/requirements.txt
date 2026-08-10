@@ -3,4 +3,8 @@ uvicorn[standard]
 python-dotenv
 supabase
 pydantic-settings
-
+passlib[bcrypt]
+bcrypt<4.0.0
+python-jose[cryptography]
+email-validator
+python-multipart

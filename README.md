@@ -1,79 +1,65 @@
 # ThePrettyPlug 💅
 
-> Premium personal brand & booking platform for a Lagos-based lash, nail, and pedicure technician. A polished online presence that replaces Instagram DM bookings with a focused booking flow and admin tools.
+> A full-stack React + FastAPI booking platform for a solo beauty technician. The repository includes a React public website and admin UI in `frontend/`, and a FastAPI backend in `backend/` with Supabase persistence.
 
 ---
 
 ## Overview
 
-ThePrettyPlug is a full-stack web application built for a solo beauty technician based in Abeokuta, Nigeria. It transforms a scattered Instagram presence into a polished, conversion-optimised booking platform — complete with an AI chat assistant, style quiz, automated reminders, and a private admin dashboard.
+ThePrettyPlug is built to transform a beauty technician's online presence into a web-first booking and content management system. The current repository supports:
+
+- A React frontend with public pages and admin screens
+- A FastAPI backend for content, services, testimonials, FAQs, gallery, media, settings, and auth
+- Supabase integration for persistent storage and backend API operations
 
 ---
 
-## Features
+## Current Implementation
 
-### Client-Facing Website
-- **Editorial landing page** — High-fashion, melanin-centered design inspired by luxury beauty magazines
-- **Portfolio gallery** — Filterable masonry grid with lightbox and before/after slider
-- **Services & pricing** — Full service catalogue with lash comparison table and add-ons
-- **4-step booking wizard** — Service → Date/Time → Client Details → Paystack deposit
-- **Slot locking** — 10-minute atomic slot reservation to prevent double bookings
-- **Testimonials page** — Video + written reviews + Google Reviews integration
-- **FAQ page** — AI-powered search bar + accordion FAQ bank
-- **Style quiz** — 5-question quiz across 3 variants (lash, nail, pedicure) with AI-generated results
-- **AI chat assistant** — 24/7 Claude-powered chat widget on every page
+### Public website
+- Homepage with backend-driven hero content
+- Services page
+- Portfolio page
+- Testimonials page
+- FAQ page
+- Booking and booking confirmation pages
 
-### Admin Dashboard
-- **Calendar view** — Day/week schedule with full booking details
-- **Bookings management** — Filterable table with CSV export
-- **Client profiles** — Full history, spend, and manual rebook triggers
-- **FAQ manager** — Add, edit, reorder FAQ entries without code
-- **Unanswered questions** — Flags AI chat queries it couldn't answer
-- **Settings** — Working hours, deposit %, cancellation policy, API keys
+### Admin experience
+- Content editor page
+- Settings page
+- Admin pages for services, gallery, testimonials, FAQ, bookings, and clients
+- Admin login
 
-### Automation & AI
-- **Booking confirmation** — Instant email + WhatsApp on payment
-- **48h & 2h reminders** — Automated cron-based reminders
-- **Post-appointment review request** — Sent 2 hours after appointment completion
-- **Smart rebooking nudges** — AI-generated personalised messages at the optimal rebook window per service
-- **AI caption generator** — Generates Instagram captions, hashtags, alt text, and site captions on portfolio upload
+### Backend API
+- FastAPI routes for `/api/content`, `/api/services`, `/api/testimonials`, `/api/faqs`, `/api/gallery`, `/api/media`, `/api/settings`, `/api/auth`, and `/health`
+- Supabase-backed persistence for site content and settings
+- `backend/sql/schema.sql` contains the database schema for Supabase
 
 ---
 
 ## Tech Stack
 
-### Frontend (Client)
+### Frontend
 | Technology | Version | Purpose |
 |---|---|---|
 | React | 19 | UI framework |
 | Vite | 6 | Build tool |
 | Tailwind CSS | 4 | Styling |
 | React Router DOM | 7 | Client-side routing |
-| Zustand | latest | Global state management |
-| Lucide React | latest | Icons |
-| React Icons | 5 | Extended icon set |
+| Zustand | ^5 | Local state management |
+| Lucide React | ^1.6 | Icons |
+| React Icons | ^5 | Extended icon set |
+| @supabase/supabase-js | ^2 | Supabase client |
 
-### Backend (Server)
+### Backend
 | Technology | Purpose |
 |---|---|
-| Express.js | REST API server (or serverless functions) |
-| Supabase (Postgres) | Hosted backend: database, auth, storage, realtime and row-level security |
-| @supabase/supabase-js | Official client for server and browser interactions |
-| JWT / Supabase Auth | Authentication (admin & clients) — prefer Supabase Auth where possible |
-| bcrypt | Password hashing (only if using custom auth flows)
-
-### External APIs
-| Service | Purpose |
-|---|---|
-| Anthropic Claude | AI chat, quiz results, rebooking messages, captions |
-| Paystack | NGN deposit payments |
-| Termii | SMS delivery (Nigerian carriers) |
-| WhatsApp Business API | Primary messaging channel |
-| Resend | Transactional emails |
-| Cloudinary | Image hosting & optimisation |
-| Mailchimp / Brevo | Email marketing list |
-| Instagram Basic Display API | Auto-pull portfolio posts |
-| Google Places API | Pull Google Reviews |
+| Python | Backend language |
+| FastAPI | API framework |
+| Uvicorn | ASGI server |
+| Pydantic | Settings and validation |
+| Supabase Python client | Supabase database access |
+| Supabase Postgres | Hosted database |
 
 ---
 
@@ -81,42 +67,38 @@ ThePrettyPlug is a full-stack web application built for a solo beauty technician
 
 ```
 pretty-plug/
-├── pretty-plug/          # React frontend (public website)
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── auth.py
+│   │   │   │   ├── content.py
+│   │   │   │   ├── faqs.py
+│   │   │   │   ├── gallery.py
+│   │   │   │   ├── health.py
+│   │   │   │   ├── media.py
+│   │   │   │   ├── services.py
+│   │   │   │   └── settings.py
+│   │   ├── core/
+│   │   │   └── config.py
+│   │   └── db/
+│   │       └── supabase.py
+│   ├── requirements.txt
+│   └── README.md
+├── frontend/
 │   ├── public/
-│   │   └── images/       # Static images (hero, gallery, services)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── home/     # Landing page sections
-│   │   │   │   ├── Hero.jsx
-│   │   │   │   ├── ServiceChapter.jsx
-│   │   │   │   ├── StyleQuiz.jsx
-│   │   │   │   ├── SecuringGlow.jsx
-│   │   │   │   └── InstagramGrid.jsx
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   └── MobileBottomNav.jsx
+│   │   ├── lib/
 │   │   ├── pages/
-│   │   │   └── Home.jsx
-│   │   ├── store/        # Zustand stores (coming soon)
 │   │   ├── App.jsx
 │   │   ├── main.jsx
-│   │   └── index.css     # Tailwind v4 theme + design system
-│   ├── index.html
-│   ├── vite.config.js
-│   └── package.json
-│
-├── server/               # Express.js backend (coming soon)
-│   ├── src/
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   └── index.js
-│   └── package.json
-│
-├── admin/                # React admin dashboard (coming soon)
+│   │   └── index.css
+│   ├── package.json
+│   └── vite.config.js
+├── UI/
 │   └── ...
-│
+├── backend/sql/schema.sql
 ├── .gitignore
 └── README.md
 ```
@@ -156,48 +138,58 @@ The UI follows the **"Editorial Melanin Intuition"** design language — a high-
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 15+ (only required for the server/back-end)
+- Python 3.11+ or 3.12+
 - npm or yarn
 
-### Quick Start (frontend)
-
-From the repository root run:
+### Frontend Quick Start
 
 ```bash
-# Enter the client folder
-cd pretty-plug
-
-# Install dependencies
+cd frontend
 npm install
-
-# Start development server
 npm run dev
 ```
 
-Notes:
-- The frontend client lives in the `pretty-plug` folder relative to this README.
-- Backend and admin areas are planned but not present in this repository snapshot.
+### Backend Quick Start
 
-### Available npm scripts (client)
+```bash
+cd backend
+pip install -r requirements.txt
+Failed to send OTP: OperationalError: (sqlite3.OperationalError) no such column: profiles.otp_code [SQL: SELECT profiles.id AS profiles_id, profiles.phone AS profiles_phone, profiles.full_name AS profiles_full_name, profiles.avatar_url AS profiles_avatar_url, profiles.onboarding_completed AS profiles_onboarding_completed, profiles.fcm_token AS profiles_fcm_token, profiles.otp_code AS profiles_otp_code, profiles.otp_expires_at AS profiles_otp_expires_at FROM profiles WHERE profiles.phone = ? LIMIT ? OFFSET ?] [parameters: ('+2349039645683', 1, 0)] (Background on this error at: https://sqlalche.me/e/20/e3q8)
 
-- `npm run dev` — Starts Vite dev server
-- `npm run build` — Builds production assets with Vite
-- `npm run preview` — Serves the built assets locally
-- `npm run lint` — Runs ESLint across the project
+[HTTP] | Failed to send OTP: OperationalError: (sqlite3.OperationalError) no such column: profiles.otp_code [SQL: SELECT profiles.id AS profiles_id, profiles.phone AS profiles_phone, profiles.full_name AS profiles_full_name, profiles.avatar_url AS profiles_avatar_url, profiles.onboarding_completed AS profiles_onboarding_completed, profiles.fcm_token AS profiles_fcm_token, profiles.otp_code AS profiles_otp_code, profiles.otp_expires_at AS profiles_otp_expires_at FROM profiles WHERE profiles.phone = ? LIMIT ? OFFSET ?] [parameters: ('+2349039645683', 1, 0)] (Background on this error at: https://sqlalche.me/e/20/e3q8) | status=500 | url=http://127.0.0.1:8000/api/auth/send-otp --reload
+```
 
-### Environment Variables (Supabase)
+The frontend and backend are separate apps in this repository. The frontend expects the backend API at `http://localhost:8000` by default.
 
-Create a `.env` file in the `server/` directory (never commit service role keys):
+### Available frontend scripts
+
+- `npm run dev` — Starts the Vite dev server
+- `npm run build` — Builds production assets
+- `npm run preview` — Serves built assets locally
+- `npm run lint` — Runs ESLint across the frontend codebase
+
+### Backend environment variables
+
+Create `backend/.env` with:
 
 ```env
-# Supabase
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=public-anon-key
-# Use the SERVICE_ROLE key only on trusted server environments — never expose it to the browser
-SUPABASE_SERVICE_ROLE_KEY=service-role-key
+SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SERVICE_ROLE_KEY=your_backend_only_service_role_key
+FRONTEND_URL=http://localhost:5173
+JWT_SECRET_KEY=replace_with_a_long_random_secret
+FIRST_ADMIN_EMAIL=admin@theprettyplug.com
+FIRST_ADMIN_PASSWORD=replace_with_a_strong_password
+FIRST_ADMIN_NAME=Admin User
+```
 
-# Anthropic
-ANTHROPIC_API_KEY=sk-ant-xxx
+The backend uses Supabase for persistence and requires the service role key for server-side writes. Do not expose `SUPABASE_SERVICE_ROLE_KEY` in browser code or commit it.
+
+### Supabase setup
+
+Run `backend/sql/schema.sql` in Supabase SQL Editor to create the required tables.
+
+---
 
 # Paystack
 PAYSTACK_SECRET_KEY=sk_live_xxx

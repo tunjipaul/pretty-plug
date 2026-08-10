@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   ArrowRight,
   CalendarDays,
@@ -15,171 +16,136 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
+import { getFAQs } from "../lib/content";
 
-const categories = [
-  {
-    id: "booking",
-    label: "Booking",
-    icon: CalendarDays,
-    questions: [
-      {
-        question: "How do I schedule a home service?",
-        answer:
-          "Home services can be booked through our booking flow by selecting the mobile service option. Availability depends on your location and appointment type.",
-      },
-      {
-        question: "Can I book for multiple people at once?",
-        answer:
-          "Yes. For groups of three or more, contact the concierge team directly so we can coordinate timing, services, and setup properly.",
-      },
-      {
-        question: "How far ahead should I book?",
-        answer:
-          "We recommend booking at least 48 hours ahead for standard appointments and one week ahead for bridal, group, or detailed nail art sessions.",
-      },
-    ],
-  },
-  {
-    id: "pricing",
-    label: "Pricing and Payments",
-    icon: CreditCard,
-    questions: [
-      {
-        question: "Do prices include nail art?",
-        answer:
-          "Base service prices include standard prep and polish. Detailed nail art, chrome, stones, 3D accents, and advanced designs are priced as add-ons.",
-      },
-      {
-        question: "Is a deposit required?",
-        answer:
-          "A deposit may be required to secure premium appointment slots, group bookings, or services with extended timing.",
-      },
-      {
-        question: "Can I pay online?",
-        answer:
-          "Yes. Online payments are supported where available in the booking flow. In-studio payment options may also be available.",
-      },
-    ],
-  },
-  {
-    id: "aftercare",
-    label: "Aftercare",
-    icon: Sparkles,
-    questions: [
-      {
-        question: "How do I care for my nails after service?",
-        answer:
-          "Apply cuticle oil daily, avoid using your nails as tools, and wear gloves for heavy cleaning or prolonged water exposure.",
-      },
-      {
-        question: "When should I refill my lashes?",
-        answer:
-          "Most lash sets need refills every two to three weeks, depending on your natural lash cycle and aftercare routine.",
-      },
-    ],
-  },
-  {
-    id: "policies",
-    label: "Studio Policies",
-    icon: Gavel,
-    questions: [
-      {
-        question: "What is the cancellation policy?",
-        answer:
-          "Please cancel or reschedule at least 24 hours before your appointment so the slot can be offered to another client.",
-      },
-      {
-        question: "What happens if I am late?",
-        answer:
-          "There is a 15-minute grace period. Late arrivals may require service adjustments to protect the next client's appointment time.",
-      },
-    ],
-  },
-];
+function getIconForCategory(categoryStr) {
+  const cat = (categoryStr || "").toLowerCase();
+  if (cat.includes("book")) return CalendarDays;
+  if (cat.includes("price") || cat.includes("pay")) return CreditCard;
+  if (cat.includes("care") || cat.includes("after")) return Sparkles;
+  if (cat.includes("policy") || cat.includes("rule")) return Gavel;
+  return MessageCircle;
+}
 
 function FAQAccordion({ item, defaultOpen = false }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
   return (
-    <details
-      className="group overflow-hidden border border-outline-variant/30 bg-white"
-      open={defaultOpen}
-    >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-6 p-6 transition-colors hover:bg-surface-container-low">
-        <h3 className="font-headline text-xl font-medium text-on-surface md:text-2xl">
+    <div className="group border border-outline-variant/30 bg-white">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-surface-container-lowest"
+      >
+        <span className="font-headline text-lg font-medium text-on-surface md:text-xl">
           {item.question}
-        </h3>
-        <ChevronDown className="shrink-0 text-primary-container transition-transform group-open:rotate-180" />
-      </summary>
-      <div className="border-t border-outline-variant/10 px-6 pb-6 pt-5 font-body text-base leading-7 text-on-surface-variant">
-        {item.answer}
+        </span>
+        <span
+          className={`ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-outline-variant/30 transition-transform duration-300 ${
+            isOpen ? "rotate-180 bg-primary-container text-on-primary" : ""
+          }`}
+        >
+          <ChevronDown size={16} />
+        </span>
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="border-t border-outline-variant/20 p-6 pt-4 font-body text-base leading-7 text-on-surface-variant">
+          {item.answer}
+        </div>
       </div>
-    </details>
+    </div>
   );
 }
 
 export default function FAQ() {
-  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getFAQs()
+      .then((data) => {
+        if (data) {
+          const published = data.filter((f) => f.is_published);
+          setFaqs(published);
+          
+          if (published.length > 0) {
+            setActiveCategory(published[0].category || "General");
+          }
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const categories = useMemo(() => {
+    const grouped = {};
+    for (const f of faqs) {
+      const cat = f.category || "General";
+      if (!grouped[cat]) {
+        grouped[cat] = {
+          id: cat,
+          label: cat,
+          icon: getIconForCategory(cat),
+          questions: [],
+        };
+      }
+      grouped[cat].questions.push(f);
+    }
+    return Object.values(grouped);
+  }, [faqs]);
 
   const filteredCategories = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    if (!normalizedQuery) {
-      return categories;
-    }
+    if (!searchQuery) return categories;
 
     return categories
-      .map((category) => ({
-        ...category,
-        questions: category.questions.filter((item) =>
-          `${item.question} ${item.answer}`
-            .toLowerCase()
-            .includes(normalizedQuery),
+      .map((cat) => ({
+        ...cat,
+        questions: cat.questions.filter(
+          (q) =>
+            q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            q.answer.toLowerCase().includes(searchQuery.toLowerCase()),
         ),
       }))
-      .filter((category) => category.questions.length > 0);
-  }, [query]);
+      .filter((cat) => cat.questions.length > 0);
+  }, [categories, searchQuery]);
 
   return (
     <>
       <Navbar />
       <main className="pb-20 md:pb-0">
         <RevealSection>
-          <section className="relative overflow-hidden bg-surface-container-low px-5 pb-16 pt-24 md:px-20 md:pt-32">
-            <div className="relative z-10 mx-auto max-w-[1280px] text-center">
-              <span className="mb-4 block font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container">
-                Support Center
-              </span>
-              <h1 className="mx-auto mb-10 max-w-2xl font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
-                How can we help you today?
-              </h1>
+          <header className="mx-auto max-w-[1280px] px-5 pb-10 pt-20 text-center md:px-20 md:pt-28">
+            <span className="mb-4 block font-label text-xs font-semibold uppercase tracking-[0.3em] text-secondary">
+              Need Assistance?
+            </span>
+            <h1 className="mb-8 font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
+              Frequently Asked Questions
+            </h1>
+            <p className="mx-auto max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
+              Everything you need to know about preparing for your service, our
+              studio policies, and managing your booking.
+            </p>
+          </header>
+        </RevealSection>
 
-              <div className="mx-auto max-w-3xl">
-                <label htmlFor="faq-search" className="sr-only">
-                  Search frequently asked questions
-                </label>
-                <div className="flex items-center border border-outline-variant/20 bg-white px-5 py-4 shadow-xl">
+        <RevealSection delay={80}>
+          <section className="bg-surface-container-lowest">
+            <div className="mx-auto max-w-4xl px-5 py-10 md:px-20">
+              <div className="relative mx-auto max-w-2xl">
+                <div className="flex h-16 w-full items-center border border-outline-variant/40 bg-white px-6 shadow-sm transition-shadow focus-within:border-primary-container focus-within:shadow-md">
                   <Search className="mr-4 text-outline" size={22} />
                   <input
                     id="faq-search"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
                     className="w-full bg-transparent font-body text-base outline-none placeholder:text-outline/60 md:text-lg"
                     placeholder="Search for pricing, aftercare, or policies..."
                     type="search"
                   />
-                </div>
-                <div className="mt-6 flex flex-wrap justify-center gap-2 font-body text-sm">
-                  <span className="text-on-surface-variant">Popular:</span>
-                  <a className="font-medium text-primary-container hover:underline" href="#aftercare">
-                    Aftercare tips
-                  </a>
-                  <span className="text-outline-variant">/</span>
-                  <a className="font-medium text-primary-container hover:underline" href="#pricing">
-                    Gel pricing
-                  </a>
-                  <span className="text-outline-variant">/</span>
-                  <a className="font-medium text-primary-container hover:underline" href="#policies">
-                    Cancellation policy
-                  </a>
                 </div>
               </div>
             </div>
@@ -188,136 +154,133 @@ export default function FAQ() {
 
         <RevealSection delay={80}>
           <section className="mx-auto max-w-[1280px] px-5 py-24 md:px-20 md:py-32">
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-              <aside className="hidden lg:col-span-3 lg:block">
-                <div className="sticky top-32 space-y-4">
-                  <h2 className="mb-6 font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
-                    Categories
-                  </h2>
-                  {categories.map((category, index) => {
-                    const Icon = category.icon;
-                    return (
-                      <a
-                        key={category.id}
-                        href={`#${category.id}`}
-                        className={`flex items-center gap-3 p-4 transition-colors ${
-                          index === 0
-                            ? "bg-primary-container text-on-primary shadow-sm"
-                            : "text-on-surface-variant hover:bg-surface-container"
-                        }`}
-                      >
-                        <Icon size={18} />
-                        <span className="font-body font-bold">
-                          {category.label}
-                        </span>
-                      </a>
-                    );
-                  })}
+            <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-20">
+              {loading ? (
+                <div className="flex w-full h-64 items-center justify-center">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary-container border-t-transparent" />
                 </div>
-              </aside>
+              ) : faqs.length === 0 ? (
+                <div className="flex w-full h-64 items-center justify-center font-body text-on-surface-variant">
+                  No FAQs available.
+                </div>
+              ) : (
+                <>
+                  <aside className="w-full lg:sticky lg:top-32 lg:w-1/3">
+                    <div className="space-y-2">
+                      {categories.map((cat) => {
+                        const Icon = cat.icon;
+                        const isActive = activeCategory === cat.id;
 
-              <div className="space-y-20 lg:col-span-9">
-                {filteredCategories.length > 0 ? (
-                  filteredCategories.map((category) => {
-                    const Icon = category.icon;
-                    return (
-                      <div key={category.id} id={category.id}>
-                        <h2 className="mb-8 flex items-center gap-4 font-headline text-3xl font-medium text-on-surface">
-                          <span className="bg-primary/10 p-3 text-primary-container">
-                            <Icon size={22} />
-                          </span>
-                          {category.label}
-                        </h2>
-                        <div className="space-y-4">
-                          {category.questions.map((item, index) => (
-                            <FAQAccordion
-                              key={item.question}
-                              item={item}
-                              defaultOpen={index === 0}
+                        return (
+                          <button
+                            key={cat.id}
+                            onClick={() => {
+                              setActiveCategory(cat.id);
+                              setSearchQuery("");
+                            }}
+                            className={`flex w-full items-center gap-4 border-l-2 p-4 text-left transition-colors ${
+                              isActive
+                                ? "border-primary-container bg-surface-container-low"
+                                : "border-transparent text-on-surface-variant hover:bg-surface-container-lowest hover:text-on-surface"
+                            }`}
+                          >
+                            <Icon
+                              size={20}
+                              className={
+                                isActive ? "text-primary-container" : "text-outline"
+                              }
                             />
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="border border-outline-variant/30 bg-white p-10 text-center">
-                    <h2 className="mb-3 font-headline text-3xl font-medium">
-                      No matching questions
-                    </h2>
-                    <p className="font-body text-on-surface-variant">
-                      Try a different keyword or message the concierge team.
-                    </p>
-                  </div>
-                )}
+                            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em]">
+                              {cat.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </aside>
 
-                <div id="policies-summary" className="grid grid-cols-1 overflow-hidden bg-inverse-surface text-inverse-on-surface md:grid-cols-2">
-                  <div className="flex flex-col justify-center p-8 md:p-12">
-                    <h2 className="mb-6 font-headline text-4xl font-medium">
-                      Studio Policies
-                    </h2>
-                    <p className="mb-8 font-body text-base leading-7 text-surface-variant">
-                      To maintain our standard of excellence and ensure every
-                      guest receives full attention, appointments follow a clear
-                      cancellation and late-arrival policy.
-                    </p>
-                    <ul className="space-y-4 font-body text-base">
-                      {[
-                        "15-minute grace period for appointments.",
-                        "24-hour notice for cancellations.",
-                        "No-shows may be charged full price.",
-                      ].map((policy) => (
-                        <li key={policy} className="flex items-start gap-3">
-                          <CheckCircle
-                            className="mt-0.5 shrink-0 text-primary-fixed"
-                            size={20}
-                          />
-                          <span>{policy}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="w-full lg:w-2/3">
+                    {filteredCategories.length === 0 ? (
+                      <div className="py-20 text-center text-on-surface-variant">
+                        <Search size={32} className="mx-auto mb-4 opacity-50" />
+                        <p className="font-body text-base">
+                          No answers found for "{searchQuery}"
+                        </p>
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="mt-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container"
+                        >
+                          Clear Search
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-16">
+                        {filteredCategories.map(
+                          (cat) =>
+                            (searchQuery || activeCategory === cat.id) && (
+                              <div key={cat.id}>
+                                <h2 className="mb-8 font-headline text-3xl font-medium text-on-surface flex items-center gap-4">
+                                  <span className="bg-primary-container/10 p-3 text-primary-container rounded-full">
+                                    <cat.icon size={22} />
+                                  </span>
+                                  {cat.label}
+                                </h2>
+                                <div className="flex flex-col gap-4">
+                                  {cat.questions.map((q, index) => (
+                                    <FAQAccordion
+                                      key={q.question}
+                                      item={q}
+                                      defaultOpen={index === 0 && !searchQuery}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            ),
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <div className="relative min-h-[340px]">
-                    <img
-                      src="/images/studio.jpg"
-                      alt="ThePrettyPlug studio interior"
-                      className="absolute inset-0 h-full w-full object-cover grayscale opacity-55 contrast-125"
-                    />
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </section>
         </RevealSection>
 
-        <RevealSection delay={80}>
-          <section className="bg-surface-container-high px-5 py-24 md:px-20 md:py-32">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-6 font-display text-4xl font-semibold text-on-surface md:text-5xl">
-                Still have questions?
-              </h2>
-              <p className="mb-10 font-body text-base leading-7 text-on-surface-variant md:text-lg">
-                Our concierge team is available from 9 AM to 7 PM WAT to assist
-                with specific requests or concerns.
-              </p>
-              <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                <a
-                  className="inline-flex h-14 items-center justify-center gap-3 bg-[#25D366] px-10 font-label text-xs font-semibold uppercase tracking-[0.12em] text-white transition-transform hover:-translate-y-1 hover:shadow-xl"
-                  href="https://wa.me/2340000000"
-                >
-                  <MessageCircle size={18} />
-                  Message on WhatsApp
-                </a>
-                <a
-                  className="inline-flex h-14 items-center justify-center gap-3 border border-outline px-10 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface transition-colors hover:bg-surface-container-lowest"
-                  href="tel:+23412345678"
-                >
-                  <Phone size={18} />
-                  Call Studio
-                </a>
-              </div>
+        <RevealSection className="bg-surface-container px-5 py-24 text-center md:px-20 md:py-32">
+          <div className="mx-auto max-w-2xl border border-outline-variant/20 bg-white p-10 shadow-2xl">
+            <span className="mb-6 flex justify-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-surface-container-low text-primary-container">
+                <MessageCircle size={32} />
+              </span>
+            </span>
+            <h2 className="mb-4 font-headline text-3xl font-medium text-on-surface">
+              Still Have Questions?
+            </h2>
+            <p className="mb-10 font-body text-base text-on-surface-variant">
+              Can't find the answer you're looking for? Reach out to our
+              concierge team. We typically respond within 2 hours during business
+              hours.
+            </p>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <a
+                href="#footer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex h-12 items-center justify-center bg-primary-container px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
+              >
+                Contact Us
+              </a>
+              <a
+                href="tel:+23400000000"
+                className="inline-flex h-12 items-center justify-center gap-3 border border-outline px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface transition-colors hover:bg-surface-container"
+              >
+                <Phone size={16} />
+                Call Studio
+              </a>
             </div>
-          </section>
+          </div>
         </RevealSection>
       </main>
       <Footer />
