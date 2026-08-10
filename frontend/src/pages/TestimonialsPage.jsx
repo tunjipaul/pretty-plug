@@ -138,10 +138,14 @@ export default function TestimonialsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-4">
-                  {[1, 2, 3].map((i) => (
+                  {[
+                    "/images/avatar-1.png",
+                    "/images/avatar-2.jpg",
+                    "/images/avatar-3.png",
+                  ].map((src, i) => (
                     <img
                       key={i}
-                      src={`/images/avatar-${i === 1 ? 1 : i === 2 ? 2 : 1}.png`}
+                      src={src}
                       alt="Reviewer avatar"
                       className="h-10 w-10 rounded-full border-2 border-surface object-cover"
                     />
