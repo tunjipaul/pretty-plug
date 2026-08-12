@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { getServices, saveService, deleteService, uploadMedia } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -459,6 +460,7 @@ export default function AdminServices() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="Services Catalog Management | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
 
       {/* Modals */}

@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
 import { getContent, getServices } from "../lib/content";
+import SeoHead from "../components/SeoHead";
+import { getServicesSchema, getBreadcrumbSchema } from "../lib/seoSchemas";
 
 function formatPrice(value) {
   return `NGN ${(value || 0).toLocaleString()}`;
@@ -61,6 +63,13 @@ export default function Services() {
     return grouped;
   }, [services]);
 
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Services", path: "/services" },
+  ]);
+  const servicesSchema = getServicesSchema(services);
+  const pageSchemas = [breadcrumbs, servicesSchema].filter(Boolean);
+
   // Extract common known categories for bespoke layouts, if they exist
   const lashKey = Object.keys(categories).find((k) => k.toLowerCase().includes("lash"));
   const nailKey = Object.keys(categories).find((k) => k.toLowerCase().includes("nail"));
@@ -77,6 +86,12 @@ export default function Services() {
 
   return (
     <>
+      <SeoHead
+        title={headerContent?.title || "Services Catalog | Gel Manicures & Lashes Abeokuta"}
+        description={headerContent?.subtitle || "Explore bespoke beauty treatments, gel manicures, luxury lash extensions, and aesthetic care in Abeokuta."}
+        canonicalPath="/services"
+        schema={pageSchemas}
+      />
       <Navbar />
       <main className="pb-20 md:pb-0">
         {/* HERO */}

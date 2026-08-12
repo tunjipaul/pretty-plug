@@ -17,6 +17,8 @@ import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
 import { getFAQs, getContent } from "../lib/content";
+import SeoHead from "../components/SeoHead";
+import { getFaqSchema, getBreadcrumbSchema } from "../lib/seoSchemas";
 
 function getIconForCategory(categoryStr) {
   const cat = (categoryStr || "").toLowerCase();
@@ -88,6 +90,13 @@ export default function FAQ() {
       .finally(() => setLoading(false));
   }, []);
 
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "FAQ", path: "/faq" },
+  ]);
+  const faqSchema = getFaqSchema(faqs);
+  const schemas = [breadcrumbs, faqSchema].filter(Boolean);
+
   const categories = useMemo(() => {
     const grouped = {};
     for (const f of faqs) {
@@ -122,6 +131,12 @@ export default function FAQ() {
 
   return (
     <>
+      <SeoHead
+        title={headerContent?.title || "Frequently Asked Questions | ThePrettyPlug Abeokuta"}
+        description={headerContent?.subtitle || "Find answers to booking questions, gel manicure care, lash maintenance, Sunday hours, and deposit policies."}
+        canonicalPath="/faq"
+        schema={schemas}
+      />
       <Navbar />
       <main className="pb-20 md:pb-0">
         <RevealSection>

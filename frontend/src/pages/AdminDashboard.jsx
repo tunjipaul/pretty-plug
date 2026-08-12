@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
 import { getBookings, getServices, getTestimonials, getStoredUser } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 const STATUS_STYLES = {
   pending:     "bg-amber-50 text-amber-700",
@@ -166,6 +167,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="Admin Dashboard | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
 
       <main className="min-h-screen pb-24 lg:ml-64 lg:pb-0">

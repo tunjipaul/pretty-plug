@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getBookings } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -145,6 +146,7 @@ export default function AdminBookings() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="Bookings Management | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
 
       <main className="min-h-screen pb-28 lg:ml-64 lg:pb-0">

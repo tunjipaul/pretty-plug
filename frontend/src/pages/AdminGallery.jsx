@@ -6,6 +6,7 @@ import {
   X,
 } from "lucide-react";
 import { getGallery, saveGalleryItem, uploadMedia, deleteGalleryItem, deleteGalleryItems } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -253,6 +254,7 @@ export default function AdminGallery() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="Gallery Management | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
 
       {editingItem && (

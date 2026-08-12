@@ -27,6 +27,7 @@ import {
 import { createElement } from "react";
 import { Link } from "react-router-dom";
 import { getSetting, saveSetting } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 const defaultSettings = {
   business: {
@@ -201,6 +202,7 @@ export default function AdminSettings() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="Admin Settings | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
       <ApiErrorDisplay error={error} onDismiss={() => setError(null)} />
 

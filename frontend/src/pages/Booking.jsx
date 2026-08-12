@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { getServices, getSetting } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -415,6 +416,11 @@ export default function Booking() {
 
   return (
     <>
+      <SeoHead
+        title="Book Online | Luxury Gel Manicures & Lash Artistry Abeokuta"
+        description="Book your bespoke nail manicure, luxury lash extension, or beauty care appointment online with ThePrettyPlug in Abeokuta."
+        canonicalPath="/book"
+      />
       <BookingHeader />
       <main className="mx-auto min-h-screen max-w-[1280px] px-5 pb-28 pt-12 md:px-20">
         <Progress step={step} />

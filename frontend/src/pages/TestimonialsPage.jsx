@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
 import { getTestimonials, getGallery, getContent } from "../lib/content";
+import SeoHead from "../components/SeoHead";
+import { getBreadcrumbSchema } from "../lib/seoSchemas";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -89,8 +91,19 @@ export default function TestimonialsPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Testimonials", path: "/testimonials" },
+  ]);
+
   return (
     <>
+      <SeoHead
+        title={headerContent?.title || "Client Stories & Reviews | ThePrettyPlug Abeokuta"}
+        description={headerContent?.subtitle || "Read authentic client reviews and stories from beauty minimalists who trust ThePrettyPlug for nails, lashes, and aesthetic care."}
+        canonicalPath="/testimonials"
+        schema={breadcrumbSchema}
+      />
       <Navbar />
       <main className="pb-20 md:pb-0">
         <PageSection className="relative mx-auto max-w-[1280px] overflow-hidden px-5 pb-24 pt-20 md:px-20 md:pb-32 md:pt-24">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
 import { ApiErrorDisplay } from "../components/ApiErrorBoundary";
+import SeoHead from "../components/SeoHead";
 import {
   CalendarDays,
   FileText,
@@ -304,6 +305,7 @@ export default function AdminContent() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="Website Content Management | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
       <ApiErrorDisplay error={error} onDismiss={() => setError(null)} />
 

@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
 import { getContent, getGallery } from "../lib/content";
+import SeoHead from "../components/SeoHead";
+import { getBreadcrumbSchema } from "../lib/seoSchemas";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -40,6 +42,11 @@ export default function Portfolio() {
       .finally(() => setLoading(false));
   }, []);
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Portfolio", path: "/portfolio" },
+  ]);
+
   const filters = useMemo(() => {
     const cats = [...new Set(items.map((i) => i.category).filter(Boolean))];
     return ["All Work", ...cats];
@@ -58,6 +65,12 @@ export default function Portfolio() {
 
   return (
     <>
+      <SeoHead
+        title={headerContent?.title || "Editorial Portfolio | Manicures & Nail Art Abeokuta"}
+        description={headerContent?.subtitle || "Explore our curated gallery of handcrafted nail art, luxury gel manicures, and editorial lash extensions in Abeokuta."}
+        canonicalPath="/portfolio"
+        schema={breadcrumbSchema}
+      />
       <Navbar />
       <main className="pb-20 md:pb-0">
         <RevealSection>

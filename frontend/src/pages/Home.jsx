@@ -10,7 +10,9 @@ import Newsletter from "../components/home/Newsletter";
 import InstagramGrid from "../components/home/InstagramGrid";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
-import { getContent, getGallery, getServices, getTestimonials } from "../lib/content";
+import { getContent, getGallery, getServices, getTestimonials, getSetting } from "../lib/content";
+import SeoHead from "../components/SeoHead";
+import { getLocalBusinessSchema } from "../lib/seoSchemas";
 
 const defaultContent = {
   hero: {
@@ -37,6 +39,7 @@ export default function Home() {
   const [services, setServices] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [gallery, setGallery] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [contentLoading, setContentLoading] = useState(true);
 
   useEffect(() => {
@@ -56,10 +59,22 @@ export default function Home() {
     getGallery().then((data) => {
       if (data) setGallery(data.filter((i) => i.is_published));
     });
+    getSetting("global_settings").then((data) => {
+      if (data) setSettings(data);
+    });
   }, []);
+
+  const businessSchema = getLocalBusinessSchema(settings);
 
   return (
     <>
+      <SeoHead
+        title="Luxury Gel Manicures & Lash Artistry Abeokuta"
+        description="Abeokuta's premier luxury studio for meticulous gel manicures, luxury lash extensions, and editorial beauty care. Book your bespoke session today."
+        canonicalPath="/"
+        ogImage={content.hero?.imageUrl || "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"}
+        schema={businessSchema}
+      />
       <Navbar />
       <main className="pb-24 lg:pb-0">
         <RevealSection>

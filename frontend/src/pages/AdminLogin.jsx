@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AlertCircle, ArrowLeft, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginAdmin } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -34,7 +35,9 @@ export default function AdminLogin() {
   }
 
   return (
-    <main className="grid h-screen overflow-hidden grid-cols-1 bg-surface text-on-surface lg:grid-cols-2">
+    <>
+      <SeoHead title="Admin Portal Login | ThePrettyPlug" noindex={true} />
+      <main className="grid h-screen overflow-hidden grid-cols-1 bg-surface text-on-surface lg:grid-cols-2">
       {/* Left panel — decorative */}
       <section className="relative hidden h-screen overflow-hidden bg-surface-container-low lg:block">
         <img
@@ -188,5 +191,6 @@ export default function AdminLogin() {
         </div>
       </section>
     </main>
+    </>
   );
 }

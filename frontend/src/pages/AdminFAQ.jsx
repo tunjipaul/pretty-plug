@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { deleteFAQ, getFAQs, saveFAQ } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 const BLANK_FORM = {
   category: "",
@@ -116,6 +117,7 @@ export default function AdminFAQ() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
+      <SeoHead title="FAQ Management | ThePrettyPlug" noindex={true} />
       <AdminSidebar />
 
       <main className="min-h-screen pb-28 lg:ml-64 lg:pb-0">

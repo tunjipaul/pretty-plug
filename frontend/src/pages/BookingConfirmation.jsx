@@ -4,6 +4,7 @@ import { CalendarDays, CheckCircle, Download, Home, MapPin } from "lucide-react"
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getSetting } from "../lib/content";
+import SeoHead from "../components/SeoHead";
 
 function formatPrice(price) {
   return `NGN ${Number(price || 0).toLocaleString()}`;
@@ -177,6 +178,12 @@ export default function BookingConfirmation() {
 
   return (
     <>
+      <SeoHead
+        title="Booking Confirmation & Receipt | ThePrettyPlug"
+        description="Booking receipt confirmation page."
+        canonicalPath="/book/confirm"
+        noindex={true}
+      />
       <Navbar />
       <main className="min-h-screen px-5 py-20 md:px-20 md:py-28">
         <section className="mx-auto max-w-[760px] text-center">
