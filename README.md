@@ -1,39 +1,72 @@
 # ThePrettyPlug 💅
 
-> A full-stack React + FastAPI booking platform for a solo beauty technician. The repository includes a React public website and admin UI in `frontend/`, and a FastAPI backend in `backend/` with Supabase persistence.
+> A full-stack React + FastAPI booking platform for a solo beauty technician based in Abeokuta. The repository includes a React public website and admin UI in `frontend/`, and a FastAPI backend in `backend/` with Supabase persistence.
 
 ---
 
 ## Overview
 
-ThePrettyPlug is built to transform a beauty technician's online presence into a web-first booking and content management system. The current repository supports:
-
-- A React frontend with public pages and admin screens
-- A FastAPI backend for content, services, testimonials, FAQs, gallery, media, settings, and auth
-- Supabase integration for persistent storage and backend API operations
+ThePrettyPlug is a web-first booking and content management system for a beauty technician. It provides a polished public-facing website for clients and a full admin dashboard for managing the business.
 
 ---
 
-## Current Implementation
+## Features
 
-### Public website
-- Homepage with backend-driven hero content
-- Services page
-- Portfolio page
-- Testimonials page
-- FAQ page
-- Booking and booking confirmation pages
+### Public Website
+- **Homepage** — Backend-driven hero, trust metrics, service highlights, portfolio preview, testimonials, newsletter, and Instagram grid
+- **Services** — Full service catalogue with categories, pricing, and descriptions
+- **Portfolio** — Gallery of work with filtering
+- **Testimonials** — Client reviews and featured quotes
+- **FAQ** — Categorised frequently asked questions
+- **Booking** — 4-step booking wizard (service → date/time → details → bank transfer deposit)
+- **Booking Confirmation** — Appointment ticket with summary
 
-### Admin experience
-- Content editor page
-- Settings page
-- Admin pages for services, gallery, testimonials, FAQ, bookings, and clients
-- Admin login
+### Admin Dashboard
+- **Dashboard** — Overview and quick stats
+- **Content Editor** — Edit homepage hero, trust metrics, and section copy
+- **Services Manager** — Create, edit, and manage services
+- **Gallery Manager** — Upload and organise portfolio images
+- **Testimonials Manager** — Manage client reviews
+- **FAQ Manager** — Create and order FAQ entries
+- **Bookings** — View and manage customer bookings
+- **Clients** — Client directory
+- **Settings** — Business profile, opening hours, booking policies, notifications
 
 ### Backend API
-- FastAPI routes for `/api/content`, `/api/services`, `/api/testimonials`, `/api/faqs`, `/api/gallery`, `/api/media`, `/api/settings`, `/api/auth`, and `/health`
-- Supabase-backed persistence for site content and settings
-- `backend/sql/schema.sql` contains the database schema for Supabase
+- FastAPI routes: `/api/content`, `/api/services`, `/api/testimonials`, `/api/faqs`, `/api/gallery`, `/api/media`, `/api/bookings`, `/api/settings`, `/api/auth`, `/health`
+- JWT authentication for admin routes (24-hour token expiry)
+- Supabase-backed persistence for all data
+- Media upload support
+
+---
+
+## Booking Flow
+
+```
+Step 1 — Service Selection
+  → Browse available services with prices and durations
+  → Select a service to proceed
+
+Step 2 — Date & Time
+  → Calendar with real-time availability
+  → Same-day bookings allowed
+  → Mon–Sat: 9:00 AM – 8:00 PM
+  → Sundays: 1:00 PM – 7:00 PM
+
+Step 3 — Client Details
+  → Name, email, phone, and optional notes
+
+Step 4 — Deposit & Confirm
+  → 40% deposit required (non-refundable)
+  → Bank transfer to: Kuda — 3003588180 — Lafulu Marvelous Omotayo
+  → Upload payment proof screenshot
+  → Booking policies displayed (rescheduling, late arrival)
+```
+
+### Booking Policies
+- **Deposit**: 40% of service price, non-refundable
+- **Rescheduling**: Notify at least 1 hour before appointment
+- **Late Arrival**: More than 30 minutes late = automatic cancellation
 
 ---
 
@@ -46,20 +79,18 @@ ThePrettyPlug is built to transform a beauty technician's online presence into a
 | Vite | 6 | Build tool |
 | Tailwind CSS | 4 | Styling |
 | React Router DOM | 7 | Client-side routing |
-| Zustand | ^5 | Local state management |
 | Lucide React | ^1.6 | Icons |
 | React Icons | ^5 | Extended icon set |
-| @supabase/supabase-js | ^2 | Supabase client |
 
 ### Backend
 | Technology | Purpose |
 |---|---|
-| Python | Backend language |
+| Python 3.11+ | Backend language |
 | FastAPI | API framework |
 | Uvicorn | ASGI server |
 | Pydantic | Settings and validation |
-| Supabase Python client | Supabase database access |
-| Supabase Postgres | Hosted database |
+| Supabase Python client | Database access |
+| JWT (PyJWT + bcrypt) | Authentication |
 
 ---
 
@@ -70,35 +101,48 @@ pretty-plug/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── routes/
-│   │   │   │   ├── auth.py
-│   │   │   │   ├── content.py
-│   │   │   │   ├── faqs.py
-│   │   │   │   ├── gallery.py
-│   │   │   │   ├── health.py
-│   │   │   │   ├── media.py
-│   │   │   │   ├── services.py
-│   │   │   │   └── settings.py
+│   │   │   ├── deps.py
+│   │   │   └── routes/
+│   │   │       ├── auth.py
+│   │   │       ├── bookings.py
+│   │   │       ├── content.py
+│   │   │       ├── faqs.py
+│   │   │       ├── gallery.py
+│   │   │       ├── health.py
+│   │   │       ├── media.py
+│   │   │       ├── services.py
+│   │   │       ├── settings.py
+│   │   │       └── testimonials.py
 │   │   ├── core/
-│   │   │   └── config.py
-│   │   └── db/
-│   │       └── supabase.py
+│   │   │   ├── config.py
+│   │   │   └── security.py
+│   │   ├── db/
+│   │   │   └── supabase.py
+│   │   ├── schemas/
+│   │   └── main.py
+│   ├── sql/
+│   │   └── schema.sql
+│   ├── scripts/
 │   ├── requirements.txt
-│   └── README.md
+│   └── .env
 ├── frontend/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── home/
+│   │   │   ├── AdminSidebar.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── MobileBottomNav.jsx
+│   │   │   └── Navbar.jsx
 │   │   ├── lib/
+│   │   │   └── content.js
 │   │   ├── pages/
 │   │   ├── App.jsx
 │   │   ├── main.jsx
 │   │   └── index.css
 │   ├── package.json
 │   └── vite.config.js
-├── UI/
-│   └── ...
-├── backend/sql/schema.sql
+├── vercel.json
 ├── .gitignore
 └── README.md
 ```
@@ -138,10 +182,10 @@ The UI follows the **"Editorial Melanin Intuition"** design language — a high-
 
 ### Prerequisites
 - Node.js 18+
-- Python 3.11+ or 3.12+
-- npm or yarn
+- Python 3.11+
+- npm
 
-### Frontend Quick Start
+### Frontend
 
 ```bash
 cd frontend
@@ -149,26 +193,26 @@ npm install
 npm run dev
 ```
 
-### Backend Quick Start
+### Backend
 
 ```bash
 cd backend
 pip install -r requirements.txt
-Failed to send OTP: OperationalError: (sqlite3.OperationalError) no such column: profiles.otp_code [SQL: SELECT profiles.id AS profiles_id, profiles.phone AS profiles_phone, profiles.full_name AS profiles_full_name, profiles.avatar_url AS profiles_avatar_url, profiles.onboarding_completed AS profiles_onboarding_completed, profiles.fcm_token AS profiles_fcm_token, profiles.otp_code AS profiles_otp_code, profiles.otp_expires_at AS profiles_otp_expires_at FROM profiles WHERE profiles.phone = ? LIMIT ? OFFSET ?] [parameters: ('+2349039645683', 1, 0)] (Background on this error at: https://sqlalche.me/e/20/e3q8)
-
-[HTTP] | Failed to send OTP: OperationalError: (sqlite3.OperationalError) no such column: profiles.otp_code [SQL: SELECT profiles.id AS profiles_id, profiles.phone AS profiles_phone, profiles.full_name AS profiles_full_name, profiles.avatar_url AS profiles_avatar_url, profiles.onboarding_completed AS profiles_onboarding_completed, profiles.fcm_token AS profiles_fcm_token, profiles.otp_code AS profiles_otp_code, profiles.otp_expires_at AS profiles_otp_expires_at FROM profiles WHERE profiles.phone = ? LIMIT ? OFFSET ?] [parameters: ('+2349039645683', 1, 0)] (Background on this error at: https://sqlalche.me/e/20/e3q8) | status=500 | url=http://127.0.0.1:8000/api/auth/send-otp --reload
+uvicorn app.main:app --reload
 ```
 
-The frontend and backend are separate apps in this repository. The frontend expects the backend API at `http://localhost:8000` by default.
+The frontend runs on `http://localhost:5173` and expects the backend API at `http://localhost:8000`.
 
-### Available frontend scripts
+### Available Frontend Scripts
 
-- `npm run dev` — Starts the Vite dev server
-- `npm run build` — Builds production assets
-- `npm run preview` — Serves built assets locally
-- `npm run lint` — Runs ESLint across the frontend codebase
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Build production assets |
+| `npm run preview` | Serve built assets locally |
+| `npm run lint` | Run ESLint |
 
-### Backend environment variables
+### Backend Environment Variables
 
 Create `backend/.env` with:
 
@@ -183,128 +227,20 @@ FIRST_ADMIN_PASSWORD=replace_with_a_strong_password
 FIRST_ADMIN_NAME=Admin User
 ```
 
-The backend uses Supabase for persistence and requires the service role key for server-side writes. Do not expose `SUPABASE_SERVICE_ROLE_KEY` in browser code or commit it.
+> ⚠️ Never expose `SUPABASE_SERVICE_ROLE_KEY` in browser code or commit it to version control.
 
-### Supabase setup
+### Supabase Setup
 
-Run `backend/sql/schema.sql` in Supabase SQL Editor to create the required tables.
-
----
-
-# Paystack
-PAYSTACK_SECRET_KEY=sk_live_xxx
-PAYSTACK_PUBLIC_KEY=pk_live_xxx
-PAYSTACK_WEBHOOK_SECRET=xxx
-
-# Termii (SMS)
-TERMII_API_KEY=xxx
-TERMII_SENDER_ID=THEPRETTYPLUG
-
-# WhatsApp
-WHATSAPP_TOKEN=xxx
-WHATSAPP_PHONE_NUMBER_ID=xxx
-
-# Resend (Email)
-RESEND_API_KEY=re_xxx
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=xxx
-CLOUDINARY_API_KEY=xxx
-CLOUDINARY_API_SECRET=xxx
-
-# Instagram
-INSTAGRAM_ACCESS_TOKEN=xxx
-
-# Google
-GOOGLE_PLACES_API_KEY=xxx
-GOOGLE_PLACE_ID=xxx
-```
+Run `backend/sql/schema.sql` in the Supabase SQL Editor to create the required tables.
 
 ---
 
-## Database Schema (Key Tables)
+## Opening Hours
 
-Note: The database is hosted in Supabase (Postgres). You can create tables via the Supabase dashboard, SQL editor, or run migrations from your preferred migration tool.
-
-| Table | Purpose |
+| Day | Hours |
 |---|---|
-| `clients` | Client profiles, contact info, preferences |
-| `services` | Service catalogue — name, price, duration, deposit % |
-| `bookings` | All bookings with status, payment ref, reschedule token |
-| `slot_locks` | 10-minute slot holds during checkout |
-| `intake_forms` | First-visit health & preference questionnaires |
-| `portfolio_items` | Gallery photos with AI-generated captions |
-| `reviews` | Client reviews (website + Google) |
-| `faq_entries` | CMS-managed FAQ bank fed into AI chat |
-| `chat_messages` | Full chat history with unanswered query flags |
-| `rebook_queue` | Scheduled rebooking nudge messages |
-| `quiz_leads` | Style quiz completions + email captures |
-
-All prices stored in **kobo** (NGN smallest unit) to avoid floating point issues. All times in **WAT (UTC+1)**.
-
----
-
-## Booking Flow
-
-```
-Step 1 — Service Selection
-  → Choose service category (Lash / Nail / Pedicure)
-  → Select service + optional add-ons
-  → Running total shown
-
-Step 2 — Date & Time
-  → Calendar shows only available dates
-  → Time slots generated from working hours, duration & buffers
-  → 10-minute slot lock applied on selection
-
-Step 3 — Client Details
-  → Name, phone, email
-  → First visit? → Intake form (allergies, nail condition, etc.)
-  → Returning client? → Phone lookup pre-fills details
-
-Step 4 — Deposit & Confirm
-  → Paystack inline embed (no redirect)
-  → Cancellation policy acknowledgement
-  → On success → confirmation page + email + WhatsApp
-```
-
----
-
-## AI Features
-
-| Feature | Trigger | Model |
-|---|---|---|
-| Chat assistant | Widget on every page | `claude-sonnet-4-20250514` |
-| Style quiz results | Quiz completion | `claude-sonnet-4-20250514` |
-| Rebooking nudges | Cron job (post-appointment) | `claude-sonnet-4-20250514` |
-| Caption generator | Portfolio photo upload | `claude-sonnet-4-20250514` |
-
-All Claude API calls are **server-side only**. The API key is never exposed to the client.
-
----
-
-## Roadmap
-
-### Phase 1 — Current
-- [x] Landing page
-- [ ] React Router configuration
-- [ ] Portfolio page
-- [ ] Services & pricing page
-- [ ] Booking wizard (4 steps)
-- [ ] Express server setup
-- [ ] PostgreSQL schema + Prisma
-- [ ] Paystack integration
-- [ ] Admin dashboard
-- [ ] AI chat widget
-- [ ] Automated messaging (email + WhatsApp + SMS)
-
-### Phase 2 — Post Launch
-- [ ] Aftercare hub (`/aftercare`)
-- [ ] Digital gift cards
-- [ ] Referral system
-- [ ] Birthday discount automation
-- [ ] AI review response drafts
-- [ ] Analytics dashboard
+| Monday – Saturday | 9:00 AM – 8:00 PM |
+| Sunday | 1:00 PM – 7:00 PM |
 
 ---
 

@@ -1,6 +1,19 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
+function resolveImageUrl(p) {
+  if (!p) return "";
+  if (typeof p === "string") return p;
+  if (typeof p === "object") {
+    return (
+      p.publicUrl || p.publicURL || p.public_url || p.url ||
+      Object.values(p).find((v) => typeof v === "string" && v.startsWith("http")) ||
+      ""
+    );
+  }
+  return "";
+}
+
 export default function ServiceChapter({ services: dynamicServices }) {
   const displayServices = dynamicServices?.length > 0 ? dynamicServices : [
     {
@@ -57,7 +70,7 @@ export default function ServiceChapter({ services: dynamicServices }) {
             >
               <div className="relative mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high sm:aspect-[3/4]">
                 <img
-                  src={service.image_path || service.image}
+                  src={resolveImageUrl(service.image_url || service.image_path) || service.image}
                   alt={service.alt || service.name}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />

@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getSetting } from "../../lib/content";
 
 const fallbackImages = [
   { src: "/images/gallery-1.jpg", alt: "Detailed nail art close-up" },
@@ -26,6 +27,18 @@ function resolveImageUrl(p) {
 }
 
 export default function InstagramGrid({ gallery = [] }) {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    getSetting("global_settings").then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
+
+  const instagramUrl = settings?.socials?.instagram || "https://instagram.com";
+  const brandName = settings?.business?.name || "theprettyplug";
+  const handle = `@${brandName.toLowerCase().replace(/\s+/g, "")}`;
+
   const displayImages = useMemo(() => {
     // Map dynamic gallery items to the expected structure
     const dynamicItems = gallery.slice(0, 9).map((g) => ({
@@ -47,10 +60,12 @@ export default function InstagramGrid({ gallery = [] }) {
       <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-20">
         <div className="mb-8 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center lg:mb-10">
           <h2 className="break-all font-headline text-2xl font-medium text-on-surface md:text-3xl">
-            @theprettyplugabeokuta
+            {handle}
           </h2>
           <a
-            href="https://instagram.com"
+            href={instagramUrl}
+            target="_blank"
+            rel="noreferrer"
             className="font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-container underline underline-offset-4 md:text-xs"
           >
             Follow on Instagram
@@ -61,7 +76,7 @@ export default function InstagramGrid({ gallery = [] }) {
           {displayImages.map((img, index) => (
             <a
               key={img.src + index}
-              href="https://instagram.com"
+              href={instagramUrl}
               target="_blank"
               rel="noreferrer"
               className="aspect-square overflow-hidden bg-surface-variant transition-opacity hover:opacity-80"

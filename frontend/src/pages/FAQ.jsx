@@ -16,7 +16,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
-import { getFAQs } from "../lib/content";
+import { getFAQs, getContent } from "../lib/content";
 
 function getIconForCategory(categoryStr) {
   const cat = (categoryStr || "").toLowerCase();
@@ -65,8 +65,15 @@ export default function FAQ() {
   const [searchQuery, setSearchQuery] = useState("");
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [headerContent, setHeaderContent] = useState(null);
 
   useEffect(() => {
+    getContent().then((data) => {
+      if (data?.pageHeaders?.faq) {
+        setHeaderContent(data.pageHeaders.faq);
+      }
+    });
+
     getFAQs()
       .then((data) => {
         if (data) {
@@ -123,11 +130,10 @@ export default function FAQ() {
               Need Assistance?
             </span>
             <h1 className="mb-8 font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
-              Frequently Asked Questions
+              {headerContent?.title || "Frequently Asked Questions"}
             </h1>
             <p className="mx-auto max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
-              Everything you need to know about preparing for your service, our
-              studio policies, and managing your booking.
+              {headerContent?.subtitle || "Everything you need to know about preparing for your service, our studio policies, and managing your booking."}
             </p>
           </header>
         </RevealSection>

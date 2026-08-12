@@ -1,4 +1,4 @@
-export default function Testimonials({ testimonials: dynamicTestimonials }) {
+export default function Testimonials({ testimonials: dynamicTestimonials, sideImageUrl }) {
   const displayTestimonials = dynamicTestimonials?.length > 0 ? dynamicTestimonials : [
     {
       quote:
@@ -62,7 +62,7 @@ export default function Testimonials({ testimonials: dynamicTestimonials }) {
         <div className="hidden lg:block">
           <div className="relative h-[520px] w-full rotate-2 overflow-hidden rounded-full border-8 border-white bg-surface-container-high shadow-2xl xl:h-[600px]">
             <img
-              src="/images/studio.jpg"
+              src={sideImageUrl || "/images/studio.jpg"}
               alt="ThePrettyPlug studio interior"
               className="h-full w-full -rotate-2 scale-110 object-cover"
             />

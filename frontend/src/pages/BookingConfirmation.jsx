@@ -1,7 +1,9 @@
+import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, CheckCircle, Download, MapPin, Share2 } from "lucide-react";
+import { CalendarDays, CheckCircle, Download, Home, MapPin } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { getSetting } from "../lib/content";
 
 function formatPrice(price) {
   return `NGN ${Number(price || 0).toLocaleString()}`;
@@ -9,6 +11,23 @@ function formatPrice(price) {
 
 export default function BookingConfirmation() {
   const { state } = useLocation();
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    getSetting("global_settings").then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
+
+  const business = settings?.business || {
+    name: "ThePrettyPlug",
+    address: "Abeokuta, Ogun State, Nigeria",
+  };
+
+  const depositPercent = settings?.bookingPolicy?.depositPercent ?? 40;
+  const reschedulingPolicy = settings?.bookingPolicy?.rescheduling || "If you need to reschedule, please notify us early — preferably an hour before your appointment.";
+  const lateArrivalPolicy = settings?.bookingPolicy?.lateArrival || "Arriving more than 30 minutes late will result in cancellation.";
+
   const booking = {
     service: state?.service ?? {
       name: "The Classic Manicure",
@@ -18,8 +37,143 @@ export default function BookingConfirmation() {
     selectedDate: state?.selectedDate ?? "Nov 11, 2026",
     selectedTime: state?.selectedTime ?? "06:00 PM",
     client: state?.client ?? { name: "ThePrettyPlug Client" },
-    deposit: state?.deposit ?? 3000,
+    deposit: state?.deposit ?? 6000,
   };
+
+  const downloadReceipt = useCallback(() => {
+    const canvas = document.createElement("canvas");
+    const w = 800;
+    const h = 1000;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+
+    // Background
+    ctx.fillStyle = "#FBFBE2";
+    ctx.fillRect(0, 0, w, h);
+
+    // Header bar
+    ctx.fillStyle = "#D1C4E9";
+    ctx.fillRect(0, 0, w, 120);
+
+    // Brand name
+    ctx.fillStyle = "#1B1D0E";
+    ctx.font = "bold 36px Georgia, serif";
+    ctx.textAlign = "center";
+    ctx.fillText(business.name, w / 2, 55);
+
+    // Subtitle
+    ctx.fillStyle = "#49454D";
+    ctx.font = "16px sans-serif";
+    ctx.fillText("Booking Receipt", w / 2, 85);
+
+    // Ticket number
+    ctx.font = "13px monospace";
+    ctx.fillStyle = "#635979";
+    ctx.fillText("#BP-" + Math.floor(10000 + Math.random() * 90000), w / 2, 108);
+
+    // Checkmark circle
+    ctx.beginPath();
+    ctx.arc(w / 2, 180, 30, 0, Math.PI * 2);
+    ctx.fillStyle = "#D1C4E9";
+    ctx.fill();
+    ctx.fillStyle = "#1B1D0E";
+    ctx.font = "bold 28px sans-serif";
+    ctx.fillText("✓", w / 2, 192);
+
+    // Confirmed text
+    ctx.fillStyle = "#1B1D0E";
+    ctx.font = "bold 28px Georgia, serif";
+    ctx.fillText("Booking Confirmed", w / 2, 250);
+
+    // Divider
+    ctx.strokeStyle = "#D1C4E9";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(80, 280);
+    ctx.lineTo(w - 80, 280);
+    ctx.stroke();
+
+    // Details section
+    ctx.textAlign = "left";
+    const leftX = 100;
+    const rightX = w / 2 + 20;
+    let y = 330;
+    const lineHeight = 65;
+
+    function drawField(label, value, x, yPos) {
+      ctx.fillStyle = "#635979";
+      ctx.font = "bold 11px sans-serif";
+      ctx.fillText(label.toUpperCase(), x, yPos);
+      ctx.fillStyle = "#1B1D0E";
+      ctx.font = "18px Georgia, serif";
+      ctx.fillText(value, x, yPos + 25);
+    }
+
+    drawField("Client", booking.client.name || `${business.name} Client`, leftX, y);
+    drawField("Service", booking.service.name, rightX, y);
+    y += lineHeight;
+
+    drawField("Date", booking.selectedDate, leftX, y);
+    drawField("Time", booking.selectedTime, rightX, y);
+    y += lineHeight;
+
+    drawField("Service Price", formatPrice(booking.service.price), leftX, y);
+    drawField(`Deposit Paid (${depositPercent}%)`, formatPrice(booking.deposit), rightX, y);
+    y += lineHeight;
+
+    drawField("Balance Due", formatPrice(booking.service.price - booking.deposit), leftX, y);
+    y += lineHeight;
+
+    // Divider
+    ctx.strokeStyle = "#D1C4E9";
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(80, y);
+    ctx.lineTo(w - 80, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    y += 40;
+
+    // Location
+    ctx.fillStyle = "#635979";
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText("LOCATION", leftX, y);
+    ctx.fillStyle = "#49454D";
+    ctx.font = "italic 16px Georgia, serif";
+    ctx.fillText(business.address, leftX, y + 25);
+    y += 70;
+
+    // Policies
+    ctx.fillStyle = "#635979";
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText("BOOKING POLICIES", leftX, y);
+    y += 25;
+    ctx.fillStyle = "#49454D";
+    ctx.font = "14px sans-serif";
+    const policiesList = [
+      "• Deposits are non-refundable once payment is made.",
+      `• Rescheduling: ${reschedulingPolicy}`,
+      `• Late arrival: ${lateArrivalPolicy}`,
+    ];
+    policiesList.forEach((p) => {
+      ctx.fillText(p, leftX, y);
+      y += 24;
+    });
+
+    // Footer
+    y = h - 60;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#9e9e9e";
+    ctx.font = "13px sans-serif";
+    ctx.fillText(`© ${new Date().getFullYear()} ${business.name} — All Rights Reserved`, w / 2, y);
+
+    // Download
+    const link = document.createElement("a");
+    link.download = `${business.name.replace(/\s+/g, "")}-Receipt-${Date.now()}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }, [booking, business, depositPercent, reschedulingPolicy, lateArrivalPolicy]);
 
   return (
     <>
@@ -36,9 +190,9 @@ export default function BookingConfirmation() {
             Booking Confirmed
           </h1>
           <p className="mx-auto mb-10 max-w-xl font-body text-lg leading-7 text-on-surface-variant">
-            You are all set, {booking.client.name || "ThePrettyPlug Client"}. A
-            confirmation email and digital receipt will be sent once payment is
-            processed by the live system.
+            You are all set, {booking.client.name || `${business.name} Client`}! Your
+            appointment has been booked successfully. Please download your receipt
+            below for your records.
           </p>
 
           <div className="editorial-shadow mb-10 border border-outline-variant/30 bg-surface p-8 text-left">
@@ -95,14 +249,8 @@ export default function BookingConfirmation() {
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <button
               type="button"
+              onClick={downloadReceipt}
               className="inline-flex h-14 items-center justify-center gap-3 bg-primary-container px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
-            >
-              <CalendarDays size={18} />
-              Add to Calendar
-            </button>
-            <button
-              type="button"
-              className="inline-flex h-14 items-center justify-center gap-3 border border-primary-container px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container transition-colors hover:bg-primary-container/5"
             >
               <Download size={18} />
               Download Receipt
@@ -111,7 +259,7 @@ export default function BookingConfirmation() {
               to="/"
               className="inline-flex h-14 items-center justify-center gap-3 border border-outline px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface transition-colors hover:bg-surface-container"
             >
-              <Share2 size={18} />
+              <Home size={18} />
               Return Home
             </Link>
           </div>

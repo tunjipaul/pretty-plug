@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { getSetting } from "../lib/content";
 
 const navLinks = [
   { label: "Portfolio", path: "/portfolio" },
@@ -11,6 +12,13 @@ const navLinks = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [brandName, setBrandName] = useState("ThePrettyPlug");
+
+  useEffect(() => {
+    getSetting("global_settings").then((data) => {
+      if (data?.business?.name) setBrandName(data.business.name);
+    });
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-outline-variant/30 bg-surface/90 backdrop-blur-md">
@@ -19,7 +27,7 @@ export default function Navbar() {
           to="/"
           className="font-headline text-xl font-semibold tracking-tight text-primary-container"
         >
-          ThePrettyPlug
+          {brandName}
         </Link>
 
         <div className="hidden items-center gap-10 lg:flex">

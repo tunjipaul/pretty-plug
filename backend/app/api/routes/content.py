@@ -29,6 +29,24 @@ DEFAULT_CONTENT = {
             {"value": "1", "label": "Certified Master"},
         ]
     },
+    "pageHeaders": {
+        "services": {
+            "title": "Our Services",
+            "subtitle": "Discover our range of bespoke beauty treatments, meticulously crafted for the minimalist and the detail-obsessed."
+        },
+        "portfolio": {
+            "title": "Our Portfolio",
+            "subtitle": "Explore our curated collection of editorial beauty work, hand-painted finishes, and luxury treatments."
+        },
+        "testimonials": {
+            "title": "Client Stories",
+            "subtitle": "Loved by beauty minimalists and curated for the meticulous. Read what our clients have to say."
+        },
+        "faq": {
+            "title": "Frequently Asked Questions",
+            "subtitle": "Everything you need to know about our services, booking process, policies, and studio care."
+        }
+    }
 }
 
 _CACHE_LOCK = Lock()

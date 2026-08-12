@@ -1,5 +1,18 @@
 import { useState } from "react";
 
+function resolveImageUrl(p) {
+  if (!p) return "";
+  if (typeof p === "string") return p;
+  if (typeof p === "object") {
+    return (
+      p.publicUrl || p.publicURL || p.public_url || p.url ||
+      Object.values(p).find((v) => typeof v === "string" && v.startsWith("http")) ||
+      ""
+    );
+  }
+  return "";
+}
+
 export default function PortfolioPreview({ items: dynamicItems }) {
   const [activeFilter, setActiveFilter] = useState("All");
   
@@ -82,7 +95,7 @@ export default function PortfolioPreview({ items: dynamicItems }) {
               }`}
             >
               <img
-                src={work.image_path || work.src}
+                src={resolveImageUrl(work.image_path) || work.src}
                 alt={work.alt_text || work.alt}
                 className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
               />

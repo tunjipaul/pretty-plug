@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
   CalendarDays,
@@ -8,20 +9,29 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  CreditCard,
+  Copy,
+  CheckCircle,
+  Info,
   Lock,
+  Upload,
   X,
 } from "lucide-react";
-import { getServices } from "../lib/content";
+import { getServices, getSetting } from "../lib/content";
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const TIMES = [
+const WEEKDAY_TIMES = [
   "09:00 AM", "10:00 AM", "11:00 AM",
   "12:00 PM", "01:00 PM", "02:00 PM",
   "03:00 PM", "04:00 PM", "05:00 PM",
-  "06:00 PM", "07:00 PM", "07:30 PM",
+  "06:00 PM", "07:00 PM", "08:00 PM",
+];
+
+const SUNDAY_TIMES = [
+  "01:00 PM", "02:00 PM", "03:00 PM",
+  "04:00 PM", "05:00 PM", "06:00 PM",
+  "07:00 PM",
 ];
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -52,7 +62,9 @@ function isSunday(year, month, day) {
 function isPast(year, month, day) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return new Date(year, month, day) < today;
+  const target = new Date(year, month, day);
+  target.setHours(0, 0, 0, 0);
+  return target < today;
 }
 
 function isToday(year, month, day) {
@@ -253,9 +265,11 @@ function Calendar({ selectedDateKey, onSelect }) {
           if (!day) return <div key={`empty-${idx}`} />;
 
           const dateKey = toDateKey(viewYear, viewMonth, day);
-          const disabled = isPast(viewYear, viewMonth, day) || isSunday(viewYear, viewMonth, day);
+          const disabled = isPast(viewYear, viewMonth, day);
           const selected = dateKey === selectedDateKey;
           const todayMark = isToday(viewYear, viewMonth, day);
+
+          const sunday = isSunday(viewYear, viewMonth, day);
 
           return (
             <button
@@ -268,7 +282,9 @@ function Calendar({ selectedDateKey, onSelect }) {
                   ? "cursor-not-allowed text-on-surface-variant/25"
                   : selected
                     ? "bg-primary-container text-on-primary font-bold"
-                    : "hover:bg-surface-container hover:text-primary-container"
+                    : sunday
+                      ? "text-purple-600 hover:bg-purple-50 hover:text-purple-800 font-medium"
+                      : "hover:bg-surface-container hover:text-primary-container"
                 }
                 ${todayMark && !selected ? "ring-1 ring-primary-container/40" : ""}
               `}
@@ -290,8 +306,8 @@ function Calendar({ selectedDateKey, onSelect }) {
         <span className="flex items-center gap-2 font-label text-[10px] text-on-surface-variant">
           <span className="h-2 w-2 rounded-full ring-1 ring-primary-container/40" /> Today
         </span>
-        <span className="flex items-center gap-2 font-label text-[10px] text-red-400">
-          <span className="font-bold">S</span> Sundays closed
+        <span className="flex items-center gap-2 font-label text-[10px] text-purple-700">
+          <span className="font-bold">S</span> Sundays: 1 PM – 7 PM
         </span>
       </div>
     </div>
@@ -311,6 +327,12 @@ export default function Booking() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [apiServices, setApiServices] = useState([]);
   const [servicesLoading, setServicesLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [proofFile, setProofFile] = useState(null);
+  const [proofPreview, setProofPreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     getServices()
@@ -318,12 +340,54 @@ export default function Booking() {
         if (data) setApiServices(data.filter((s) => s.is_active));
       })
       .finally(() => setServicesLoading(false));
+
+    getSetting("global_settings").then((data) => {
+      if (data) setSettings(data);
+    });
   }, []);
 
+  const depositPercent = settings?.bookingPolicy?.depositPercent ?? 40;
+  const depositMultiplier = depositPercent / 100;
+
+  const paymentDetails = {
+    bank: settings?.payment?.bank || "Kuda",
+    accountNumber: settings?.payment?.accountNumber || "3003588180",
+    accountName: settings?.payment?.accountName || "Lafulu Marvelous Omotayo",
+  };
+
+  const policies = {
+    lateArrival: settings?.bookingPolicy?.lateArrival || "Arriving more than 30 minutes late will result in automatic cancellation.",
+    rescheduling: settings?.bookingPolicy?.rescheduling || "If you need to reschedule, please notify us early — preferably an hour before your appointment.",
+  };
+
   const deposit = useMemo(
-    () => Math.ceil((selectedService?.price ?? 0) * 0.2),
-    [selectedService]
+    () => Math.ceil((selectedService?.price ?? 0) * depositMultiplier),
+    [selectedService, depositMultiplier]
   );
+
+  // Check if selected date is a Sunday
+  const isSelectedDateSunday = useMemo(() => {
+    if (!selectedDateKey) return false;
+    const d = new Date(selectedDateKey + "T00:00:00");
+    return d.getDay() === 0;
+  }, [selectedDateKey]);
+
+  const availableTimes = isSelectedDateSunday ? SUNDAY_TIMES : WEEKDAY_TIMES;
+
+  function copyAccountNumber() {
+    navigator.clipboard.writeText(paymentDetails.accountNumber).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  function handleProofFile(file) {
+    if (!file) return;
+    setProofFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setProofPreview(reader.result);
+    reader.readAsDataURL(file);
+  }
 
   function selectService(service) {
     setSelectedService(service);
@@ -465,8 +529,17 @@ export default function Booking() {
                   </p>
                 )}
 
+                {isSelectedDateSunday && selectedDateKey && (
+                  <div className="mb-4 flex items-start gap-2 rounded-lg bg-purple-50 px-4 py-3 border border-purple-100">
+                    <Info size={16} className="mt-0.5 shrink-0 text-purple-600" />
+                    <p className="font-body text-xs text-purple-800">
+                      Sunday hours: <span className="font-semibold">1:00 PM – 7:00 PM</span>
+                    </p>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-3">
-                  {TIMES.map((time) => {
+                  {availableTimes.map((time) => {
                     const active = time === selectedTime;
                     const disabled = !selectedDateKey;
                     return (
@@ -492,7 +565,7 @@ export default function Booking() {
                 <button
                   type="button"
                   disabled={!selectedDateKey || !selectedTime}
-                  onClick={() => setStep(3)}
+                  onClick={() => { setSelectedTime(isSelectedDateSunday && !SUNDAY_TIMES.includes(selectedTime) ? null : selectedTime); setStep(3); }}
                   className="mt-10 h-14 w-full bg-primary-container font-label text-xs font-semibold uppercase tracking-[0.18em] text-on-primary transition-colors hover:bg-primary disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Continue to Details
@@ -607,63 +680,249 @@ export default function Booking() {
                 Deposit Payment
               </h1>
               <p className="font-body text-lg text-on-surface-variant">
-                A 20% deposit is required to secure your slot.
+                A {depositPercent}% deposit is required to secure your slot.
               </p>
             </div>
 
-            <div className="mx-auto max-w-[520px] border border-outline-variant/20 bg-surface-container-lowest p-8 md:p-10">
-              <div className="mb-8 text-center">
-                <div className="mb-1 font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
-                  Deposit Amount
-                </div>
-                <div className="font-display text-5xl font-semibold text-primary-container">
-                  {formatPrice(deposit)}
-                </div>
-                <p className="mt-2 font-body text-sm text-on-surface-variant">
-                  Full service: {formatPrice(selectedService?.price)}
-                </p>
-              </div>
-              <div className="space-y-6">
-                {["Cardholder Name", "Card Number"].map((label) => (
-                  <label key={label} className="flex flex-col gap-2">
-                    <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
-                      {label}
+            <div className="mx-auto max-w-[560px] space-y-6">
+              {/* ── Bank Transfer Card ── */}
+              <div
+                className="relative overflow-hidden rounded-2xl border border-purple-200/80 p-[2px] shadow-lg"
+                style={{
+                  background: "linear-gradient(135deg, #e1d2ff 0%, #c4a9f5 40%, #5e4075 100%)",
+                }}
+              >
+                <div
+                  className="rounded-[14px] px-7 py-8 md:px-9 md:py-10"
+                  style={{
+                    background: "linear-gradient(145deg, rgba(247,242,255,0.95) 0%, rgba(235,220,255,0.90) 50%, rgba(218,198,252,0.85) 100%)",
+                    backdropFilter: "blur(20px)",
+                  }}
+                >
+                  {/* Header */}
+                  <h2
+                    className="mb-8 text-center font-headline text-xl font-medium tracking-wide md:text-2xl"
+                    style={{ color: "#3a1e54" }}
+                  >
+                    Account Details — {formatPrice(deposit)} Deposit
+                  </h2>
+
+                  {/* Bank Name */}
+                  <div className="mb-6">
+                    <span
+                      className="mb-1 block font-label text-[10px] font-bold uppercase tracking-[0.16em]"
+                      style={{ color: "#5e4075" }}
+                    >
+                      Bank
                     </span>
-                    <input
-                      className="border-0 border-b border-outline-variant bg-transparent py-3 font-body text-base outline-none focus:border-primary-container"
-                      placeholder={label === "Card Number" ? "0000 0000 0000 0000" : "YOUR NAME"}
-                    />
-                  </label>
-                ))}
-                <div className="grid grid-cols-2 gap-8">
-                  <label className="flex flex-col gap-2">
-                    <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">Expiry</span>
-                    <input
-                      className="border-0 border-b border-outline-variant bg-transparent py-3 font-body text-base outline-none focus:border-primary-container"
-                      placeholder="MM/YY"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">CVV</span>
-                    <input
-                      className="border-0 border-b border-outline-variant bg-transparent py-3 font-body text-base outline-none focus:border-primary-container"
-                      placeholder="123"
-                    />
-                  </label>
+                    <span
+                      className="font-headline text-lg font-semibold tracking-wide md:text-xl"
+                      style={{ color: "#21132b" }}
+                    >
+                      {paymentDetails.bank}
+                    </span>
+                  </div>
+
+                  {/* Account Number */}
+                  <div
+                    className="mb-6 flex items-center justify-between rounded-xl px-5 py-4"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(225,210,255,0.75) 0%, rgba(198,172,245,0.65) 100%)",
+                      border: "1px solid rgba(225,210,255,0.9)",
+                    }}
+                  >
+                    <div>
+                      <span
+                        className="mb-1 block font-label text-[10px] font-bold uppercase tracking-[0.16em]"
+                        style={{ color: "#5e4075" }}
+                      >
+                        Account Number
+                      </span>
+                      <span
+                        className="font-mono text-2xl font-bold tracking-wider md:text-3xl"
+                        style={{ color: "#21132b" }}
+                      >
+                        {paymentDetails.accountNumber}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={copyAccountNumber}
+                      className="flex items-center gap-2 rounded-lg px-4 py-2.5 font-label text-xs font-bold uppercase tracking-[0.1em] transition-all hover:scale-105 active:scale-95"
+                      style={{
+                        background: copied
+                          ? "linear-gradient(135deg, #86efac 0%, #4ade80 100%)"
+                          : "linear-gradient(135deg, #5e4075 0%, #3a1e54 100%)",
+                        color: copied ? "#166534" : "#ffffff",
+                        boxShadow: "0 2px 8px rgba(94,64,117,0.25)",
+                      }}
+                    >
+                      {copied ? (
+                        <>
+                          <CheckCircle size={15} />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={15} />
+                          Copy
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Account Name */}
+                  <div className="mb-6">
+                    <span
+                      className="mb-1 block font-label text-[10px] font-bold uppercase tracking-[0.16em]"
+                      style={{ color: "#5e4075" }}
+                    >
+                      Account Name
+                    </span>
+                    <span
+                      className="font-headline text-lg font-semibold tracking-wide md:text-xl"
+                      style={{ color: "#21132b" }}
+                    >
+                      {paymentDetails.accountName}
+                    </span>
+                  </div>
+
+                  {/* Instruction */}
+                  <p
+                    className="text-center font-body text-sm leading-relaxed md:text-base"
+                    style={{ color: "#5e4075" }}
+                  >
+                    Pay your <strong>{formatPrice(deposit)}</strong> deposit, then scroll down and
+                    upload your payment screenshot to activate your booking.
+                  </p>
                 </div>
+              </div>
+
+              {/* ── Proof of Payment Upload ── */}
+              <div className="rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-6 md:p-8">
+                <h3 className="mb-1 font-headline text-lg font-medium text-on-surface">
+                  Upload Payment Proof
+                </h3>
+                <p className="mb-5 font-body text-sm text-on-surface-variant">
+                  Upload a screenshot of your successful transfer to confirm your deposit.
+                </p>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleProofFile(e.target.files?.[0])}
+                />
+
+                {proofPreview ? (
+                  <div className="relative mb-5 overflow-hidden rounded-xl border border-outline-variant/20">
+                    <img
+                      src={proofPreview}
+                      alt="Payment proof preview"
+                      className="mx-auto max-h-64 w-full object-contain bg-surface-container"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setProofFile(null); setProofPreview(null); }}
+                      className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-500/90 text-white transition-transform hover:scale-110"
+                    >
+                      <X size={16} />
+                    </button>
+                    <div className="flex items-center gap-2 border-t border-outline-variant/20 bg-green-50 px-4 py-2.5">
+                      <CheckCircle size={16} className="text-green-600" />
+                      <span className="font-body text-sm font-medium text-green-700">{proofFile?.name}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-outline-variant/40 bg-surface-container/30 px-6 py-10 transition-colors hover:border-primary-container/50 hover:bg-primary-container/5"
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    onDrop={(e) => { e.preventDefault(); e.stopPropagation(); handleProofFile(e.dataTransfer.files?.[0]); }}
+                  >
+                    <Upload size={32} className="text-on-surface-variant/40" />
+                    <span className="font-body text-sm text-on-surface-variant">
+                      Click or drag & drop your payment screenshot here
+                    </span>
+                    <span className="font-label text-[10px] uppercase tracking-wider text-on-surface-variant/50">
+                      JPG, PNG, WEBP accepted
+                    </span>
+                  </button>
+                )}
+
                 <button
                   type="button"
-                  disabled={isProcessing}
+                  disabled={!proofFile || isProcessing}
                   onClick={completePayment}
-                  className="flex h-14 w-full items-center justify-center gap-3 bg-primary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary disabled:opacity-70"
+                  className="mt-4 flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-primary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-all hover:bg-primary hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  <CreditCard size={18} />
-                  {isProcessing ? "Processing..." : `Securely Pay ${formatPrice(deposit)}`}
+                  <CheckCircle size={18} />
+                  {isProcessing ? "Processing..." : "Complete Booking"}
                 </button>
-                <p className="flex items-center justify-center gap-2 text-center font-body text-xs text-outline">
-                  <Lock size={14} />
-                  UI prototype. Paystack integration pending.
-                </p>
+              </div>
+
+              {/* ── Booking Policies ── */}
+              <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6 md:p-8">
+                <div className="mb-5 flex items-center gap-2">
+                  <Info size={18} className="text-primary-container" />
+                  <h3 className="font-headline text-lg font-medium text-on-surface">
+                    Booking Policies
+                  </h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-50">
+                      <Lock size={12} className="text-red-500" />
+                    </div>
+                    <div>
+                      <p className="font-body text-sm font-semibold text-on-surface">Non-Refundable Deposit</p>
+                      <p className="font-body text-sm text-on-surface-variant">All deposits are non-refundable once payment is made.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-50">
+                      <Clock size={12} className="text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="font-body text-sm font-semibold text-on-surface">Rescheduling</p>
+                      <p className="font-body text-sm text-on-surface-variant">{policies.rescheduling}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-50">
+                      <AlertTriangle size={12} className="text-orange-500" />
+                    </div>
+                    <div>
+                      <p className="font-body text-sm font-semibold text-on-surface">Late Arrival</p>
+                      <p className="font-body text-sm text-on-surface-variant">{policies.lateArrival}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Service Summary */}
+              <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-body text-sm text-on-surface-variant">Service</p>
+                    <p className="font-headline text-lg font-medium text-on-surface">{selectedService?.name}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-body text-sm text-on-surface-variant">Full Price</p>
+                    <p className="font-bold text-on-surface">{formatPrice(selectedService?.price)}</p>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-outline-variant/20 pt-3">
+                  <span className="font-body text-sm text-on-surface-variant">
+                    {selectedDateDisplay} at {selectedTime}
+                  </span>
+                  <div>
+                    <span className="font-body text-xs text-on-surface-variant">Deposit ({depositPercent}%): </span>
+                    <span className="font-bold text-primary-container">{formatPrice(deposit)}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>

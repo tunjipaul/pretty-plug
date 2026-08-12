@@ -41,29 +41,27 @@ const defaultSettings = {
     twitter: "",
     facebook: "",
   },
+  hours: [
+    { day: "Monday", open: "09:00 AM", close: "08:00 PM", active: true },
+    { day: "Tuesday", open: "09:00 AM", close: "08:00 PM", active: true },
+    { day: "Wednesday", open: "09:00 AM", close: "08:00 PM", active: true },
+    { day: "Thursday", open: "09:00 AM", close: "08:00 PM", active: true },
+    { day: "Friday", open: "09:00 AM", close: "08:00 PM", active: true },
+    { day: "Saturday", open: "09:00 AM", close: "08:00 PM", active: true },
+    { day: "Sunday", open: "01:00 PM", close: "07:00 PM", active: true },
+  ],
+  payment: {
+    bank: "Kuda",
+    accountNumber: "3003588180",
+    accountName: "Lafulu Marvelous Omotayo",
+  },
+  bookingPolicy: {
+    depositPercent: 40,
+    allowSameDay: true,
+    lateArrival: "30 min = cancellation",
+    rescheduling: "Notify 1 hour before",
+  },
 };
-
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-  { label: "Website", icon: FileText, path: "/admin/content" },
-  { label: "Services", icon: Scissors, path: "/admin/services" },
-  { label: "Gallery", icon: Image, path: "/admin/gallery" },
-  { label: "Reviews", icon: MessageSquareQuote, path: "/admin/testimonials" },
-  { label: "FAQ", icon: HelpCircle, path: "/admin/faq" },
-  { label: "Bookings", icon: CalendarDays, path: "/admin/bookings" },
-  { label: "Clients", icon: Users, path: "/admin/clients" },
-  { label: "Settings", icon: Settings, path: "/admin/settings", active: true },
-];
-
-const hours = [
-  ["Monday", "09:00 AM", "07:30 PM", true],
-  ["Tuesday", "09:00 AM", "07:30 PM", true],
-  ["Wednesday", "09:00 AM", "07:30 PM", true],
-  ["Thursday", "09:00 AM", "07:30 PM", true],
-  ["Friday", "09:00 AM", "07:30 PM", true],
-  ["Saturday", "10:00 AM", "06:00 PM", true],
-  ["Sunday", "Closed", "Closed", false],
-];
 
 const notificationRules = [
   ["Booking confirmation", "Email, WhatsApp"],
@@ -138,7 +136,13 @@ export default function AdminSettings() {
     getSetting("global_settings")
       .then((data) => {
         if (data && Object.keys(data).length > 0) {
-          setSettings(data);
+          setSettings((prev) => ({
+            ...prev,
+            ...data,
+            hours: data.hours || prev.hours,
+            payment: { ...prev.payment, ...(data.payment || {}) },
+            bookingPolicy: { ...prev.bookingPolicy, ...(data.bookingPolicy || {}) },
+          }));
         }
       })
       .catch((err) => {
@@ -153,6 +157,32 @@ export default function AdminSettings() {
       business: { ...prev.business, [field]: value },
     }));
     setError(null);
+    setStatus("Unsaved");
+  }
+
+  function updateHour(index, field, value) {
+    setSettings((prev) => {
+      const newHours = [...prev.hours];
+      newHours[index] = { ...newHours[index], [field]: value };
+      return { ...prev, hours: newHours };
+    });
+    setStatus("Unsaved");
+  }
+
+  function updatePayment(field, value) {
+    setSettings((prev) => ({
+      ...prev,
+      payment: { ...prev.payment, [field]: value },
+    }));
+    setStatus("Unsaved");
+  }
+
+  function updatePolicy(field, value) {
+    setSettings((prev) => ({
+      ...prev,
+      bookingPolicy: { ...prev.bookingPolicy, [field]: value },
+    }));
+    setStatus("Unsaved");
   }
 
   async function handleSave() {
@@ -249,23 +279,44 @@ export default function AdminSettings() {
             <SettingCard
               icon={CalendarDays}
               title="Booking Policy"
-              description="Rules used by the booking wizard before backend availability is connected."
+              description="These rules are shown to clients in the booking wizard."
             >
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Field label="Deposit Required" value="20%" />
-                <Field label="Slot Buffer" value="15 minutes" />
-                <Field label="Cancellation Window" value="24 hours" />
+                <Field
+                  label="Deposit (%)"
+                  value={String(settings.bookingPolicy.depositPercent)}
+                  onChange={(val) => updatePolicy("depositPercent", Number(val) || 0)}
+                />
+                <Field
+                  label="Late Arrival Policy"
+                  value={settings.bookingPolicy.lateArrival}
+                  onChange={(val) => updatePolicy("lateArrival", val)}
+                />
+                <Field
+                  label="Rescheduling Policy"
+                  value={settings.bookingPolicy.rescheduling}
+                  onChange={(val) => updatePolicy("rescheduling", val)}
+                />
               </div>
               <div className="mt-4 divide-y divide-outline-variant/10 border border-outline-variant/20 bg-surface">
                 <ToggleRow
                   label="Require deposit before confirmation"
                   description="Bookings remain pending until deposit is recorded."
                 />
-                <ToggleRow
-                  label="Allow same-day bookings"
-                  description="Clients can book available slots for the current day."
-                  enabled={false}
-                />
+                <div className="flex items-center justify-between gap-4 border-b border-outline-variant/10 py-4 last:border-b-0">
+                  <div>
+                    <p className="font-body font-bold text-on-surface">Allow same-day bookings</p>
+                    <p className="mt-1 text-sm text-on-surface-variant">Clients can book available slots for the current day.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => updatePolicy("allowSameDay", !settings.bookingPolicy.allowSameDay)}
+                    className={settings.bookingPolicy.allowSameDay ? "text-primary-container" : "text-on-surface-variant"}
+                    aria-label={`${settings.bookingPolicy.allowSameDay ? "Disable" : "Enable"} same-day bookings`}
+                  >
+                    {createElement(settings.bookingPolicy.allowSameDay ? ToggleRight : ToggleLeft, { size: 34 })}
+                  </button>
+                </div>
                 <ToggleRow
                   label="Collect client notes"
                   description="Show allergies, style requests, and special instructions field."
@@ -276,7 +327,7 @@ export default function AdminSettings() {
             <SettingCard
               icon={ClockIcon}
               title="Opening Hours"
-              description="Default weekly availability shown in the booking experience."
+              description="Weekly availability shown in the booking flow and footer. Changes are saved with the Save button above."
             >
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] border-collapse text-left">
@@ -293,27 +344,39 @@ export default function AdminSettings() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-outline-variant/10">
-                    {hours.map(([day, open, close, active]) => (
-                      <tr key={day}>
+                    {settings.hours.map((row, idx) => (
+                      <tr key={row.day}>
                         <td className="p-4 font-body font-bold text-on-surface">
-                          {day}
-                        </td>
-                        <td className="p-4 text-sm text-on-surface-variant">
-                          {open}
-                        </td>
-                        <td className="p-4 text-sm text-on-surface-variant">
-                          {close}
+                          {row.day}
                         </td>
                         <td className="p-4">
-                          <span
-                            className={`px-3 py-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] ${
-                              active
-                                ? "bg-green-50 text-green-700"
-                                : "bg-surface-container-high text-on-surface-variant"
+                          <input
+                            value={row.active ? row.open : "—"}
+                            disabled={!row.active}
+                            onChange={(e) => updateHour(idx, "open", e.target.value)}
+                            className="w-28 border border-outline-variant/30 bg-surface-container-lowest px-3 py-1.5 font-body text-sm text-on-surface outline-none focus:border-primary-container disabled:opacity-40"
+                          />
+                        </td>
+                        <td className="p-4">
+                          <input
+                            value={row.active ? row.close : "—"}
+                            disabled={!row.active}
+                            onChange={(e) => updateHour(idx, "close", e.target.value)}
+                            className="w-28 border border-outline-variant/30 bg-surface-container-lowest px-3 py-1.5 font-body text-sm text-on-surface outline-none focus:border-primary-container disabled:opacity-40"
+                          />
+                        </td>
+                        <td className="p-4">
+                          <button
+                            type="button"
+                            onClick={() => updateHour(idx, "active", !row.active)}
+                            className={`px-3 py-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] cursor-pointer transition-colors ${
+                              row.active
+                                ? "bg-green-50 text-green-700 hover:bg-green-100"
+                                : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
                             }`}
                           >
-                            {active ? "Open" : "Closed"}
-                          </span>
+                            {row.active ? "Open" : "Closed"}
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -326,15 +389,24 @@ export default function AdminSettings() {
           <aside className="space-y-6">
             <SettingCard
               icon={CreditCard}
-              title="Payments"
-              description="Payment provider settings for deposits and invoices."
+              title="Bank Transfer Details"
+              description="Account details shown to clients during booking deposit payment."
             >
               <div className="space-y-4">
-                <Field label="Provider" value="Paystack" />
-                <Field label="Currency" value="NGN" />
-                <ToggleRow
-                  label="Payment test mode"
-                  description="Use sandbox keys until production backend is ready."
+                <Field
+                  label="Bank Name"
+                  value={settings.payment.bank}
+                  onChange={(val) => updatePayment("bank", val)}
+                />
+                <Field
+                  label="Account Number"
+                  value={settings.payment.accountNumber}
+                  onChange={(val) => updatePayment("accountNumber", val)}
+                />
+                <Field
+                  label="Account Name"
+                  value={settings.payment.accountName}
+                  onChange={(val) => updatePayment("accountName", val)}
                 />
               </div>
             </SettingCard>

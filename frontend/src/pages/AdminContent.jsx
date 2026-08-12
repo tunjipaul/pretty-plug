@@ -15,10 +15,11 @@ import {
   Sparkles,
   Star,
   ToggleRight,
+  Upload,
   Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getContent, saveContent } from "../lib/content";
+import { getContent, saveContent, uploadMedia } from "../lib/content";
 
 const contentSections = [
   {
@@ -74,6 +75,7 @@ const draftContent = {
       "Loved by beauty minimalists and curated for the meticulous. Step into an era of editorial beauty where every finish is personal.",
     primaryCta: "Book Appointment",
     secondaryCta: "View Portfolio",
+    imageUrl: "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif",
   },
   trustMetrics: {
     items: [
@@ -82,6 +84,33 @@ const draftContent = {
       { value: "5", label: "Star Reviews" },
       { value: "1", label: "Certified Master" },
     ],
+  },
+  pageHeaders: {
+    services: {
+      title: "Our Services",
+      subtitle: "Discover our range of bespoke beauty treatments, meticulously crafted for the minimalist and the detail-obsessed.",
+      image1Url: "/images/studio.jpg",
+      image2Url: "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif",
+    },
+    portfolio: {
+      title: "Our Portfolio",
+      subtitle: "Explore our curated collection of editorial beauty work, hand-painted finishes, and luxury treatments.",
+    },
+    testimonials: {
+      title: "Client Stories",
+      subtitle: "Loved by beauty minimalists and curated for the meticulous. Read what our clients have to say.",
+    },
+    faq: {
+      title: "Frequently Asked Questions",
+      subtitle: "Everything you need to know about our services, booking process, policies, and studio care.",
+    },
+  },
+  clientExperiencesImageUrl: "/images/studio.jpg",
+  newsletter: {
+    title: "Stay Polished",
+    subtitle: "Join our inner circle for priority booking, seasonal trends, and exclusive beauty notes.",
+    buttonText: "Subscribe",
+    finePrint: "Respecting your inbox like your time. Unsubscribe anytime.",
   },
 };
 
@@ -169,7 +198,6 @@ export default function AdminContent() {
   useEffect(() => {
     getContent()
       .then((data) => {
-        console.log("CMS DEBUG: Received content:", data);
         if (data) {
           setDraft((current) => ({
             ...current,
@@ -180,6 +208,15 @@ export default function AdminContent() {
             },
             trustMetrics: {
               items: data.trustMetrics?.items || current.trustMetrics.items,
+            },
+            pageHeaders: {
+              ...current.pageHeaders,
+              ...(data.pageHeaders || {}),
+            },
+            clientExperiencesImageUrl: data.clientExperiencesImageUrl || current.clientExperiencesImageUrl,
+            newsletter: {
+              ...current.newsletter,
+              ...(data.newsletter || {}),
             },
           }));
         }
@@ -196,6 +233,33 @@ export default function AdminContent() {
     setDraft((current) => ({
       ...current,
       hero: { ...current.hero, [field]: value },
+    }));
+    setStatus("Unsaved");
+    setError(null);
+  }
+
+  function updatePageHeader(pageKey, field, value) {
+    setDraft((current) => ({
+      ...current,
+      pageHeaders: {
+        ...current.pageHeaders,
+        [pageKey]: {
+          ...(current.pageHeaders?.[pageKey] || {}),
+          [field]: value,
+        },
+      },
+    }));
+    setStatus("Unsaved");
+    setError(null);
+  }
+
+  function updateNewsletter(field, value) {
+    setDraft((current) => ({
+      ...current,
+      newsletter: {
+        ...current.newsletter,
+        [field]: value,
+      },
     }));
     setStatus("Unsaved");
     setError(null);
@@ -297,11 +361,67 @@ export default function AdminContent() {
                   onChange={(value) => updateHeroField("primaryCta", value)}
                 />
                 <Field
-                  label="Secondary CTA"
-                  value={draft.hero.secondaryCta}
-                  onChange={(value) => updateHeroField("secondaryCta", value)}
+                  label="Hero Badge Title"
+                  value={draft.hero.badgeTitle || ""}
+                  onChange={(value) => updateHeroField("badgeTitle", value)}
+                />
+                <Field
+                  label="Hero Badge Description"
+                  value={draft.hero.badgeBody || ""}
+                  onChange={(value) => updateHeroField("badgeBody", value)}
                 />
               </div>
+
+              <div className="mt-4 border border-outline-variant/30 bg-surface p-4">
+                <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+                  Homepage Main Hero Picture
+                </span>
+                <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="h-28 w-28 shrink-0 overflow-hidden bg-surface-container-highest border border-outline-variant/30">
+                    {draft.hero.imageUrl ? (
+                      <img
+                        src={draft.hero.imageUrl}
+                        alt="Hero preview"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-xs text-on-surface-variant">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <Field
+                      label="Image URL"
+                      value={draft.hero.imageUrl || ""}
+                      onChange={(value) => updateHeroField("imageUrl", value)}
+                    />
+                    <label className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 border border-outline-variant bg-surface-container-lowest px-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant transition-colors hover:bg-surface-container">
+                      <Upload size={14} />
+                      Upload New Photo
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            setStatus("Uploading photo...");
+                            const uploadedUrl = await uploadMedia(file);
+                            updateHeroField("imageUrl", uploadedUrl);
+                            setStatus("Unsaved");
+                          } catch (err) {
+                            setError(err.message || "Failed to upload image");
+                            setStatus("Error");
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <label className="mt-4 block">
                 <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
                   Headline
@@ -352,6 +472,231 @@ export default function AdminContent() {
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* PAGE HEADERS SECTION */}
+            <div id="page-headers-section" className="border border-outline-variant/20 bg-surface-container-lowest p-5 md:p-6">
+              <div className="mb-6">
+                <h2 className="font-headline text-2xl font-medium text-on-surface">
+                  Page Titles & Introductions
+                </h2>
+                <p className="mt-1 font-body text-sm text-on-surface-variant">
+                  Customize the title and introduction text displayed at the top of public pages.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                {[
+                  { key: "services", label: "Services Page Header" },
+                  { key: "portfolio", label: "Portfolio Page Header" },
+                  { key: "testimonials", label: "Testimonials Page Header" },
+                  { key: "faq", label: "FAQ Page Header" },
+                ].map(({ key, label }) => (
+                  <div key={key} className="border border-outline-variant/30 bg-surface p-4 space-y-3">
+                    <h3 className="font-label text-xs font-bold uppercase tracking-[0.12em] text-primary-container">
+                      {label}
+                    </h3>
+                    <Field
+                      label="Page Title"
+                      value={draft.pageHeaders?.[key]?.title || ""}
+                      onChange={(val) => updatePageHeader(key, "title", val)}
+                    />
+                    <label className="block">
+                      <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+                        Page Subtitle / Intro Copy
+                      </span>
+                      <textarea
+                        value={draft.pageHeaders?.[key]?.subtitle || ""}
+                        onChange={(e) => updatePageHeader(key, "subtitle", e.target.value)}
+                        rows={2}
+                        className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
+                      />
+                    </label>
+
+                    {key === "services" && (
+                      <div className="mt-4 border-t border-outline-variant/20 pt-4 space-y-4">
+                        <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+                          Services Header Showcase Photos (2 Photos)
+                        </span>
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          {/* Image 1 */}
+                          <div className="border border-outline-variant/30 bg-surface-container-lowest p-3 space-y-2">
+                            <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-secondary">Photo 1 (Interior / Studio)</span>
+                            <div className="h-24 w-full overflow-hidden bg-surface-container">
+                              {draft.pageHeaders?.services?.image1Url ? (
+                                <img src={draft.pageHeaders.services.image1Url} alt="Photo 1" className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-xs text-on-surface-variant">No Image</div>
+                              )}
+                            </div>
+                            <Field
+                              label="Photo 1 URL"
+                              value={draft.pageHeaders?.services?.image1Url || ""}
+                              onChange={(val) => updatePageHeader("services", "image1Url", val)}
+                            />
+                            <label className="inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 border border-outline-variant font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant hover:bg-surface-container">
+                              <Upload size={12} />
+                              Upload Photo 1
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+                                  try {
+                                    setStatus("Uploading...");
+                                    const url = await uploadMedia(file);
+                                    updatePageHeader("services", "image1Url", url);
+                                    setStatus("Unsaved");
+                                  } catch (err) {
+                                    setError(err.message || "Upload failed");
+                                  }
+                                }}
+                              />
+                            </label>
+                          </div>
+
+                          {/* Image 2 */}
+                          <div className="border border-outline-variant/30 bg-surface-container-lowest p-3 space-y-2">
+                            <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-secondary">Photo 2 (Artistry / Model)</span>
+                            <div className="h-24 w-full overflow-hidden bg-surface-container">
+                              {draft.pageHeaders?.services?.image2Url ? (
+                                <img src={draft.pageHeaders.services.image2Url} alt="Photo 2" className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-xs text-on-surface-variant">No Image</div>
+                              )}
+                            </div>
+                            <Field
+                              label="Photo 2 URL"
+                              value={draft.pageHeaders?.services?.image2Url || ""}
+                              onChange={(val) => updatePageHeader("services", "image2Url", val)}
+                            />
+                            <label className="inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 border border-outline-variant font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant hover:bg-surface-container">
+                              <Upload size={12} />
+                              Upload Photo 2
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+                                  try {
+                                    setStatus("Uploading...");
+                                    const url = await uploadMedia(file);
+                                    updatePageHeader("services", "image2Url", url);
+                                    setStatus("Unsaved");
+                                  } catch (err) {
+                                    setError(err.message || "Upload failed");
+                                  }
+                                }}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CLIENT EXPERIENCES IMAGE SECTION */}
+            <div id="client-experiences-image-section" className="border border-outline-variant/20 bg-surface-container-lowest p-5 md:p-6">
+              <div className="mb-6">
+                <h2 className="font-headline text-2xl font-medium text-on-surface">
+                  Homepage Client Experiences Section Photo
+                </h2>
+                <p className="mt-1 font-body text-sm text-on-surface-variant">
+                  This controls the showcase portrait photo displayed next to client reviews on the homepage.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center border border-outline-variant/30 bg-surface p-4">
+                <div className="h-32 w-32 shrink-0 overflow-hidden bg-surface-container border border-outline-variant/30 rounded-lg">
+                  {draft.clientExperiencesImageUrl ? (
+                    <img src={draft.clientExperiencesImageUrl} alt="Client Experiences showcase" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-xs text-on-surface-variant">No Image</div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-3">
+                  <Field
+                    label="Image URL"
+                    value={draft.clientExperiencesImageUrl || ""}
+                    onChange={(val) => {
+                      setDraft((current) => ({ ...current, clientExperiencesImageUrl: val }));
+                      setStatus("Unsaved");
+                    }}
+                  />
+                  <label className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 border border-outline-variant bg-surface-container-lowest px-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant hover:bg-surface-container">
+                    <Upload size={14} />
+                    Upload New Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          setStatus("Uploading photo...");
+                          const uploadedUrl = await uploadMedia(file);
+                          setDraft((current) => ({ ...current, clientExperiencesImageUrl: uploadedUrl }));
+                          setStatus("Unsaved");
+                        } catch (err) {
+                          setError(err.message || "Failed to upload image");
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* NEWSLETTER BANNER SECTION */}
+            <div id="newsletter-section" className="border border-outline-variant/20 bg-surface-container-lowest p-5 md:p-6">
+              <div className="mb-6">
+                <h2 className="font-headline text-2xl font-medium text-on-surface">
+                  Homepage Newsletter Banner
+                </h2>
+                <p className="mt-1 font-body text-sm text-on-surface-variant">
+                  Customize the headline, subtext, button text, and disclaimers for the email subscription banner.
+                </p>
+              </div>
+
+              <div className="space-y-4 border border-outline-variant/30 bg-surface p-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <Field
+                    label="Banner Headline"
+                    value={draft.newsletter?.title || ""}
+                    onChange={(val) => updateNewsletter("title", val)}
+                  />
+                  <Field
+                    label="Button Text"
+                    value={draft.newsletter?.buttonText || ""}
+                    onChange={(val) => updateNewsletter("buttonText", val)}
+                  />
+                </div>
+                <label className="block">
+                  <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+                    Banner Subtitle / Description
+                  </span>
+                  <textarea
+                    value={draft.newsletter?.subtitle || ""}
+                    onChange={(e) => updateNewsletter("subtitle", e.target.value)}
+                    rows={2}
+                    className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
+                  />
+                </label>
+                <Field
+                  label="Fine Print / Disclaimer"
+                  value={draft.newsletter?.finePrint || ""}
+                  onChange={(val) => updateNewsletter("finePrint", val)}
+                />
               </div>
             </div>
 

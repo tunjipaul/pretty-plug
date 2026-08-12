@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
-import { getTestimonials, getGallery } from "../lib/content";
+import { getTestimonials, getGallery, getContent } from "../lib/content";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -32,8 +32,15 @@ export default function TestimonialsPage() {
   const [reviews, setReviews] = useState([]);
   const [reels, setReels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [headerContent, setHeaderContent] = useState(null);
 
   useEffect(() => {
+    getContent().then((data) => {
+      if (data?.pageHeaders?.testimonials) {
+        setHeaderContent(data.pageHeaders.testimonials);
+      }
+    });
+
     Promise.allSettled([getTestimonials(), getGallery()])
       .then(([testimonialsRes, galleryRes]) => {
         if (testimonialsRes.status === "fulfilled" && testimonialsRes.value) {
@@ -93,13 +100,10 @@ export default function TestimonialsPage() {
                 Kind Words From Abeokuta
               </span>
               <h1 className="mb-8 font-display text-[40px] font-semibold leading-tight text-primary-container md:text-[64px]">
-                Where <span className="font-light italic">Elegance</span>{" "}
-                Meets Endless Appreciation.
+                {headerContent?.title || "Where Elegance Meets Endless Appreciation."}
               </h1>
               <p className="max-w-xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
-                Discover why ThePrettyPlug is a coveted sanctuary for refined
-                beauty care. Our commitment to meticulous detail is mirrored in
-                the stories of our clients.
+                {headerContent?.subtitle || "Discover why ThePrettyPlug is a coveted sanctuary for refined beauty care. Our commitment to meticulous detail is mirrored in the stories of our clients."}
               </p>
             </div>
 

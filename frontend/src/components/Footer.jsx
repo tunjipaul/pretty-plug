@@ -112,9 +112,19 @@ export default function Footer() {
             ))}
             <br />
             <br />
-            Mon - Sat: 9am - 7pm
-            <br />
-            Sun: Closed
+            {settings?.hours && settings.hours.length > 0 ? (
+              settings.hours.map((h) => (
+                <span key={h.day} className="block">
+                  {h.day}: {h.active ? `${h.open} - ${h.close}` : "Closed"}
+                </span>
+              ))
+            ) : (
+              <>
+                Mon - Sat: 9am - 8pm
+                <br />
+                Sun: 1pm - 7pm
+              </>
+            )}
           </p>
         </div>
       </div>

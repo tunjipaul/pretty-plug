@@ -44,7 +44,7 @@ export default function Home() {
       .then((data) => {
         if (data) setContent(data);
       })
-      .catch((err) => console.error("HOME DEBUG: Content load failed:", err))
+      .catch((err) => console.error("Content load failed:", err))
       .finally(() => setContentLoading(false));
 
     getServices().then((data) => {
@@ -75,10 +75,10 @@ export default function Home() {
           <PortfolioPreview items={gallery} />
         </RevealSection>
         <RevealSection delay={120}>
-          <Testimonials testimonials={testimonials} />
+          <Testimonials testimonials={testimonials} sideImageUrl={content.clientExperiencesImageUrl} />
         </RevealSection>
         <RevealSection delay={120}>
-          <Newsletter />
+          <Newsletter content={content.newsletter} />
         </RevealSection>
         <RevealSection delay={120}>
           <InstagramGrid gallery={gallery} />

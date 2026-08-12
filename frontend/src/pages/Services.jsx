@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
-import { getServices } from "../lib/content";
+import { getContent, getServices } from "../lib/content";
 
 function formatPrice(value) {
   return `NGN ${(value || 0).toLocaleString()}`;
@@ -31,8 +31,15 @@ function ServiceShell({ children, className = "", ...sectionProps }) {
 export default function Services() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [headerContent, setHeaderContent] = useState(null);
 
   useEffect(() => {
+    getContent().then((data) => {
+      if (data?.pageHeaders?.services) {
+        setHeaderContent(data.pageHeaders.services);
+      }
+    });
+
     getServices()
       .then((data) => {
         if (data) {
@@ -79,17 +86,16 @@ export default function Services() {
               Exclusive Experiences
             </span>
             <h1 className="mx-auto mb-8 max-w-3xl font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
-              Elevated Beauty for Your Best Moments
+              {headerContent?.title || "Elevated Beauty for Your Best Moments"}
             </h1>
             <p className="mx-auto mb-12 max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
-              Carefully curated services designed to enhance your natural grace.
-              From meticulous nail artistry to cinematic lash transformations.
+              {headerContent?.subtitle || "Carefully curated services designed to enhance your natural grace. From meticulous nail artistry to cinematic lash transformations."}
             </p>
           </div>
           <div className="order-1 mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:order-2 lg:mb-0">
             <div className="group relative h-[320px] overflow-hidden bg-surface-container-high md:h-[400px]">
               <img
-                src="/images/studio.jpg"
+                src={headerContent?.image1Url || "/images/studio.jpg"}
                 alt="Luxury beauty studio interior"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -97,7 +103,7 @@ export default function Services() {
             </div>
             <div className="group relative h-[320px] overflow-hidden bg-surface-container-high md:h-[400px]">
               <img
-                src="/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"
+                src={headerContent?.image2Url || "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"}
                 alt="Dusty rose and gold nail artistry"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />

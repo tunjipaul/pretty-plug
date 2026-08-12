@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
-import { getGallery } from "../lib/content";
+import { getContent, getGallery } from "../lib/content";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -24,8 +24,15 @@ export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState("All Work");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [headerContent, setHeaderContent] = useState(null);
 
   useEffect(() => {
+    getContent().then((data) => {
+      if (data?.pageHeaders?.portfolio) {
+        setHeaderContent(data.pageHeaders.portfolio);
+      }
+    });
+
     getGallery()
       .then((data) => {
         if (data) setItems(data.filter((i) => i.is_published));
@@ -58,12 +65,14 @@ export default function Portfolio() {
             <span className="mb-4 block font-label text-xs font-semibold uppercase tracking-[0.3em] text-secondary">
               Curated Artistry
             </span>
-            <h1 className="mb-8 font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
-              The Portfolio of <br />
-              <span className="italic text-primary-container">
-                ThePrettyPlug Excellence
-              </span>
+            <h1 className="mb-6 font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
+              {headerContent?.title || "Our Portfolio"}
             </h1>
+            {headerContent?.subtitle && (
+              <p className="mx-auto mb-8 max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
+                {headerContent.subtitle}
+              </p>
+            )}
             <div className="mx-auto h-px w-24 bg-outline-variant" />
           </header>
         </RevealSection>

@@ -52,25 +52,26 @@ export default function Hero({ content }) {
         <div className="order-1 relative flex items-center justify-center lg:order-2 lg:col-span-6">
           <div className="group relative aspect-[4/5] max-h-[620px] w-full overflow-hidden bg-surface-container-high sm:aspect-[5/4] lg:aspect-[4/5]">
             <img
-              src="/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"
-              alt="Luxury nude manicure with soft neutral styling"
+              src={hero.imageUrl || hero.image || "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"}
+              alt={hero.headline || "Luxury nude manicure"}
               className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="editorial-shadow absolute bottom-8 left-0 hidden max-w-xs bg-white p-6 lg:block">
-              <p className="mb-2 font-headline text-2xl text-primary-container">
-                Summer Collection
-              </p>
-              <p className="mb-4 font-body text-sm leading-5 text-on-surface-variant">
-                Limited edition hand-painted finishes inspired by soft Abeokuta
-                evenings.
-              </p>
-              <Link
-                to="/portfolio"
-                className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary"
-              >
-                Discover
-              </Link>
-            </div>
+            {hero.showBadge !== false && (
+              <div className="editorial-shadow absolute bottom-8 left-0 hidden max-w-xs bg-white p-6 lg:block">
+                <p className="mb-2 font-headline text-2xl text-primary-container">
+                  {hero.badgeTitle || "Summer Collection"}
+                </p>
+                <p className="mb-4 font-body text-sm leading-5 text-on-surface-variant">
+                  {hero.badgeBody || "Limited edition hand-painted finishes inspired by soft Abeokuta evenings."}
+                </p>
+                <Link
+                  to="/portfolio"
+                  className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-secondary"
+                >
+                  Discover
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

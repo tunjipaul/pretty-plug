@@ -10,9 +10,10 @@ import {
   ToggleLeft,
   ToggleRight,
   Trash2,
+  Upload,
   X,
 } from "lucide-react";
-import { getServices, saveService, deleteService } from "../lib/content";
+import { getServices, saveService, deleteService, uploadMedia } from "../lib/content";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -27,6 +28,7 @@ const EMPTY_FORM = {
   description: "",
   price: "",
   duration_minutes: "",
+  image_url: "",
   is_active: true,
   is_featured: false,
 };
@@ -115,6 +117,7 @@ function ServiceModal({ service, onClose, onSaved }) {
           description: service.description ?? "",
           price: service.price ?? "",
           duration_minutes: service.duration_minutes ?? "",
+          image_url: service.image_url ?? service.image_path ?? "",
           is_active: service.is_active ?? true,
           is_featured: service.is_featured ?? false,
         }
@@ -252,6 +255,49 @@ function ServiceModal({ service, onClose, onSaved }) {
               placeholder="Brief description of the service..."
             />
           </label>
+
+          {/* Service Image */}
+          <div className="border border-outline-variant/30 bg-surface-container-low p-3 space-y-2">
+            <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+              Service Photo (Optional)
+            </span>
+            <div className="flex items-center gap-3">
+              <div className="h-16 w-16 shrink-0 overflow-hidden bg-surface-container border border-outline-variant/30">
+                {form.image_url ? (
+                  <img src={form.image_url} alt="Service preview" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-[10px] text-on-surface-variant">No Image</div>
+                )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <input
+                  value={form.image_url || ""}
+                  onChange={(e) => update("image_url", e.target.value)}
+                  className="h-9 w-full border border-outline-variant/40 bg-surface-container-lowest px-3 font-body text-xs text-on-surface outline-none focus:border-primary-container"
+                  placeholder="Image URL or upload below..."
+                />
+                <label className="inline-flex h-8 cursor-pointer items-center justify-center gap-2 border border-outline-variant bg-surface-container-lowest px-3 font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant hover:bg-surface-container">
+                  <Upload size={12} />
+                  Upload Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      try {
+                        const url = await uploadMedia(file);
+                        update("image_url", url);
+                      } catch (err) {
+                        setError(err.message || "Image upload failed");
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
 
           {/* Toggles */}
           <div className="flex gap-6">
