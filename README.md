@@ -253,7 +253,3 @@ This is a private client project. Not open for external contributions.
 ## License
 
 Private — All rights reserved © 2026 ThePrettyPlug.
-
----
-
-*Crafted with intention in Abeokuta. 🌸*
