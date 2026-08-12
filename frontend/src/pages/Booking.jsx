@@ -161,8 +161,7 @@ function Progress({ step }) {
   );
 }
 
-function Summary({ selectedService, selectedAddOns = [], totalPrice = 0, selectedDateKey, selectedTime }) {
-  const service = selectedService ?? { name: "Select a service", price: 0, duration: "—" };
+function Summary({ selectedServices = [], selectedAddOns = [], totalPrice = 0, selectedDateKey, selectedTime }) {
   const dateDisplay = selectedDateKey
     ? new Intl.DateTimeFormat("en-US", {
         weekday: "short",
@@ -172,20 +171,33 @@ function Summary({ selectedService, selectedAddOns = [], totalPrice = 0, selecte
       }).format(new Date(selectedDateKey + "T00:00:00"))
     : null;
 
+  const totalDuration = useMemo(
+    () => selectedServices.reduce((sum, s) => sum + (Number(s.duration_minutes) || 0), 0),
+    [selectedServices]
+  );
+
   return (
     <aside className="border border-outline-variant/50 bg-surface p-6 shadow-2xl md:sticky md:top-28">
       <h2 className="mb-6 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
         Your Booking
       </h2>
       <div className="space-y-5">
-        <div className="flex items-start justify-between gap-4">
-          <span className="font-headline text-xl font-medium text-on-surface">
-            {service.name}
-          </span>
-          <span className="shrink-0 font-bold text-primary-container">
-            {formatPrice(service.price || 0)}
-          </span>
-        </div>
+        {selectedServices.length === 0 ? (
+          <p className="font-body text-sm italic text-on-surface-variant">No service selected</p>
+        ) : (
+          <div className="space-y-3">
+            {selectedServices.map((service) => (
+              <div key={service.id} className="flex items-start justify-between gap-4">
+                <span className="font-headline text-lg font-medium text-on-surface">
+                  {service.name}
+                </span>
+                <span className="shrink-0 font-bold text-primary-container">
+                  {formatPrice(service.price || 0)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {selectedAddOns.length > 0 && (
           <div className="border-t border-outline-variant/20 pt-3 space-y-2">
@@ -201,17 +213,20 @@ function Summary({ selectedService, selectedAddOns = [], totalPrice = 0, selecte
           </div>
         )}
 
-        {selectedAddOns.length > 0 && (
+        {selectedServices.length > 0 && (
           <div className="flex items-center justify-between border-t border-outline-variant/30 pt-3 font-bold">
             <span className="font-label text-xs uppercase tracking-[0.12em] text-on-surface">Total Amount</span>
             <span className="text-lg text-primary-container">{formatPrice(totalPrice)}</span>
           </div>
         )}
 
-        <div className="flex items-center gap-2 font-body text-sm text-on-surface-variant">
-          <Clock size={16} />
-          {service.duration_minutes ? `${service.duration_minutes} mins` : service.duration ?? "—"}
-        </div>
+        {totalDuration > 0 && (
+          <div className="flex items-center gap-2 font-body text-sm text-on-surface-variant">
+            <Clock size={16} />
+            {totalDuration} mins total
+          </div>
+        )}
+
         {dateDisplay && selectedTime ? (
           <div className="border-t border-outline-variant/30 pt-5">
             <div className="flex items-center gap-2 font-body text-sm font-bold text-secondary">
@@ -243,7 +258,6 @@ function Calendar({ selectedDateKey, onSelect }) {
     else setViewMonth(m => m + 1);
   }
 
-  // Prevent going back before current month
   const todayYear = today.getFullYear();
   const todayMonth = today.getMonth();
   const canGoPrev = viewYear > todayYear || (viewYear === todayYear && viewMonth > todayMonth);
@@ -251,7 +265,6 @@ function Calendar({ selectedDateKey, onSelect }) {
   const daysInMonth = getDaysInMonth(viewYear, viewMonth);
   const firstDay = getFirstDayOfMonth(viewYear, viewMonth);
 
-  // Build grid: leading empty cells + day cells
   const cells = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
@@ -357,7 +370,7 @@ function Calendar({ selectedDateKey, onSelect }) {
 export default function Booking() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedServices, setSelectedServices] = useState([]);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [selectedDateKey, setSelectedDateKey] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -398,19 +411,29 @@ export default function Booking() {
     rescheduling: settings?.bookingPolicy?.rescheduling || "If you need to reschedule, please notify us early — preferably an hour before your appointment.",
   };
 
+  const totalServicesPrice = useMemo(
+    () => selectedServices.reduce((sum, s) => sum + (Number(s.price) || 0), 0),
+    [selectedServices]
+  );
+
   const totalAddOnsPrice = useMemo(
     () => selectedAddOns.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
     [selectedAddOns]
   );
 
   const totalPrice = useMemo(
-    () => (selectedService?.price ?? 0) + totalAddOnsPrice,
-    [selectedService, totalAddOnsPrice]
+    () => totalServicesPrice + totalAddOnsPrice,
+    [totalServicesPrice, totalAddOnsPrice]
   );
 
   const deposit = useMemo(
     () => Math.ceil(totalPrice * depositMultiplier),
     [totalPrice, depositMultiplier]
+  );
+
+  const serviceNameDisplay = useMemo(
+    () => (selectedServices.length > 0 ? selectedServices.map((s) => s.name).join(" + ") : ""),
+    [selectedServices]
   );
 
   // Check if selected date is a Sunday
@@ -437,10 +460,15 @@ export default function Booking() {
     reader.readAsDataURL(file);
   }
 
-  function selectService(service) {
-    if (selectedService?.id === service.id) return;
-    setSelectedService(service);
-    setSelectedAddOns([]);
+  function toggleService(service) {
+    setSelectedServices((prev) => {
+      const exists = prev.some((s) => s.id === service.id);
+      if (exists) {
+        return prev.filter((s) => s.id !== service.id);
+      } else {
+        return [...prev, service];
+      }
+    });
   }
 
   function toggleAddOn(addon) {
@@ -469,7 +497,11 @@ export default function Booking() {
     setTimeout(() => {
       navigate("/book/confirm", {
         state: {
-          service: selectedService,
+          service: {
+            name: serviceNameDisplay,
+            price: totalServicesPrice,
+          },
+          selectedServices,
           selectedAddOns,
           totalPrice,
           selectedDate: selectedDateDisplay,
@@ -489,7 +521,7 @@ export default function Booking() {
         canonicalPath="/book"
       />
       <BookingHeader />
-      <main className="mx-auto min-h-screen max-w-[1280px] px-5 pb-28 pt-12 md:px-20">
+      <main className="mx-auto min-h-screen max-w-[1280px] px-5 pb-36 pt-12 md:px-20">
         <Progress step={step} />
 
         {/* ── Step 1: Service Selection ─────────────────────────────────── */}
@@ -497,10 +529,10 @@ export default function Booking() {
           <section>
             <div className="mb-12 text-center">
               <h1 className="mb-4 font-headline text-4xl font-medium text-on-surface md:text-5xl">
-                Select Your Treatment
+                Select Your Treatments
               </h1>
               <p className="mx-auto max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">
-                Luxury is in the details. Choose from our curated selection of premium beauty services.
+                Luxury is in the details. Select one or multiple beauty services for your session.
               </p>
             </div>
 
@@ -520,11 +552,11 @@ export default function Booking() {
               <div>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {apiServices.map((service) => {
-                    const isSelected = selectedService?.id === service.id;
+                    const isSelected = selectedServices.some((s) => s.id === service.id);
                     return (
                       <div
                         key={service.id}
-                        onClick={() => selectService(service)}
+                        onClick={() => toggleService(service)}
                         className={`flex min-h-[220px] cursor-pointer flex-col justify-between border p-8 text-left transition-all hover:border-primary-container hover:shadow-md ${
                           isSelected
                             ? "border-2 border-primary-container bg-surface-container-low shadow-lg"
@@ -542,7 +574,8 @@ export default function Booking() {
                               {service.is_featured ? " · Featured" : ""}
                             </span>
                             {isSelected && (
-                              <span className="bg-primary-container px-2.5 py-0.5 font-label text-[10px] font-bold uppercase tracking-[0.10em] text-on-primary">
+                              <span className="inline-flex items-center gap-1 bg-primary-container px-2.5 py-0.5 font-label text-[10px] font-bold uppercase tracking-[0.10em] text-on-primary">
+                                <Check size={12} />
                                 Selected
                               </span>
                             )}
@@ -614,12 +647,12 @@ export default function Booking() {
                   })}
                 </div>
 
-                {/* Continue action bar once service is selected */}
-                {selectedService && (
-                  <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-outline-variant/30 pt-8 sm:flex-row">
+                {/* Desktop Continue action bar once service is selected */}
+                {selectedServices.length > 0 && (
+                  <div className="mt-10 hidden flex-col items-center justify-between gap-4 border-t border-outline-variant/30 pt-8 sm:flex sm:flex-row">
                     <div>
                       <p className="font-headline text-xl font-medium text-on-surface">
-                        Selected: <span className="text-primary-container">{selectedService.name}</span>
+                        Selected: <span className="text-primary-container">{serviceNameDisplay}</span>
                       </p>
                       <p className="font-body text-sm text-on-surface-variant">
                         Total Amount: <span className="font-bold text-on-surface">{formatPrice(totalPrice)}</span>
@@ -657,7 +690,7 @@ export default function Booking() {
                 Find Your Time
               </h1>
               <p className="font-body text-lg italic text-on-surface-variant">
-                Select a date and time for your {selectedService?.name}
+                Select a date and time for your appointment ({serviceNameDisplay})
               </p>
             </div>
 
@@ -806,7 +839,9 @@ export default function Booking() {
               </form>
               <div className="space-y-6">
                 <Summary
-                  selectedService={selectedService}
+                  selectedServices={selectedServices}
+                  selectedAddOns={selectedAddOns}
+                  totalPrice={totalPrice}
                   selectedDateKey={selectedDateKey}
                   selectedTime={selectedTime}
                 />
@@ -1057,16 +1092,16 @@ export default function Booking() {
               <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-body text-sm text-on-surface-variant">Service</p>
-                    <p className="font-headline text-lg font-medium text-on-surface">{selectedService?.name}</p>
+                    <p className="font-body text-sm text-on-surface-variant">Services</p>
+                    <p className="font-headline text-lg font-medium text-on-surface">{serviceNameDisplay}</p>
                   </div>
                   <div className="text-right">
                     <p className="font-body text-sm text-on-surface-variant">Full Price</p>
-                    <p className="font-bold text-on-surface">{formatPrice(selectedService?.price)}</p>
+                    <p className="font-bold text-on-surface">{formatPrice(totalPrice)}</p>
                   </div>
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-outline-variant/20 pt-3">
-                  <span className="font-body text-sm text-on-surface-variant">
+                  <span className="font-body text-xs text-on-surface-variant">
                     {selectedDateDisplay} at {selectedTime}
                   </span>
                   <div>
@@ -1080,14 +1115,49 @@ export default function Booking() {
         )}
       </main>
 
-      {/* Mobile sticky summary */}
-      {step < 3 && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant/40 bg-surface p-5 md:hidden">
-          <Summary
-            selectedService={selectedService}
-            selectedDateKey={selectedDateKey}
-            selectedTime={selectedTime}
-          />
+      {/* Floating Universal Sticky Action Bar (Step 1 & Step 2) - Active on Desktop & Mobile */}
+      {step === 1 && selectedServices.length > 0 && (
+        <div className="fixed bottom-[64px] sm:bottom-6 left-3 right-3 sm:left-1/2 sm:-translate-x-1/2 sm:w-[90%] sm:max-w-[960px] z-40 flex items-center justify-between gap-4 rounded-2xl border border-primary-container/40 bg-surface/95 p-4 shadow-2xl backdrop-blur-xl">
+          <div className="truncate">
+            <p className="truncate font-headline text-sm font-semibold text-on-surface sm:text-base">
+              Selected: <span className="text-primary-container">{serviceNameDisplay}</span>
+            </p>
+            <p className="font-label text-xs font-bold text-on-surface-variant">
+              Total Amount: <span className="text-primary-container">{formatPrice(totalPrice)}</span>
+              {selectedAddOns.length > 0 && ` (${selectedAddOns.length} add-on${selectedAddOns.length > 1 ? "s" : ""})`}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStep(2)}
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary-container px-6 font-label text-xs font-bold uppercase tracking-[0.12em] text-on-primary transition-all hover:bg-primary shadow-lg hover:scale-105 active:scale-95"
+          >
+            <span className="hidden sm:inline">Continue to Date & Time</span>
+            <span className="sm:hidden">Continue</span>
+            <ArrowRight size={16} />
+          </button>
+        </div>
+      )}
+
+      {step === 2 && selectedDateKey && selectedTime && (
+        <div className="fixed bottom-[64px] sm:bottom-6 left-3 right-3 sm:left-1/2 sm:-translate-x-1/2 sm:w-[90%] sm:max-w-[960px] z-40 flex items-center justify-between gap-4 rounded-2xl border border-primary-container/40 bg-surface/95 p-4 shadow-2xl backdrop-blur-xl">
+          <div className="truncate">
+            <p className="truncate font-headline text-sm font-semibold text-on-surface sm:text-base">
+              Appointment Slot: <span className="text-primary-container">{selectedDateDisplay}</span>
+            </p>
+            <p className="font-label text-xs font-bold text-on-surface-variant">
+              Time: <span className="text-primary-container">{selectedTime}</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStep(3)}
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary-container px-6 font-label text-xs font-bold uppercase tracking-[0.12em] text-on-primary transition-all hover:bg-primary shadow-lg hover:scale-105 active:scale-95"
+          >
+            <span className="hidden sm:inline">Continue to Details</span>
+            <span className="sm:hidden">Next</span>
+            <ArrowRight size={16} />
+          </button>
         </div>
       )}
     </>

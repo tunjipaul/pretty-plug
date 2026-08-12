@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
@@ -14,31 +15,39 @@ function resolveImageUrl(p) {
   return "";
 }
 
+const fallbackServices = [
+  {
+    name: "Lash Extensions",
+    description: "Volume, hybrid, and classic sets tailored to your eye shape.",
+    price: "From NGN 15,000",
+    image: "/images/lashes.png",
+    alt: "Premium lash extensions close-up",
+  },
+  {
+    name: "Nail Artistry",
+    description: "Sculpted gels and hand-painted miniature art.",
+    price: "From NGN 12,000",
+    image: "/images/nails.png",
+    alt: "Luxury nail art on melanin skin",
+    offset: true,
+  },
+  {
+    name: "Pedi-Rituals",
+    description: "Restorative treatments focused on comfort and polish.",
+    price: "From NGN 10,000",
+    image: "/images/pedi.jpg",
+    alt: "Luxurious pedicure treatment",
+  },
+];
+
 export default function ServiceChapter({ services: dynamicServices }) {
-  const displayServices = dynamicServices?.length > 0 ? dynamicServices : [
-    {
-      name: "Lash Extensions",
-      description: "Volume, hybrid, and classic sets tailored to your eye shape.",
-      price: "From NGN 15,000",
-      image: "/images/lashes.png",
-      alt: "Premium lash extensions close-up",
-    },
-    {
-      name: "Nail Artistry",
-      description: "Sculpted gels and hand-painted miniature art.",
-      price: "From NGN 12,000",
-      image: "/images/nails.png",
-      alt: "Luxury nail art on melanin skin",
-      offset: true,
-    },
-    {
-      name: "Pedi-Rituals",
-      description: "Restorative treatments focused on comfort and polish.",
-      price: "From NGN 10,000",
-      image: "/images/pedi.jpg",
-      alt: "Luxurious pedicure treatment",
-    },
-  ];
+  const displayServices = useMemo(() => {
+    const dynamicItems = (dynamicServices || []).slice(0, 6);
+    if (dynamicItems.length < 3) {
+      return [...dynamicItems, ...fallbackServices.slice(dynamicItems.length, 3)];
+    }
+    return dynamicItems;
+  }, [dynamicServices]);
 
   return (
     <section className="bg-surface py-16 md:py-20 lg:py-32">
@@ -64,9 +73,9 @@ export default function ServiceChapter({ services: dynamicServices }) {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
           {displayServices.map((service, idx) => (
             <Link
-              key={service.name}
+              key={service.id || service.name || idx}
               to="/services"
-              className={`group block ${service.offset || (idx === 1 && dynamicServices?.length > 0) ? "lg:mt-20" : ""}`}
+              className={`group block ${idx === 1 ? "lg:mt-20" : ""}`}
             >
               <div className="relative mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high sm:aspect-[3/4]">
                 <img
