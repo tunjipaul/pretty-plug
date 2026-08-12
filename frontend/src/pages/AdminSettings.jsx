@@ -41,6 +41,7 @@ const defaultSettings = {
     instagram: "https://instagram.com/theprettyplug",
     twitter: "",
     facebook: "",
+    substack: "https://substack.com/@theprettyplug",
   },
   hours: [
     { day: "Monday", open: "09:00 AM", close: "08:00 PM", active: true },
@@ -308,6 +309,11 @@ export default function AdminSettings() {
                   label="Facebook Profile URL"
                   value={settings.socials?.facebook || ""}
                   onChange={(val) => updateSocials("facebook", val)}
+                />
+                <Field
+                  label="Substack URL"
+                  value={settings.socials?.substack || ""}
+                  onChange={(val) => updateSocials("substack", val)}
                 />
               </div>
             </SettingCard>

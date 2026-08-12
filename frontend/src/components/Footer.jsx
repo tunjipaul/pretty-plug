@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Phone } from "lucide-react";
-import { FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaTwitter, FaFacebook } from "react-icons/fa";
+import { SiSubstack } from "react-icons/si";
 import { getSetting } from "../lib/content";
 
 const studioLinks = [
@@ -34,16 +35,49 @@ export default function Footer() {
       label: "Instagram",
       href: settings?.socials?.instagram || "https://instagram.com",
       icon: FaInstagram,
+      isExternal: true,
     },
+    ...(settings?.socials?.substack
+      ? [
+          {
+            label: "Substack",
+            href: settings.socials.substack,
+            icon: SiSubstack,
+            isExternal: true,
+          },
+        ]
+      : []),
+    ...(settings?.socials?.twitter
+      ? [
+          {
+            label: "Twitter",
+            href: settings.socials.twitter,
+            icon: FaTwitter,
+            isExternal: true,
+          },
+        ]
+      : []),
+    ...(settings?.socials?.facebook
+      ? [
+          {
+            label: "Facebook",
+            href: settings.socials.facebook,
+            icon: FaFacebook,
+            isExternal: true,
+          },
+        ]
+      : []),
     {
       label: "Email",
       href: `mailto:${business.email}`,
       icon: Mail,
+      isExternal: false,
     },
     {
       label: "Phone",
       href: `tel:${business.whatsapp}`,
       icon: Phone,
+      isExternal: false,
     },
   ];
 
@@ -91,6 +125,7 @@ export default function Footer() {
                   className="flex h-10 w-10 items-center justify-center border border-outline-variant/40 text-on-surface-variant transition-colors hover:text-primary-container"
                   href={link.href}
                   aria-label={link.label}
+                  {...(link.isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
                 >
                   <Icon size={16} />
                 </a>
