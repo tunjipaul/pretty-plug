@@ -1,6 +1,6 @@
 # ThePrettyPlug 💅
 
-> A full-stack React + FastAPI booking platform for a solo beauty technician based in Abeokuta. The repository includes a React public website and admin UI in `frontend/`, and a FastAPI backend in `backend/` with Supabase persistence.
+> Full-stack personal brand & booking platform for an Abeokuta-based lash, nail, and pedicure technician. Built with React, FastAPI, and Supabase — featuring a real-time booking system with bank transfer deposits, downloadable receipts, dynamic CMS content, and an admin dashboard.
 
 ---
 
