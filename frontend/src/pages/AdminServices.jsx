@@ -25,13 +25,14 @@ function formatPrice(value) {
 
 const EMPTY_FORM = {
   name: "",
-  category: "",
+  category: "Nails",
   description: "",
   price: "",
   duration_minutes: "",
   image_url: "",
   is_active: true,
   is_featured: false,
+  add_ons: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -53,6 +54,11 @@ function ServiceCard({ service, onEdit, onDelete }) {
               <span className="inline-flex items-center gap-1 bg-primary-fixed px-3 py-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-primary-fixed">
                 <Star size={12} />
                 Featured
+              </span>
+            )}
+            {service.add_ons && service.add_ons.length > 0 && (
+              <span className="bg-secondary-container px-2.5 py-0.5 font-label text-[10px] font-bold uppercase tracking-[0.10em] text-on-secondary-container">
+                {service.add_ons.length} Add-on{service.add_ons.length > 1 ? "s" : ""}
               </span>
             )}
           </div>
@@ -121,6 +127,7 @@ function ServiceModal({ service, onClose, onSaved }) {
           image_url: service.image_url ?? service.image_path ?? "",
           is_active: service.is_active ?? true,
           is_featured: service.is_featured ?? false,
+          add_ons: service.add_ons ?? [],
         }
       : EMPTY_FORM
   );
@@ -129,6 +136,29 @@ function ServiceModal({ service, onClose, onSaved }) {
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
+  }
+
+  function addAddOn() {
+    setForm((f) => ({
+      ...f,
+      add_ons: [...(f.add_ons || []), { name: "", price: 0 }],
+    }));
+  }
+
+  function updateAddOn(index, field, value) {
+    setForm((f) => {
+      const updated = [...(f.add_ons || [])];
+      updated[index] = { ...updated[index], [field]: value };
+      return { ...f, add_ons: updated };
+    });
+  }
+
+  function removeAddOn(index) {
+    setForm((f) => {
+      const updated = [...(f.add_ons || [])];
+      updated.splice(index, 1);
+      return { ...f, add_ons: updated };
+    });
   }
 
   async function handleSubmit(e) {
@@ -298,6 +328,63 @@ function ServiceModal({ service, onClose, onSaved }) {
                 </label>
               </div>
             </div>
+          </div>
+
+          {/* Add-Ons & Custom Options */}
+          <div className="border border-outline-variant/30 bg-surface-container-low p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface">
+                  Add-Ons & Custom Options
+                </span>
+                <p className="text-[11px] text-on-surface-variant">
+                  Optional upgrades clients can select (e.g. Cat-Eye design, French Tip).
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={addAddOn}
+                className="inline-flex h-8 items-center gap-1.5 bg-primary-container px-3 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
+              >
+                + Add Option
+              </button>
+            </div>
+
+            {(!form.add_ons || form.add_ons.length === 0) ? (
+              <p className="py-2 text-xs italic text-on-surface-variant/70">No add-ons configured.</p>
+            ) : (
+              <div className="space-y-2 pt-1">
+                {form.add_ons.map((addon, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={addon.name || ""}
+                      onChange={(e) => updateAddOn(idx, "name", e.target.value)}
+                      placeholder="Option name (e.g. Cat-Eye design)"
+                      className="h-9 flex-1 border border-outline-variant/40 bg-surface-container-lowest px-3 font-body text-xs text-on-surface outline-none focus:border-primary-container"
+                    />
+                    <div className="relative w-28 shrink-0">
+                      <span className="absolute left-2.5 top-2.5 font-body text-xs text-on-surface-variant">₦</span>
+                      <input
+                        type="number"
+                        value={addon.price ?? 0}
+                        onChange={(e) => updateAddOn(idx, "price", Number(e.target.value) || 0)}
+                        placeholder="Price"
+                        className="h-9 w-full border border-outline-variant/40 bg-surface-container-lowest pl-6 pr-2 font-body text-xs text-on-surface outline-none focus:border-primary-container"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeAddOn(idx)}
+                      className="flex h-9 w-9 shrink-0 items-center justify-center border border-outline-variant/40 bg-surface-container-lowest text-red-600 hover:bg-red-50"
+                      title="Remove option"
+                    >
+                      <Trash size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Toggles */}

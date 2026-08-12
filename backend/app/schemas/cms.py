@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Any
 
 
 class TestimonialBase(BaseModel):
@@ -49,6 +49,8 @@ class ServiceBase(BaseModel):
     is_active: bool = True
     is_featured: bool = False
     sort_order: int = 0
+    add_ons: Optional[List[Any]] = []
+    image_url: Optional[str] = None
 
 
 class ServiceCreate(ServiceBase):

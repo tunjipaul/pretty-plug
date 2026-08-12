@@ -157,6 +157,71 @@ function EditGalleryModal({ item, onClose, onSaved }) {
 }
 
 // ---------------------------------------------------------------------------
+// Delete Modal
+// ---------------------------------------------------------------------------
+function DeleteGalleryModal({ items = [], count = 1, onClose, onConfirm }) {
+  const [deleting, setDeleting] = useState(false);
+  const singleItem = items.length === 1 ? items[0] : null;
+
+  async function handleConfirm() {
+    setDeleting(true);
+    try {
+      await onConfirm();
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-sm border border-outline-variant/20 bg-surface p-6 shadow-2xl md:p-8">
+        <h2 className="font-headline text-2xl font-medium text-on-surface">
+          {count > 1 ? `Delete ${count} Images?` : "Delete Image?"}
+        </h2>
+
+        {singleItem && (
+          <div className="my-4 h-40 w-full overflow-hidden border border-outline-variant/20 bg-surface-container-highest">
+            <img
+              src={resolveImageUrl(singleItem.image_path)}
+              alt={singleItem.title || "Gallery image"}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
+
+        <p className="mt-3 font-body text-sm leading-relaxed text-on-surface-variant">
+          {count > 1
+            ? `Are you sure you want to permanently remove these ${count} selected images? This action cannot be undone.`
+            : singleItem
+            ? `Are you sure you want to delete "${singleItem.title || "this image"}"? It will be permanently removed from your gallery.`
+            : "Are you sure you want to delete this image? It will be permanently removed from your gallery."}
+        </p>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={deleting}
+            className="h-11 flex-1 border border-outline-variant font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant transition-colors hover:bg-surface-container"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={handleConfirm}
+            className="h-11 flex-1 bg-red-600 font-label text-xs font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-red-700 disabled:opacity-60"
+          >
+            {deleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Page
 // ---------------------------------------------------------------------------
 export default function AdminGallery() {
@@ -166,6 +231,7 @@ export default function AdminGallery() {
   const [selectAll, setSelectAll] = useState(false);
   const [error, setError] = useState(null);
   const [editingItem, setEditingItem] = useState(null);
+  const [deletingTarget, setDeletingTarget] = useState(null); // null or { items: [], isBulk: boolean }
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -195,34 +261,49 @@ export default function AdminGallery() {
     }
   }
 
-  async function handleDeleteSingle(id) {
-    if (!confirm("Delete this image?")) return;
-    try {
-      setError(null);
-      await deleteGalleryItem(id);
-      setItems((prev) => prev.filter((p) => p.id !== id));
-      setSelected((prev) => {
-        const next = new Set(prev);
-        next.delete(id);
-        return next;
-      });
-    } catch (err) {
-      setError(`Delete failed: ${err.message || "Unknown error"}`);
-    }
+  function handleDeleteSingle(id) {
+    const item = items.find((i) => i.id === id);
+    if (!item) return;
+    setDeletingTarget({ items: [item], isBulk: false });
   }
 
-  async function handleBulkDelete() {
-    const ids = Array.from(selected);
-    if (ids.length === 0) return;
-    if (!confirm(`Delete ${ids.length} images?`)) return;
-    try {
-      setError(null);
-      await deleteGalleryItems(ids);
-      setItems((prev) => prev.filter((p) => !selected.has(p.id)));
-      setSelected(new Set());
-      setSelectAll(false);
-    } catch (err) {
-      setError(`Bulk delete failed: ${err.message || "Unknown error"}`);
+  function handleBulkDelete() {
+    const selectedItems = items.filter((i) => selected.has(i.id));
+    if (selectedItems.length === 0) return;
+    setDeletingTarget({ items: selectedItems, isBulk: true });
+  }
+
+  async function executeDelete() {
+    if (!deletingTarget) return;
+
+    if (deletingTarget.isBulk) {
+      const ids = deletingTarget.items.map((i) => i.id);
+      try {
+        setError(null);
+        await deleteGalleryItems(ids);
+        setItems((prev) => prev.filter((p) => !selected.has(p.id)));
+        setSelected(new Set());
+        setSelectAll(false);
+        setDeletingTarget(null);
+      } catch (err) {
+        setError(`Bulk delete failed: ${err.message || "Unknown error"}`);
+      }
+    } else {
+      const item = deletingTarget.items[0];
+      if (!item) return;
+      try {
+        setError(null);
+        await deleteGalleryItem(item.id);
+        setItems((prev) => prev.filter((p) => p.id !== item.id));
+        setSelected((prev) => {
+          const next = new Set(prev);
+          next.delete(item.id);
+          return next;
+        });
+        setDeletingTarget(null);
+      } catch (err) {
+        setError(`Delete failed: ${err.message || "Unknown error"}`);
+      }
     }
   }
 
@@ -264,6 +345,15 @@ export default function AdminGallery() {
           onSaved={(saved) => {
             setItems((prev) => prev.map((item) => (item.id === saved.id ? saved : item)));
           }}
+        />
+      )}
+
+      {deletingTarget && (
+        <DeleteGalleryModal
+          items={deletingTarget.items}
+          count={deletingTarget.items.length}
+          onClose={() => setDeletingTarget(null)}
+          onConfirm={executeDelete}
         />
       )}
 

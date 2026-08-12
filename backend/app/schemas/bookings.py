@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List, Any
 
 
 class BookingCreate(BaseModel):
@@ -13,6 +13,7 @@ class BookingCreate(BaseModel):
     status: str = "Pending"
     amount: int = 0
     deposit: int = 0
+    selected_add_ons: Optional[List[Any]] = []
     notes: Optional[str] = None
 
 
@@ -27,4 +28,5 @@ class BookingUpdate(BaseModel):
     status: Optional[str] = None
     amount: Optional[int] = None
     deposit: Optional[int] = None
+    selected_add_ons: Optional[List[Any]] = None
     notes: Optional[str] = None

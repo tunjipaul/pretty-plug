@@ -147,7 +147,7 @@ function Progress({ step }) {
   );
 }
 
-function Summary({ selectedService, selectedDateKey, selectedTime }) {
+function Summary({ selectedService, selectedAddOns = [], totalPrice = 0, selectedDateKey, selectedTime }) {
   const service = selectedService ?? { name: "Select a service", price: 0, duration: "—" };
   const dateDisplay = selectedDateKey
     ? new Intl.DateTimeFormat("en-US", {
@@ -169,9 +169,31 @@ function Summary({ selectedService, selectedDateKey, selectedTime }) {
             {service.name}
           </span>
           <span className="shrink-0 font-bold text-primary-container">
-            {formatPrice(service.price)}
+            {formatPrice(service.price || 0)}
           </span>
         </div>
+
+        {selectedAddOns.length > 0 && (
+          <div className="border-t border-outline-variant/20 pt-3 space-y-2">
+            <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+              Selected Add-Ons
+            </span>
+            {selectedAddOns.map((addon, idx) => (
+              <div key={idx} className="flex items-center justify-between font-body text-xs text-on-surface">
+                <span>+ {addon.name}</span>
+                <span className="font-semibold text-primary-container">{formatPrice(addon.price)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {selectedAddOns.length > 0 && (
+          <div className="flex items-center justify-between border-t border-outline-variant/30 pt-3 font-bold">
+            <span className="font-label text-xs uppercase tracking-[0.12em] text-on-surface">Total Amount</span>
+            <span className="text-lg text-primary-container">{formatPrice(totalPrice)}</span>
+          </div>
+        )}
+
         <div className="flex items-center gap-2 font-body text-sm text-on-surface-variant">
           <Clock size={16} />
           {service.duration_minutes ? `${service.duration_minutes} mins` : service.duration ?? "—"}
@@ -322,6 +344,7 @@ export default function Booking() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
+  const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [selectedDateKey, setSelectedDateKey] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [client, setClient] = useState({ name: "", email: "", phone: "", notes: "" });
@@ -361,9 +384,19 @@ export default function Booking() {
     rescheduling: settings?.bookingPolicy?.rescheduling || "If you need to reschedule, please notify us early — preferably an hour before your appointment.",
   };
 
+  const totalAddOnsPrice = useMemo(
+    () => selectedAddOns.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
+    [selectedAddOns]
+  );
+
+  const totalPrice = useMemo(
+    () => (selectedService?.price ?? 0) + totalAddOnsPrice,
+    [selectedService, totalAddOnsPrice]
+  );
+
   const deposit = useMemo(
-    () => Math.ceil((selectedService?.price ?? 0) * depositMultiplier),
-    [selectedService, depositMultiplier]
+    () => Math.ceil(totalPrice * depositMultiplier),
+    [totalPrice, depositMultiplier]
   );
 
   // Check if selected date is a Sunday
@@ -392,7 +425,18 @@ export default function Booking() {
 
   function selectService(service) {
     setSelectedService(service);
-    setTimeout(() => setStep(2), 250);
+    setSelectedAddOns([]);
+  }
+
+  function toggleAddOn(addon) {
+    setSelectedAddOns((prev) => {
+      const exists = prev.some((a) => a.name === addon.name);
+      if (exists) {
+        return prev.filter((a) => a.name !== addon.name);
+      } else {
+        return [...prev, addon];
+      }
+    });
   }
 
   function updateClient(field, value) {
@@ -409,7 +453,15 @@ export default function Booking() {
     setIsProcessing(true);
     setTimeout(() => {
       navigate("/book/confirm", {
-        state: { service: selectedService, selectedDate: selectedDateDisplay, selectedTime, client, deposit },
+        state: {
+          service: selectedService,
+          selectedAddOns,
+          totalPrice,
+          selectedDate: selectedDateDisplay,
+          selectedTime,
+          client,
+          deposit,
+        },
       });
     }, 900);
   }
@@ -450,47 +502,117 @@ export default function Booking() {
                 <p className="mt-2 font-body text-on-surface-variant">Please check back soon.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {apiServices.map((service) => (
-                  <button
-                    key={service.id}
-                    type="button"
-                    onClick={() => selectService(service)}
-                    className={`flex min-h-[220px] flex-col justify-between border p-8 text-left transition-all hover:border-primary-container hover:shadow-md ${
-                      service.is_featured
-                        ? "border-primary-container bg-primary-container text-on-primary"
-                        : "border-outline-variant/50 bg-surface-container-lowest"
-                    }`}
-                  >
+              <div>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {apiServices.map((service) => {
+                    const isSelected = selectedService?.id === service.id;
+                    return (
+                      <div
+                        key={service.id}
+                        onClick={() => selectService(service)}
+                        className={`flex min-h-[220px] cursor-pointer flex-col justify-between border p-8 text-left transition-all hover:border-primary-container hover:shadow-md ${
+                          isSelected
+                            ? "border-2 border-primary-container bg-surface-container-low shadow-lg"
+                            : service.is_featured
+                            ? "border-primary-container bg-primary-container text-on-primary"
+                            : "border-outline-variant/50 bg-surface-container-lowest"
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <span className={`font-label text-[10px] font-bold uppercase tracking-[0.14em] ${
+                              isSelected ? "text-primary-container" : service.is_featured ? "text-on-primary/70" : "text-secondary"
+                            }`}>
+                              {service.category}
+                              {service.is_featured ? " · Featured" : ""}
+                            </span>
+                            {isSelected && (
+                              <span className="bg-primary-container px-2.5 py-0.5 font-label text-[10px] font-bold uppercase tracking-[0.10em] text-on-primary">
+                                Selected
+                              </span>
+                            )}
+                          </div>
+                          <h2 className="mb-2 font-headline text-2xl font-medium">{service.name}</h2>
+                          <p className={`font-body text-sm leading-6 ${
+                            isSelected ? "text-on-surface-variant" : service.is_featured ? "text-on-primary/80" : "text-on-surface-variant"
+                          }`}>
+                            {service.description}
+                          </p>
+
+                          {/* Add-ons checkboxes if selected */}
+                          {isSelected && service.add_ons && service.add_ons.length > 0 && (
+                            <div className="mt-5 border-t border-outline-variant/30 pt-4 space-y-2" onClick={(e) => e.stopPropagation()}>
+                              <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-primary-container">
+                                Customize Options & Add-Ons:
+                              </span>
+                              {service.add_ons.map((addon, idx) => {
+                                const checked = selectedAddOns.some((a) => a.name === addon.name);
+                                return (
+                                  <label
+                                    key={idx}
+                                    className={`flex cursor-pointer items-center justify-between border px-3 py-2 text-xs transition-colors ${
+                                      checked
+                                        ? "border-primary-container bg-primary-container/10 text-on-surface"
+                                        : "border-outline-variant/40 bg-surface hover:border-primary-container"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="checkbox"
+                                        checked={checked}
+                                        onChange={() => toggleAddOn(addon)}
+                                        className="h-4 w-4 accent-primary-container"
+                                      />
+                                      <span className="font-body font-medium text-on-surface">{addon.name}</span>
+                                    </div>
+                                    <span className="font-bold text-primary-container">+{formatPrice(addon.price)}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-6 flex items-center justify-between">
+                          <div>
+                            <span className="font-bold">{formatPrice(service.price)}</span>
+                            {service.duration_minutes && (
+                              <span className={`ml-3 font-label text-xs ${
+                                isSelected ? "text-on-surface-variant" : service.is_featured ? "text-on-primary/60" : "text-on-surface-variant"
+                              }`}>
+                                {service.duration_minutes} mins
+                              </span>
+                            )}
+                          </div>
+                          <ArrowRight size={18} className="shrink-0" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Continue action bar once service is selected */}
+                {selectedService && (
+                  <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-outline-variant/30 pt-8 sm:flex-row">
                     <div>
-                      <span className={`mb-3 block font-label text-[10px] font-bold uppercase tracking-[0.14em] ${
-                        service.is_featured ? "text-on-primary/70" : "text-secondary"
-                      }`}>
-                        {service.category}
-                        {service.is_featured ? " · Featured" : ""}
-                      </span>
-                      <h2 className="mb-2 font-headline text-2xl font-medium">{service.name}</h2>
-                      <p className={`font-body text-sm leading-6 ${
-                        service.is_featured ? "text-on-primary/80" : "text-on-surface-variant"
-                      }`}>
-                        {service.description}
+                      <p className="font-headline text-xl font-medium text-on-surface">
+                        Selected: <span className="text-primary-container">{selectedService.name}</span>
+                      </p>
+                      <p className="font-body text-sm text-on-surface-variant">
+                        Total Amount: <span className="font-bold text-on-surface">{formatPrice(totalPrice)}</span>
+                        {selectedAddOns.length > 0 && ` (${selectedAddOns.length} add-on${selectedAddOns.length > 1 ? "s" : ""} selected)`}
                       </p>
                     </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <div>
-                        <span className="font-bold">{formatPrice(service.price)}</span>
-                        {service.duration_minutes && (
-                          <span className={`ml-3 font-label text-xs ${
-                            service.is_featured ? "text-on-primary/60" : "text-on-surface-variant"
-                          }`}>
-                            {service.duration_minutes} mins
-                          </span>
-                        )}
-                      </div>
-                      <ArrowRight size={18} className="shrink-0" />
-                    </div>
-                  </button>
-                ))}
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="inline-flex h-14 items-center justify-center gap-3 bg-primary-container px-10 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary"
+                    >
+                      Continue to Date & Time
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </section>

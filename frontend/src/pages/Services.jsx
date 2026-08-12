@@ -267,6 +267,20 @@ export default function Services() {
                               </div>
                             </div>
                             <p className="mb-6 font-body text-sm leading-6 text-on-surface-variant">{service.description}</p>
+                            {service.add_ons && service.add_ons.length > 0 && (
+                              <div className="mb-6 border-t border-outline-variant/20 pt-3">
+                                <span className="mb-2 block font-label text-[10px] font-bold uppercase tracking-[0.12em] text-secondary">
+                                  Available Add-Ons:
+                                </span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {service.add_ons.map((addon, idx) => (
+                                    <span key={idx} className="bg-surface-container-high px-2.5 py-1 font-body text-[11px] text-on-surface-variant">
+                                      {addon.name} (+{formatPrice(addon.price)})
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                             <div className="flex items-center gap-4">
                               <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
                                 {service.duration_minutes ? `${service.duration_minutes} Mins` : ""}

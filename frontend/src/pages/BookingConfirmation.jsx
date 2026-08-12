@@ -29,12 +29,17 @@ export default function BookingConfirmation() {
   const reschedulingPolicy = settings?.bookingPolicy?.rescheduling || "If you need to reschedule, please notify us early — preferably an hour before your appointment.";
   const lateArrivalPolicy = settings?.bookingPolicy?.lateArrival || "Arriving more than 30 minutes late will result in cancellation.";
 
+  const selectedAddOns = state?.selectedAddOns ?? [];
+  const totalPrice = state?.totalPrice ?? (state?.service?.price ?? 15000);
+
   const booking = {
     service: state?.service ?? {
       name: "The Classic Manicure",
       price: 15000,
       duration: "60 mins",
     },
+    selectedAddOns,
+    totalPrice,
     selectedDate: state?.selectedDate ?? "Nov 11, 2026",
     selectedTime: state?.selectedTime ?? "06:00 PM",
     client: state?.client ?? { name: "ThePrettyPlug Client" },
@@ -240,9 +245,23 @@ export default function BookingConfirmation() {
                   Balance
                 </span>
                 <span className="font-body">
-                  {formatPrice(booking.service.price - booking.deposit)}
+                  {formatPrice(booking.totalPrice - booking.deposit)}
                 </span>
               </div>
+              {booking.selectedAddOns && booking.selectedAddOns.length > 0 && (
+                <div className="col-span-full border-t border-outline-variant/20 pt-3">
+                  <span className="mb-2 block font-label text-[10px] font-bold uppercase tracking-[0.12em] text-outline">
+                    Selected Add-Ons
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {booking.selectedAddOns.map((addon, idx) => (
+                      <span key={idx} className="bg-primary-container/10 px-3 py-1 font-body text-xs font-semibold text-primary-container">
+                        {addon.name} (+{formatPrice(addon.price)})
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mt-8 flex items-start gap-3 border-t border-dashed border-outline-variant pt-6">
