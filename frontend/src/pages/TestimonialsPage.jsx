@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileBottomNav from "../components/MobileBottomNav";
 import RevealSection from "../components/home/RevealSection";
-import { getTestimonials, getGallery, getContent } from "../lib/content";
+import { getTestimonials, getGallery, getContent, getSetting } from "../lib/content";
 import SeoHead from "../components/SeoHead";
 import { getBreadcrumbSchema } from "../lib/seoSchemas";
 
@@ -35,8 +35,13 @@ export default function TestimonialsPage() {
   const [reels, setReels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [headerContent, setHeaderContent] = useState(null);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
+    getSetting("global_settings").then((data) => {
+      if (data) setSettings(data);
+    });
+
     getContent().then((data) => {
       if (data?.pageHeaders?.testimonials) {
         setHeaderContent(data.pageHeaders.testimonials);
@@ -287,7 +292,7 @@ export default function TestimonialsPage() {
 
             <div className="mt-24 text-center md:mt-32">
               <a
-                href="https://instagram.com"
+                href={settings?.socials?.instagram || "https://instagram.com"}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container transition-colors hover:text-primary"

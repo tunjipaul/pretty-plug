@@ -140,6 +140,7 @@ export default function AdminSettings() {
           setSettings((prev) => ({
             ...prev,
             ...data,
+            socials: { ...prev.socials, ...(data.socials || {}) },
             hours: data.hours || prev.hours,
             payment: { ...prev.payment, ...(data.payment || {}) },
             bookingPolicy: { ...prev.bookingPolicy, ...(data.bookingPolicy || {}) },
@@ -156,6 +157,15 @@ export default function AdminSettings() {
     setSettings((prev) => ({
       ...prev,
       business: { ...prev.business, [field]: value },
+    }));
+    setError(null);
+    setStatus("Unsaved");
+  }
+
+  function updateSocials(field, value) {
+    setSettings((prev) => ({
+      ...prev,
+      socials: { ...prev.socials, [field]: value },
     }));
     setError(null);
     setStatus("Unsaved");
@@ -276,6 +286,30 @@ export default function AdminSettings() {
                   className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
                 />
               </label>
+            </SettingCard>
+
+            <SettingCard
+              icon={LinkIcon}
+              title="Social Media Links"
+              description="Manage official social profile links displayed in the website footer and homepage Instagram section."
+            >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <Field
+                  label="Instagram Profile URL"
+                  value={settings.socials?.instagram || ""}
+                  onChange={(val) => updateSocials("instagram", val)}
+                />
+                <Field
+                  label="Twitter / X Profile URL"
+                  value={settings.socials?.twitter || ""}
+                  onChange={(val) => updateSocials("twitter", val)}
+                />
+                <Field
+                  label="Facebook Profile URL"
+                  value={settings.socials?.facebook || ""}
+                  onChange={(val) => updateSocials("facebook", val)}
+                />
+              </div>
             </SettingCard>
 
             <SettingCard

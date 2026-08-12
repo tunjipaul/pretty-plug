@@ -13,6 +13,19 @@ function formatPrice(value) {
   return `NGN ${(value || 0).toLocaleString()}`;
 }
 
+function resolveImageUrl(p) {
+  if (!p) return "";
+  if (typeof p === "string") return p;
+  if (typeof p === "object") {
+    return (
+      p.publicUrl || p.publicURL || p.public_url || p.url ||
+      Object.values(p).find((v) => typeof v === "string" && v.startsWith("http")) ||
+      ""
+    );
+  }
+  return "";
+}
+
 const lashComparison = [
   ["Lash Ratio", "1:1", "Mix 1:1 and 3D", "5D - 7D", "10D - 15D"],
   ["Appearance", "Natural", "Textured", "Full and Fluffy", "Dense and Black"],
@@ -152,32 +165,40 @@ export default function Services() {
                   </div>
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                    {lashServices.map((service) => (
-                      <article key={service.id} className="editorial-shadow group flex h-full flex-col border border-outline-variant/10 bg-surface p-8 transition-transform duration-300 hover:-translate-y-2">
-                        <div className="mb-8 flex items-start justify-between gap-4">
-                          <h3 className="font-headline text-2xl font-medium text-on-surface">{service.name}</h3>
-                          {service.is_featured && (
-                            <span className="bg-primary-fixed px-3 py-1 font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-container">
-                              Featured
-                            </span>
-                          )}
-                        </div>
-                        <p className="mb-auto font-body text-sm leading-6 text-on-surface-variant">
-                          {service.description}
-                        </p>
-                        <div className="mt-8 flex items-center justify-between border-t border-outline-variant/30 pt-6">
-                          <div>
-                            <div className="font-headline text-2xl font-medium text-on-surface">{formatPrice(service.price)}</div>
-                            <div className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
-                              {service.duration_minutes ? `${service.duration_minutes} Mins` : "—"}
+                    {lashServices.map((service) => {
+                      const img = resolveImageUrl(service.image_url || service.image_path);
+                      return (
+                        <article key={service.id} className="editorial-shadow group flex h-full flex-col overflow-hidden border border-outline-variant/10 bg-surface p-8 transition-transform duration-300 hover:-translate-y-2">
+                          {img && (
+                            <div className="-mx-8 -mt-8 mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high">
+                              <img src={img} alt={service.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             </div>
+                          )}
+                          <div className="mb-8 flex items-start justify-between gap-4">
+                            <h3 className="font-headline text-2xl font-medium text-on-surface">{service.name}</h3>
+                            {service.is_featured && (
+                              <span className="bg-primary-fixed px-3 py-1 font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-container">
+                                Featured
+                              </span>
+                            )}
                           </div>
-                          <Link to="/book" className="flex h-12 w-12 items-center justify-center rounded-full border border-secondary text-secondary transition-colors hover:bg-secondary hover:text-on-primary">
-                            <Plus size={18} />
-                          </Link>
-                        </div>
-                      </article>
-                    ))}
+                          <p className="mb-auto font-body text-sm leading-6 text-on-surface-variant">
+                            {service.description}
+                          </p>
+                          <div className="mt-8 flex items-center justify-between border-t border-outline-variant/30 pt-6">
+                            <div>
+                              <div className="font-headline text-2xl font-medium text-on-surface">{formatPrice(service.price)}</div>
+                              <div className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
+                                {service.duration_minutes ? `${service.duration_minutes} Mins` : "—"}
+                              </div>
+                            </div>
+                            <Link to="/book" className="flex h-12 w-12 items-center justify-center rounded-full border border-secondary text-secondary transition-colors hover:bg-secondary hover:text-on-primary">
+                              <Plus size={18} />
+                            </Link>
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
                 </div>
               </ServiceShell>
@@ -230,25 +251,33 @@ export default function Services() {
                   </aside>
                   <div className="w-full md:w-2/3">
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                      {nailServices.map((service) => (
-                        <article key={service.id} className="border border-outline-variant/50 bg-surface-container-lowest p-8 transition-colors hover:border-primary-container">
-                          <div className="mb-4 flex items-start justify-between gap-4">
-                            <h3 className="font-headline text-2xl font-medium text-on-surface">{service.name}</h3>
-                            <div className="shrink-0 font-label text-xs font-bold uppercase tracking-[0.08em] text-primary-container">
-                              {formatPrice(service.price)}
+                      {nailServices.map((service) => {
+                        const img = resolveImageUrl(service.image_url || service.image_path);
+                        return (
+                          <article key={service.id} className="border border-outline-variant/50 bg-surface-container-lowest p-8 transition-colors hover:border-primary-container overflow-hidden">
+                            {img && (
+                              <div className="-mx-8 -mt-8 mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high">
+                                <img src={img} alt={service.name} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
+                              </div>
+                            )}
+                            <div className="mb-4 flex items-start justify-between gap-4">
+                              <h3 className="font-headline text-2xl font-medium text-on-surface">{service.name}</h3>
+                              <div className="shrink-0 font-label text-xs font-bold uppercase tracking-[0.08em] text-primary-container">
+                                {formatPrice(service.price)}
+                              </div>
                             </div>
-                          </div>
-                          <p className="mb-6 font-body text-sm leading-6 text-on-surface-variant">{service.description}</p>
-                          <div className="flex items-center gap-4">
-                            <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
-                              {service.duration_minutes ? `${service.duration_minutes} Mins` : ""}
-                            </span>
-                            <Link to="/book" className="ml-auto border-b border-primary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container transition-colors hover:text-primary">
-                              Book
-                            </Link>
-                          </div>
-                        </article>
-                      ))}
+                            <p className="mb-6 font-body text-sm leading-6 text-on-surface-variant">{service.description}</p>
+                            <div className="flex items-center gap-4">
+                              <span className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-outline">
+                                {service.duration_minutes ? `${service.duration_minutes} Mins` : ""}
+                              </span>
+                              <Link to="/book" className="ml-auto border-b border-primary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container transition-colors hover:text-primary">
+                                Book
+                              </Link>
+                            </div>
+                          </article>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -311,28 +340,36 @@ export default function Services() {
                     <div className="mx-auto mt-6 h-px w-24 bg-primary-container" />
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                    {categories[catKey].map((service) => (
-                      <article key={service.id} className="border border-outline-variant/50 bg-surface-container-lowest p-8 transition-colors hover:border-primary-container">
-                        <div className="mb-4 flex items-start justify-between gap-4">
-                          <h3 className="font-headline text-2xl font-medium text-on-surface">{service.name}</h3>
-                          {service.is_featured && (
-                            <span className="bg-primary-fixed px-3 py-1 font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-container">Featured</span>
-                          )}
-                        </div>
-                        <p className="mb-6 font-body text-sm leading-6 text-on-surface-variant">{service.description}</p>
-                        <div className="flex items-center justify-between mt-auto pt-6 border-t border-outline-variant/30">
-                          <div>
-                            <div className="font-headline text-xl font-medium text-on-surface">{formatPrice(service.price)}</div>
-                            <div className="font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-outline">
-                              {service.duration_minutes ? `${service.duration_minutes} Mins` : ""}
+                    {categories[catKey].map((service) => {
+                      const img = resolveImageUrl(service.image_url || service.image_path);
+                      return (
+                        <article key={service.id} className="border border-outline-variant/50 bg-surface-container-lowest p-8 transition-colors hover:border-primary-container overflow-hidden">
+                          {img && (
+                            <div className="-mx-8 -mt-8 mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high">
+                              <img src={img} alt={service.name} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
                             </div>
+                          )}
+                          <div className="mb-4 flex items-start justify-between gap-4">
+                            <h3 className="font-headline text-2xl font-medium text-on-surface">{service.name}</h3>
+                            {service.is_featured && (
+                              <span className="bg-primary-fixed px-3 py-1 font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-container">Featured</span>
+                            )}
                           </div>
-                          <Link to="/book" className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-container text-on-primary transition-colors hover:bg-primary">
-                            <Plus size={16} />
-                          </Link>
-                        </div>
-                      </article>
-                    ))}
+                          <p className="mb-6 font-body text-sm leading-6 text-on-surface-variant">{service.description}</p>
+                          <div className="flex items-center justify-between mt-auto pt-6 border-t border-outline-variant/30">
+                            <div>
+                              <div className="font-headline text-xl font-medium text-on-surface">{formatPrice(service.price)}</div>
+                              <div className="font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-outline">
+                                {service.duration_minutes ? `${service.duration_minutes} Mins` : ""}
+                              </div>
+                            </div>
+                            <Link to="/book" className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-container text-on-primary transition-colors hover:bg-primary">
+                              <Plus size={16} />
+                            </Link>
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
                 </div>
               </ServiceShell>
