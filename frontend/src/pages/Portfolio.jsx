@@ -22,6 +22,46 @@ function resolveImageUrl(p) {
   return "";
 }
 
+const fallbackWorks = [
+  {
+    id: "fallback-1",
+    title: "Minimal Gel Manicure",
+    category: "Nails",
+    image_path: "/images/gallery-1.jpg",
+    is_featured: true,
+  },
+  {
+    id: "fallback-2",
+    title: "Soft Lash Extension",
+    category: "Lashes",
+    image_path: "/images/gallery-2.png",
+  },
+  {
+    id: "fallback-3",
+    title: "Dark Editorial Art",
+    category: "Nails",
+    image_path: "/images/gallery-3.jpg",
+  },
+  {
+    id: "fallback-4",
+    title: "Hand-Painted Nail Pose",
+    category: "Nails",
+    image_path: "/images/gallery-4.png",
+  },
+  {
+    id: "fallback-5",
+    title: "Meticulous Application",
+    category: "Nails",
+    image_path: "/images/gallery-5.jpg",
+  },
+  {
+    id: "fallback-6",
+    title: "Luxury Pedicure Ritual",
+    category: "Pedicure",
+    image_path: "/images/download (6).jfif",
+  },
+];
+
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState("All Work");
   const [items, setItems] = useState([]);
@@ -42,20 +82,34 @@ export default function Portfolio() {
       .finally(() => setLoading(false));
   }, []);
 
+  const displayItems = useMemo(() => {
+    const dynamicMapped = (items || []).map((item) => ({
+      ...item,
+      image_path: resolveImageUrl(item.image_url || item.image_path) || item.image_path,
+    }));
+
+    if (dynamicMapped.length < 6) {
+      const needed = 6 - dynamicMapped.length;
+      return [...dynamicMapped, ...fallbackWorks.slice(0, needed)];
+    }
+
+    return dynamicMapped;
+  }, [items]);
+
   const breadcrumbSchema = getBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Portfolio", path: "/portfolio" },
   ]);
 
   const filters = useMemo(() => {
-    const cats = [...new Set(items.map((i) => i.category).filter(Boolean))];
+    const cats = [...new Set(displayItems.map((i) => i.category).filter(Boolean))];
     return ["All Work", ...cats];
-  }, [items]);
+  }, [displayItems]);
 
   const visibleItems = useMemo(() => {
-    if (activeFilter === "All Work") return items;
-    return items.filter((item) => item.category === activeFilter);
-  }, [activeFilter, items]);
+    if (activeFilter === "All Work") return displayItems;
+    return displayItems.filter((item) => item.category === activeFilter);
+  }, [activeFilter, displayItems]);
 
   const featureItem = visibleItems.find((item) => item.is_featured) ?? visibleItems[0];
   const sideItems = visibleItems.filter((item) => item !== featureItem).slice(0, 2);

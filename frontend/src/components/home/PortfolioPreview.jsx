@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -13,50 +13,74 @@ function resolveImageUrl(p) {
   return "";
 }
 
+const fallbackWorks = [
+  {
+    id: "fallback-1",
+    src: "/images/gallery-1.jpg",
+    alt: "Minimal manicure portfolio work",
+    category: "Nails",
+  },
+  {
+    id: "fallback-2",
+    src: "/images/gallery-2.png",
+    alt: "Soft lash portfolio work",
+    category: "Lashes",
+    offset: "lg:mt-12",
+  },
+  {
+    id: "fallback-3",
+    src: "/images/gallery-3.jpg",
+    alt: "Dark editorial nail portfolio work",
+    category: "Nails",
+  },
+  {
+    id: "fallback-4",
+    src: "/images/gallery-4.png",
+    alt: "Detailed hand pose with nail art",
+    category: "Nails",
+  },
+  {
+    id: "fallback-5",
+    src: "/images/gallery-5.jpg",
+    alt: "Nail technician applying detail",
+    category: "Nails",
+    offset: "lg:-mt-12",
+  },
+  {
+    id: "fallback-6",
+    src: "/images/download (6).jfif",
+    alt: "Luxury pedicure portfolio work",
+    category: "Pedicure",
+  },
+];
+
 export default function PortfolioPreview({ items: dynamicItems }) {
   const [activeFilter, setActiveFilter] = useState("All");
-  
-  const works = dynamicItems?.length > 0 ? dynamicItems : [
-    {
-      src: "/images/gallery-1.jpg",
-      alt: "Minimal manicure portfolio work",
-      category: "Nails",
-    },
-    {
-      src: "/images/gallery-2.png",
-      alt: "Soft lash portfolio work",
-      category: "Lashes",
-      offset: "lg:mt-12",
-    },
-    {
-      src: "/images/gallery-3.jpg",
-      alt: "Dark editorial nail portfolio work",
-      category: "Nails",
-    },
-    {
-      src: "/images/gallery-4.png",
-      alt: "Detailed hand pose with nail art",
-      category: "Nails",
-    },
-    {
-      src: "/images/gallery-5.jpg",
-      alt: "Nail technician applying detail",
-      category: "Nails",
-      offset: "lg:-mt-12",
-    },
-    {
-      src: "/images/download (6).jfif",
-      alt: "Luxury pedicure portfolio work",
-      category: "Pedicure",
-    },
-  ];
 
-  const visibleWorks =
-    activeFilter === "All"
-      ? works
-      : works.filter((work) => (work.category || work.category) === activeFilter);
+  const works = useMemo(() => {
+    const dynamicMapped = (dynamicItems || []).map((item) => ({
+      ...item,
+      src: resolveImageUrl(item.image_url || item.image_path || item.url) || item.src || item.image,
+      alt: item.title || item.alt_text || item.alt || "Portfolio work",
+      category: item.category || "General",
+    }));
 
-  const availableFilters = ["All", ...new Set(works.map(w => w.category))];
+    if (dynamicMapped.length < 6) {
+      const needed = 6 - dynamicMapped.length;
+      return [...dynamicMapped, ...fallbackWorks.slice(0, needed)];
+    }
+
+    return dynamicMapped;
+  }, [dynamicItems]);
+
+  const visibleWorks = useMemo(() => {
+    if (activeFilter === "All") return works;
+    return works.filter((work) => work.category === activeFilter);
+  }, [activeFilter, works]);
+
+  const availableFilters = useMemo(() => {
+    return ["All", ...new Set(works.map((w) => w.category).filter(Boolean))];
+  }, [works]);
 
   return (
     <section className="bg-surface-container-low py-16 md:py-20 lg:py-32">
@@ -95,9 +119,9 @@ export default function PortfolioPreview({ items: dynamicItems }) {
               }`}
             >
               <img
-                src={resolveImageUrl(work.image_path) || work.src}
-                alt={work.alt_text || work.alt}
-                className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                src={resolveImageUrl(work.image_url || work.image_path) || work.src}
+                alt={work.alt || work.title || "Portfolio work"}
+                className="h-full w-full object-cover transition-all duration-700 group-hover:scale-105"
               />
               <figcaption className="absolute inset-x-0 bottom-0 translate-y-full bg-primary-container/90 px-4 py-3 font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-transform duration-300 group-hover:translate-y-0">
                 {work.category}
@@ -109,3 +133,4 @@ export default function PortfolioPreview({ items: dynamicItems }) {
     </section>
   );
 }
+

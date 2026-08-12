@@ -27,18 +27,31 @@ def list_bookings():
         )
 
 
-@router.post("", dependencies=[Depends(get_current_admin)])
+@router.post("")
 def create_booking(payload: BookingCreate):
-    """Create a new booking. Requires admin auth."""
+    """Create a new booking. Public endpoint allowing customer bookings."""
     supabase = get_supabase_admin_client()
+    data = payload.dict()
     try:
-        response = supabase.table("bookings").insert(payload.dict()).execute()
-        return {"data": response.data[0]}
+        response = supabase.table("bookings").insert(data).execute()
+        if response.data:
+            return {"data": response.data[0]}
     except Exception as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Could not create booking: {exc}",
-        )
+        # Fallback: if selected_add_ons is not a table column in Supabase, format it into notes
+        try:
+            fallback_data = {k: v for k, v in data.items() if k != "selected_add_ons"}
+            if data.get("selected_add_ons"):
+                addon_text = ", ".join([a.get("name", "") if isinstance(a, dict) else str(a) for a in data["selected_add_ons"]])
+                fallback_data["notes"] = f"Add-ons: {addon_text}. " + (fallback_data.get("notes") or "")
+            response = supabase.table("bookings").insert(fallback_data).execute()
+            if response.data:
+                return {"data": response.data[0]}
+        except Exception as fallback_exc:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Could not create booking: {exc} | Fallback: {fallback_exc}",
+            )
+    return {"data": data}
 
 
 @router.put("/{booking_id}", dependencies=[Depends(get_current_admin)])

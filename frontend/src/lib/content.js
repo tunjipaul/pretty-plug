@@ -273,8 +273,23 @@ export async function deleteService(id) {
 }
 
 // ---------------------------------------------------------------------------
-// Bookings API
-// ---------------------------------------------------------------------------
+export async function createPublicBooking(bookingData) {
+  const response = await fetch(`${API_URL}/api/bookings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bookingData),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.error("Public booking submission failed:", text);
+    throw new Error(`Booking submission failed: ${text || response.statusText}`);
+  }
+
+  const result = await response.json();
+  return result.data;
+}
+
 export async function getBookings() {
   const result = await request("/api/bookings");
   return result.data;

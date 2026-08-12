@@ -28,10 +28,12 @@ function EditGalleryModal({ item, onClose, onSaved }) {
   const [form, setForm] = useState({
     title: item.title ?? "",
     category: item.category ?? "",
+    image_path: item.image_path ?? item.image_url ?? "",
     is_published: item.is_published ?? true,
     is_featured: item.is_featured ?? false,
   });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
   function update(field, value) {
@@ -47,7 +49,7 @@ function EditGalleryModal({ item, onClose, onSaved }) {
     setSaving(true);
     setError(null);
     try {
-      const payload = { ...item, ...form };
+      const payload = { ...item, ...form, image_path: form.image_path };
       const saved = await saveGalleryItem(payload);
       onSaved(saved);
       onClose();
@@ -75,13 +77,13 @@ function EditGalleryModal({ item, onClose, onSaved }) {
 
         <div className="h-48 w-full bg-surface-container-highest">
           <img
-            src={resolveImageUrl(item.image_path)}
+            src={resolveImageUrl(form.image_path) || resolveImageUrl(item.image_url || item.image_path)}
             alt={form.title}
             className="h-full w-full object-cover"
           />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6">
+        <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6 max-h-[70vh] overflow-y-auto">
           {error && <p className="bg-red-50 px-4 py-3 font-body text-sm text-red-600">{error}</p>}
 
           <label className="block">
@@ -104,6 +106,41 @@ function EditGalleryModal({ item, onClose, onSaved }) {
               placeholder="e.g. Lashes"
             />
           </label>
+
+          <div className="border border-outline-variant/30 bg-surface-container-low p-3 space-y-2">
+            <span className="font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant">
+              Image Photo / URL
+            </span>
+            <input
+              value={form.image_path}
+              onChange={(e) => update("image_path", e.target.value)}
+              className="h-9 w-full border border-outline-variant/40 bg-surface-container-lowest px-3 font-body text-xs text-on-surface outline-none focus:border-primary-container"
+              placeholder="Image URL or upload new below..."
+            />
+            <label className="inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 border border-outline-variant bg-surface-container-lowest px-3 font-label text-[10px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant hover:bg-surface-container">
+              <Upload size={14} />
+              {uploading ? "Uploading..." : "Upload New Photo"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={uploading}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploading(true);
+                  try {
+                    const url = await uploadMedia(file);
+                    update("image_path", url);
+                  } catch (err) {
+                    setError(err.message || "Photo upload failed");
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+              />
+            </label>
+          </div>
 
           <div className="flex gap-6">
             <label className="flex cursor-pointer items-center gap-3">
@@ -144,7 +181,7 @@ function EditGalleryModal({ item, onClose, onSaved }) {
             </button>
             <button
               type="submit"
-              disabled={saving}
+              disabled={saving || uploading}
               className="h-11 flex-1 bg-primary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary transition-colors hover:bg-primary disabled:opacity-60"
             >
               {saving ? "Saving..." : "Save Changes"}
