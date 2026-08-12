@@ -24,6 +24,9 @@ create table if not exists services (
   is_active boolean not null default true,
   is_featured boolean not null default false,
   sort_order integer not null default 0,
+  add_ons jsonb default '[]'::jsonb,
+  image_url text,
+  image_path text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
