@@ -73,8 +73,9 @@ class PageHeaders(BaseModel):
 class NewsletterContent(BaseModel):
     title: str = "Stay Polished"
     subtitle: str = "Join our inner circle for priority booking, seasonal trends, and exclusive beauty notes."
-    buttonText: str = "Subscribe"
+    buttonText: str = "Subscribe on Substack"
     finePrint: str = "Respecting your inbox like your time. Unsubscribe anytime."
+    substackUrl: str = "https://substack.com/@theprettyplug?r=3ntzvy&utm_medium=ios&utm_source=stories&shareImageVariant=image"
 
     class Config:
         extra = "allow"

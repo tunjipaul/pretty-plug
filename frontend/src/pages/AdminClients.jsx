@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AdminSidebar, MobileAdminNav } from "../components/AdminSidebar";
 import {
   CalendarDays,
@@ -22,6 +22,7 @@ import {
   Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getBookings } from "../lib/content";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -35,7 +36,7 @@ const navItems = [
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 
-const clients = [
+const sampleClients = [
   {
     id: "CL-1001",
     name: "Chinwe Okoro",
@@ -169,14 +170,78 @@ function ClientListItem({ client, isActive, onSelect }) {
 
 export default function AdminClients() {
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(clients[0].id);
-  const selectedClient =
-    clients.find((client) => client.id === selectedId) ?? clients[0];
+  const [apiBookings, setApiBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getBookings()
+      .then((data) => {
+        if (data) setApiBookings(data);
+      })
+      .catch((err) => console.error("Failed to fetch bookings for clients:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const dynamicClients = useMemo(() => {
+    if (!apiBookings || apiBookings.length === 0) return sampleClients;
+
+    const grouped = {};
+
+    apiBookings.forEach((b, idx) => {
+      const name = b.client_name || b.client || `Client #${b.id || idx + 1}`;
+      const email = b.client_email || b.email || "No email";
+      const phone = b.client_phone || b.phone || "No phone";
+      const key = email !== "No email" ? email.toLowerCase() : name.toLowerCase();
+
+      if (!grouped[key]) {
+        const parts = name.split(" ");
+        const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
+
+        grouped[key] = {
+          id: `CL-API-${idx + 1}`,
+          name,
+          initials,
+          email,
+          phone,
+          location: "Online Booking",
+          status: b.status || "Active",
+          focus: b.service_name || b.service || "Beauty Care",
+          lastSeen: b.appointment_date || "Recent",
+          loyalty: "Member",
+          totalSpend: 0,
+          visits: 0,
+          frequency: "Regular",
+          notes: b.notes || "Booked online",
+          sensitivities: ["None recorded"],
+          preferences: [b.service_name || b.service || "Standard service"],
+          history: [],
+        };
+      }
+
+      const price = b.price || b.amount || 0;
+      grouped[key].totalSpend += Number(price);
+      grouped[key].visits += 1;
+      grouped[key].history.push({
+        service: b.service_name || b.service || "Appointment",
+        date: b.appointment_date || "Booked",
+        amount: price,
+      });
+    });
+
+    const realList = Object.values(grouped);
+    return realList.length > 0 ? realList : sampleClients;
+  }, [apiBookings]);
+
+  const [selectedId, setSelectedId] = useState(null);
+
+  const activeClients = dynamicClients;
+  const currentSelected =
+    activeClients.find((c) => c.id === selectedId) ?? activeClients[0];
 
   const filteredClients = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return clients.filter((client) =>
+    return activeClients.filter((client) =>
       [
         client.name,
         client.email,
@@ -189,7 +254,7 @@ export default function AdminClients() {
         .toLowerCase()
         .includes(normalizedQuery),
     );
-  }, [query]);
+  }, [query, activeClients]);
 
   return (
     <div className="min-h-screen bg-background text-on-background">
@@ -241,7 +306,7 @@ export default function AdminClients() {
                 <div key={client.id} className="w-[285px] shrink-0 lg:w-auto">
                   <ClientListItem
                     client={client}
-                    isActive={client.id === selectedClient.id}
+                    isActive={client.id === currentSelected.id}
                     onSelect={setSelectedId}
                   />
                 </div>
@@ -253,11 +318,11 @@ export default function AdminClients() {
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-[220px_minmax(0,1fr)]">
               <div className="border border-outline-variant/20 bg-surface-container-lowest p-6 text-center">
                 <div className="mx-auto flex h-32 w-32 items-center justify-center bg-primary-fixed font-display text-5xl font-semibold text-on-primary-fixed">
-                  {selectedClient.initials}
+                  {currentSelected.initials}
                 </div>
                 <div className="mt-5 inline-flex items-center gap-2 bg-secondary-fixed px-4 py-2 font-label text-xs font-bold uppercase tracking-[0.12em] text-on-secondary-fixed">
                   <Star size={14} />
-                  {selectedClient.loyalty}
+                  {currentSelected.loyalty}
                 </div>
               </div>
 
@@ -266,12 +331,12 @@ export default function AdminClients() {
                   <div>
                     <div className="flex items-center gap-3">
                       <h2 className="font-headline text-4xl font-medium text-on-surface">
-                        {selectedClient.name}
+                        {currentSelected.name}
                       </h2>
                       <button
                         type="button"
                         className="flex h-10 w-10 items-center justify-center border border-outline-variant text-on-surface-variant hover:bg-surface-container"
-                        aria-label={`Edit ${selectedClient.name}`}
+                        aria-label={`Edit ${currentSelected.name}`}
                       >
                         <Edit3 size={17} />
                       </button>
@@ -279,15 +344,15 @@ export default function AdminClients() {
                     <div className="mt-4 flex flex-col gap-3 text-sm text-on-surface-variant md:flex-row md:flex-wrap md:items-center">
                       <span className="inline-flex items-center gap-2">
                         <Mail size={16} />
-                        {selectedClient.email}
+                        {currentSelected.email}
                       </span>
                       <span className="inline-flex items-center gap-2">
                         <Phone size={16} />
-                        {selectedClient.phone}
+                        {currentSelected.phone}
                       </span>
                       <span className="inline-flex items-center gap-2">
                         <MapPin size={16} />
-                        {selectedClient.location}
+                        {currentSelected.location}
                       </span>
                     </div>
                   </div>
@@ -299,7 +364,7 @@ export default function AdminClients() {
                       Total Spend
                     </p>
                     <p className="mt-2 font-display text-3xl font-semibold text-primary-container">
-                      {formatPrice(selectedClient.totalSpend)}
+                      {formatPrice(currentSelected.totalSpend)}
                     </p>
                   </div>
                   <div className="border border-outline-variant/20 bg-surface-container-lowest p-5">
@@ -307,7 +372,7 @@ export default function AdminClients() {
                       Visits
                     </p>
                     <p className="mt-2 font-display text-3xl font-semibold text-on-surface">
-                      {selectedClient.visits}
+                      {currentSelected.visits}
                     </p>
                   </div>
                   <div className="border border-outline-variant/20 bg-surface-container-lowest p-5">
@@ -315,7 +380,7 @@ export default function AdminClients() {
                       Frequency
                     </p>
                     <p className="mt-2 font-display text-2xl font-semibold text-secondary">
-                      {selectedClient.frequency}
+                      {currentSelected.frequency}
                     </p>
                   </div>
                 </div>
@@ -333,7 +398,7 @@ export default function AdminClients() {
                   </button>
                 </div>
                 <div className="space-y-3">
-                  {selectedClient.history.map((entry) => (
+                  {currentSelected.history.map((entry) => (
                     <article
                       key={`${entry.service}-${entry.date}`}
                       className="flex flex-col gap-3 border border-outline-variant/10 bg-surface p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -369,7 +434,7 @@ export default function AdminClients() {
                       Medical & Sensitivities
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {selectedClient.sensitivities.map((item) => (
+                      {currentSelected.sensitivities.map((item) => (
                         <span
                           key={item}
                           className="bg-surface-container-lowest px-3 py-2 text-sm text-on-surface"
@@ -384,7 +449,7 @@ export default function AdminClients() {
                       Style Preferences
                     </p>
                     <ul className="space-y-2">
-                      {selectedClient.preferences.map((item) => (
+                      {currentSelected.preferences.map((item) => (
                         <li key={item} className="flex items-center gap-2 text-sm">
                           <CheckCircle2 size={16} className="text-secondary" />
                           {item}
@@ -394,7 +459,7 @@ export default function AdminClients() {
                   </div>
                   <div className="bg-surface-container-lowest p-4">
                     <p className="font-body text-sm italic leading-6 text-on-surface-variant">
-                      "{selectedClient.notes}"
+                      "{currentSelected.notes}"
                     </p>
                   </div>
                   <button className="h-11 w-full bg-tertiary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-tertiary-container transition-colors hover:bg-tertiary">

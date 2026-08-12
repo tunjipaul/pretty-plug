@@ -109,8 +109,9 @@ const draftContent = {
   newsletter: {
     title: "Stay Polished",
     subtitle: "Join our inner circle for priority booking, seasonal trends, and exclusive beauty notes.",
-    buttonText: "Subscribe",
+    buttonText: "Subscribe on Substack",
     finePrint: "Respecting your inbox like your time. Unsubscribe anytime.",
+    substackUrl: "https://substack.com/@theprettyplug?r=3ntzvy&utm_medium=ios&utm_source=stories&shareImageVariant=image",
   },
 };
 
@@ -692,6 +693,11 @@ export default function AdminContent() {
                     className="mt-2 w-full resize-none border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
                   />
                 </label>
+                <Field
+                  label="Substack Subscription Link"
+                  value={draft.newsletter?.substackUrl || ""}
+                  onChange={(val) => updateNewsletter("substackUrl", val)}
+                />
                 <Field
                   label="Fine Print / Disclaimer"
                   value={draft.newsletter?.finePrint || ""}

@@ -1,10 +1,30 @@
+import { useState } from "react";
+
 export default function Newsletter({ content }) {
+  const [email, setEmail] = useState("");
+
   const data = content || {
     title: "Stay Polished",
     subtitle: "Join our inner circle for priority booking, seasonal trends, and exclusive beauty notes.",
-    buttonText: "Subscribe",
+    buttonText: "Subscribe on Substack",
     finePrint: "Respecting your inbox like your time. Unsubscribe anytime.",
+    substackUrl: "https://substack.com/@theprettyplug?r=3ntzvy&utm_medium=ios&utm_source=stories&shareImageVariant=image",
   };
+
+  const substackUrl =
+    data.substackUrl ||
+    "https://substack.com/@theprettyplug?r=3ntzvy&utm_medium=ios&utm_source=stories&shareImageVariant=image";
+
+  function handleSubscribe(e) {
+    e.preventDefault();
+    let targetUrl = substackUrl;
+    if (email.trim()) {
+      const urlObj = new URL(substackUrl);
+      urlObj.searchParams.set("email", email.trim());
+      targetUrl = urlObj.toString();
+    }
+    window.open(targetUrl, "_blank", "noopener,noreferrer");
+  }
 
   return (
     <section className="bg-primary-container py-12 text-on-primary md:py-20 lg:py-28">
@@ -15,21 +35,26 @@ export default function Newsletter({ content }) {
         <p className="mb-6 font-body text-base leading-7 text-white/90 md:mb-8 lg:mb-10 lg:text-lg">
           {data.subtitle}
         </p>
-        <form className="mx-auto flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:gap-0" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="mx-auto flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:gap-0"
+          onSubmit={handleSubscribe}
+        >
           <label htmlFor="newsletter-email" className="sr-only">
             Email address
           </label>
           <input
             id="newsletter-email"
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Your Email Address"
             className="h-12 min-h-[48px] w-full flex-1 box-border px-4 border border-white/30 bg-white/10 text-center font-body text-sm text-white outline-none placeholder:text-white/55 focus:border-white sm:h-16 sm:px-8 sm:text-left sm:text-base"
           />
           <button
             type="submit"
-            className="h-12 w-full bg-white px-6 font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container transition-colors hover:bg-secondary-container hover:text-on-secondary-container sm:h-16 sm:w-auto sm:px-10"
+            className="h-12 w-full bg-white px-6 font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container transition-colors hover:bg-secondary-container hover:text-on-secondary-container sm:h-16 sm:w-auto sm:px-10 cursor-pointer"
           >
-            {data.buttonText || "Subscribe"}
+            {data.buttonText || "Subscribe on Substack"}
           </button>
         </form>
         <p className="mt-6 font-body text-sm text-white/60">
