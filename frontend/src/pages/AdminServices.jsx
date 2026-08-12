@@ -23,6 +23,20 @@ function formatPrice(value) {
   return `NGN ${(value || 0).toLocaleString()}`;
 }
 
+function parseAddOns(addOns) {
+  if (!addOns) return [];
+  if (Array.isArray(addOns)) return addOns;
+  if (typeof addOns === "string") {
+    try {
+      const parsed = JSON.parse(addOns);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+}
+
 const EMPTY_FORM = {
   name: "",
   category: "Nails",
@@ -41,6 +55,7 @@ const EMPTY_FORM = {
 function ServiceCard({ service, onEdit, onDelete }) {
   const isActive = service.is_active;
   const StatusIcon = isActive ? ToggleRight : ToggleLeft;
+  const addOnsList = parseAddOns(service.add_ons);
 
   return (
     <article className="border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-sm transition-colors hover:border-primary-container/30">
@@ -56,9 +71,9 @@ function ServiceCard({ service, onEdit, onDelete }) {
                 Featured
               </span>
             )}
-            {service.add_ons && service.add_ons.length > 0 && (
+            {addOnsList.length > 0 && (
               <span className="bg-secondary-container px-2.5 py-0.5 font-label text-[10px] font-bold uppercase tracking-[0.10em] text-on-secondary-container">
-                {service.add_ons.length} Add-on{service.add_ons.length > 1 ? "s" : ""}
+                {addOnsList.length} Add-on{addOnsList.length > 1 ? "s" : ""}
               </span>
             )}
           </div>
@@ -127,7 +142,7 @@ function ServiceModal({ service, onClose, onSaved }) {
           image_url: service.image_url ?? service.image_path ?? "",
           is_active: service.is_active ?? true,
           is_featured: service.is_featured ?? false,
-          add_ons: service.add_ons ?? [],
+          add_ons: parseAddOns(service.add_ons),
         }
       : EMPTY_FORM
   );
@@ -379,7 +394,7 @@ function ServiceModal({ service, onClose, onSaved }) {
                       className="flex h-9 w-9 shrink-0 items-center justify-center border border-outline-variant/40 bg-surface-container-lowest text-red-600 hover:bg-red-50"
                       title="Remove option"
                     >
-                      <Trash size={14} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 ))}

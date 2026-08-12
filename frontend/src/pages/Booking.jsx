@@ -40,8 +40,22 @@ const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function formatPrice(price) {
-  return `NGN ${(price ?? 0).toLocaleString()}`;
+function formatPrice(value) {
+  return `NGN ${(value || 0).toLocaleString()}`;
+}
+
+function parseAddOns(addOns) {
+  if (!addOns) return [];
+  if (Array.isArray(addOns)) return addOns;
+  if (typeof addOns === "string") {
+    try {
+      const parsed = JSON.parse(addOns);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
 }
 
 function toDateKey(year, month, day) {
@@ -424,6 +438,7 @@ export default function Booking() {
   }
 
   function selectService(service) {
+    if (selectedService?.id === service.id) return;
     setSelectedService(service);
     setSelectedAddOns([]);
   }
@@ -540,37 +555,45 @@ export default function Booking() {
                           </p>
 
                           {/* Add-ons checkboxes if selected */}
-                          {isSelected && service.add_ons && service.add_ons.length > 0 && (
-                            <div className="mt-5 border-t border-outline-variant/30 pt-4 space-y-2" onClick={(e) => e.stopPropagation()}>
-                              <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-primary-container">
-                                Customize Options & Add-Ons:
-                              </span>
-                              {service.add_ons.map((addon, idx) => {
-                                const checked = selectedAddOns.some((a) => a.name === addon.name);
-                                return (
-                                  <label
-                                    key={idx}
-                                    className={`flex cursor-pointer items-center justify-between border px-3 py-2 text-xs transition-colors ${
-                                      checked
-                                        ? "border-primary-container bg-primary-container/10 text-on-surface"
-                                        : "border-outline-variant/40 bg-surface hover:border-primary-container"
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <input
-                                        type="checkbox"
-                                        checked={checked}
-                                        onChange={() => toggleAddOn(addon)}
-                                        className="h-4 w-4 accent-primary-container"
-                                      />
-                                      <span className="font-body font-medium text-on-surface">{addon.name}</span>
-                                    </div>
-                                    <span className="font-bold text-primary-container">+{formatPrice(addon.price)}</span>
-                                  </label>
-                                );
-                              })}
-                            </div>
-                          )}
+                          {isSelected && (() => {
+                            const addOnsList = parseAddOns(service.add_ons);
+                            if (addOnsList.length === 0) return null;
+                            return (
+                              <div className="mt-5 border-t border-outline-variant/30 pt-4 space-y-2" onClick={(e) => e.stopPropagation()}>
+                                <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-primary-container">
+                                  Customize Options & Add-Ons:
+                                </span>
+                                {addOnsList.map((addon, idx) => {
+                                  const checked = selectedAddOns.some((a) => a.name === addon.name);
+                                  return (
+                                    <label
+                                      key={idx}
+                                      onClick={(e) => e.stopPropagation()}
+                                      className={`flex cursor-pointer items-center justify-between border px-3 py-2 text-xs transition-colors ${
+                                        checked
+                                          ? "border-primary-container bg-primary-container/10 text-on-surface"
+                                          : "border-outline-variant/40 bg-surface hover:border-primary-container"
+                                      }`}
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={checked}
+                                          onChange={(e) => {
+                                            e.stopPropagation();
+                                            toggleAddOn(addon);
+                                          }}
+                                          className="h-4 w-4 accent-primary-container"
+                                        />
+                                        <span className="font-body font-medium text-on-surface">{addon.name}</span>
+                                      </div>
+                                      <span className="font-bold text-primary-container">+{formatPrice(addon.price)}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         <div className="mt-6 flex items-center justify-between">
