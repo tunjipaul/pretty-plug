@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, CheckCircle, Download, Home, MapPin } from "lucide-react";
+import { CalendarDays, CheckCircle, Download, Home, MapPin, MessageSquare } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getSetting } from "../lib/content";
@@ -23,6 +23,7 @@ export default function BookingConfirmation() {
   const business = settings?.business || {
     name: "ThePrettyPlug",
     address: "Abeokuta, Ogun State, Nigeria",
+    whatsapp: "+2349028789806",
   };
 
   const depositPercent = settings?.bookingPolicy?.depositPercent ?? 40;
@@ -45,6 +46,18 @@ export default function BookingConfirmation() {
     client: state?.client ?? { name: "ThePrettyPlug Client" },
     deposit: state?.deposit ?? 6000,
   };
+
+  const rawWhatsapp = settings?.business?.whatsapp || business.whatsapp || "+2349028789806";
+  const cleanWhatsapp = rawWhatsapp.replace(/[^\d]/g, "") || "2349028789806";
+
+  const clientName = booking.client?.name || "Client";
+  const serviceName = booking.service?.name || "Service";
+  const dateStr = booking.selectedDate || "";
+  const timeStr = booking.selectedTime || "";
+  const depositPaid = formatPrice(booking.deposit);
+
+  const whatsappText = `Hello! My name is ${clientName}. I just booked ${serviceName} for ${dateStr} at ${timeStr}. Deposit paid: ${depositPaid}. Here is my booking receipt!`;
+  const whatsappUrl = `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(whatsappText)}`;
 
   const downloadReceipt = useCallback(() => {
     const canvas = document.createElement("canvas");
@@ -203,9 +216,23 @@ export default function BookingConfirmation() {
           </h1>
           <p className="mx-auto mb-10 max-w-xl font-body text-lg leading-7 text-on-surface-variant">
             You are all set, {booking.client.name || `${business.name} Client`}! Your
-            appointment has been booked successfully. Please download your receipt
-            below for your records.
+            appointment has been booked successfully. Please notify our studio on WhatsApp or download your receipt below.
           </p>
+
+          <div className="mb-8 rounded-xl border border-green-200 bg-green-50 p-4 text-left sm:p-5 shadow-sm">
+            <div className="flex items-start gap-3">
+              <MessageSquare className="mt-0.5 shrink-0 text-green-700" size={20} />
+              <div>
+                <p className="font-headline text-base font-semibold text-green-950">
+                  Notify Studio via WhatsApp
+                </p>
+                <p className="mt-1 font-body text-xs leading-5 text-green-800">
+                  1. Tap <strong>"Download Receipt"</strong> to save your receipt ticket image.<br />
+                  2. Click <strong>"Send via WhatsApp"</strong> to send your pre-filled appointment details directly to our studio phone (<strong>+234 902 878 9806</strong>)!
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div className="editorial-shadow mb-10 border border-outline-variant/30 bg-surface p-8 text-left">
             <div className="mb-6 flex items-center justify-between gap-4">
@@ -273,6 +300,15 @@ export default function BookingConfirmation() {
           </div>
 
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-14 items-center justify-center gap-3 bg-[#25D366] px-8 font-label text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-md transition-colors hover:bg-[#1EBE5D]"
+            >
+              <MessageSquare size={18} />
+              Send via WhatsApp
+            </a>
             <button
               type="button"
               onClick={downloadReceipt}
@@ -295,3 +331,4 @@ export default function BookingConfirmation() {
     </>
   );
 }
+

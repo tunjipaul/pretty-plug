@@ -34,7 +34,7 @@ const defaultSettings = {
     name: "ThePrettyPlug",
     location: "Abeokuta Suite",
     email: "hello@theprettyplug.test",
-    whatsapp: "+234 800 000 0000",
+    whatsapp: "+2349028789806",
     address: "Abeokuta, Ogun State, Nigeria",
   },
   socials: {
