@@ -16,7 +16,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { createPublicBooking, getServices, getSetting } from "../lib/content";
+import { createPublicBooking, getServices, getSetting, uploadMedia } from "../lib/content";
 import SeoHead from "../components/SeoHead";
 
 // ---------------------------------------------------------------------------
@@ -492,63 +492,79 @@ export default function Booking() {
       }).format(new Date(selectedDateKey + "T00:00:00"))
     : null;
 
-  function completePayment() {
+  async function completePayment() {
     setIsProcessing(true);
+
+    let proofUrl = null;
+    if (proofFile) {
+      try {
+        proofUrl = await uploadMedia(proofFile);
+      } catch (e) {
+        console.warn("Payment proof upload failed, continuing with booking:", e);
+      }
+    }
+
+    const notesArray = [];
+    if (client.notes) notesArray.push(`Client Notes: ${client.notes}`);
+    if (proofUrl) notesArray.push(`Payment Proof: ${proofUrl}`);
+    const combinedNotes = notesArray.join(" | ");
 
     const bookingPayload = {
       client_name: client.name || "Valued Client",
       email: client.email || null,
       phone: client.phone || null,
+      client_email: client.email || null,
+      client_phone: client.phone || null,
       service_name: serviceNameDisplay || "Bespoke Treatment",
       appointment_date: selectedDateKey || new Date().toISOString().split("T")[0],
       appointment_time: selectedTime || "12:00 PM",
       status: "Pending",
       amount: totalPrice,
+      total_amount: totalPrice,
       deposit: deposit,
+      deposit_amount: deposit,
       selected_add_ons: selectedAddOns,
-      notes: client.notes || null,
+      notes: combinedNotes || null,
     };
 
-    createPublicBooking(bookingPayload)
-      .then((created) => {
-        setIsProcessing(false);
-        navigate("/book/confirm", {
-          state: {
-            bookingId: created?.id,
-            service: {
-              name: serviceNameDisplay,
-              price: totalServicesPrice,
-            },
-            selectedServices,
-            selectedAddOns,
-            totalPrice,
-            selectedDate: selectedDateDisplay,
-            selectedTime,
-            client,
-            deposit,
+    try {
+      const created = await createPublicBooking(bookingPayload);
+      setIsProcessing(false);
+      navigate("/book/confirm", {
+        state: {
+          bookingId: created?.id,
+          service: {
+            name: serviceNameDisplay,
+            price: totalServicesPrice,
           },
-        });
-      })
-      .catch((err) => {
-        console.error("Booking API error:", err);
-        setIsProcessing(false);
-        // Navigate even on error so client sees receipt, but logged
-        navigate("/book/confirm", {
-          state: {
-            service: {
-              name: serviceNameDisplay,
-              price: totalServicesPrice,
-            },
-            selectedServices,
-            selectedAddOns,
-            totalPrice,
-            selectedDate: selectedDateDisplay,
-            selectedTime,
-            client,
-            deposit,
-          },
-        });
+          selectedServices,
+          selectedAddOns,
+          totalPrice,
+          selectedDate: selectedDateDisplay,
+          selectedTime,
+          client,
+          deposit,
+        },
       });
+    } catch (err) {
+      console.error("Booking API error:", err);
+      setIsProcessing(false);
+      navigate("/book/confirm", {
+        state: {
+          service: {
+            name: serviceNameDisplay,
+            price: totalServicesPrice,
+          },
+          selectedServices,
+          selectedAddOns,
+          totalPrice,
+          selectedDate: selectedDateDisplay,
+          selectedTime,
+          client,
+          deposit,
+        },
+      });
+    }
   }
 
   return (

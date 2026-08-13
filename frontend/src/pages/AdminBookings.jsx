@@ -24,51 +24,192 @@ import {
   XCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getBookings } from "../lib/content";
+import { updateBookingStatus, deleteBooking, saveBooking, getBookings } from "../lib/content";
 import SeoHead from "../components/SeoHead";
-
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-  { label: "Website", icon: FileText, path: "/admin/content" },
-  { label: "Services", icon: Scissors, path: "/admin/services" },
-  { label: "Gallery", icon: Image, path: "/admin/gallery" },
-  { label: "Reviews", icon: MessageSquareQuote, path: "/admin/testimonials" },
-  { label: "FAQ", icon: HelpCircle, path: "/admin/faq" },
-  { label: "Bookings", icon: CalendarDays, path: "/admin/bookings", active: true },
-  { label: "Clients", icon: Users, path: "/admin/clients" },
-  { label: "Settings", icon: Settings, path: "/admin/settings" },
-];
-
-
 
 const filters = ["All", "Confirmed", "Pending", "In Progress", "Completed", "Cancelled"];
 
 function formatPrice(value) {
-  return `NGN ${value.toLocaleString()}`;
+  return `NGN ${(value || 0).toLocaleString()}`;
 }
 
-function statusStyles(status) {
-  const styles = {
-    Confirmed: "bg-primary-fixed text-on-primary-fixed",
-    Pending: "bg-secondary-fixed text-on-secondary-fixed",
-    "In Progress": "bg-tertiary-fixed text-on-tertiary-fixed",
-    Completed: "bg-green-50 text-green-700",
-    Cancelled: "bg-error-container text-on-error-container",
-  };
-
-  return styles[status] ?? "bg-surface-container text-on-surface-variant";
+function statusStyles(status = "") {
+  const s = status.toLowerCase();
+  if (s === "confirmed") return "bg-primary-fixed text-on-primary-fixed";
+  if (s === "pending") return "bg-secondary-fixed text-on-secondary-fixed";
+  if (s === "in progress" || s === "in-progress") return "bg-tertiary-fixed text-on-tertiary-fixed";
+  if (s === "completed") return "bg-green-50 text-green-700";
+  if (s === "cancelled") return "bg-error-container text-on-error-container";
+  return "bg-surface-container text-on-surface-variant";
 }
 
 function StatusBadge({ status }) {
+  const isCancelled = (status || "").toLowerCase() === "cancelled";
   return (
     <span
       className={`inline-flex items-center gap-2 px-3 py-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] ${statusStyles(
         status,
       )}`}
     >
-      {status === "Cancelled" ? <XCircle size={13} /> : <CheckCircle2 size={13} />}
-      {status}
+      {isCancelled ? <XCircle size={13} /> : <CheckCircle2 size={13} />}
+      {status || "Pending"}
     </span>
+  );
+}
+
+function BookingModal({ booking, onClose, onUpdated, onDeleted }) {
+  const [status, setStatus] = useState(booking.status || "Pending");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const clientName = booking.client_name || booking.client || "—";
+  const serviceName = booking.service_name || booking.service || "—";
+  const clientEmail = booking.email || booking.client_email || "—";
+  const clientPhone = booking.phone || booking.client_phone || "—";
+  const totalAmt = booking.amount ?? booking.total_amount ?? 0;
+  const depositAmt = booking.deposit ?? booking.deposit_amount ?? 0;
+
+  async function handleSaveStatus() {
+    setSaving(true);
+    setError(null);
+    try {
+      const updated = await updateBookingStatus(booking.id, status);
+      onUpdated(updated || { ...booking, status });
+      onClose();
+    } catch (err) {
+      setError(err.message || "Failed to update status");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!window.confirm(`Are you sure you want to delete booking for ${clientName}?`)) return;
+    setSaving(true);
+    try {
+      await deleteBooking(booking.id);
+      onDeleted(booking.id);
+      onClose();
+    } catch (err) {
+      setError(err.message || "Failed to delete booking");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  // Extract proof URL from notes if present
+  const proofUrlMatch = (booking.notes || "").match(/Payment Proof: (https?:\/\/[^\s|]+)/);
+  const proofUrl = proofUrlMatch ? proofUrlMatch[1] : null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-lg border border-outline-variant/20 bg-surface p-6 shadow-2xl md:p-8 max-h-[90vh] overflow-y-auto">
+        <div className="mb-6 flex items-center justify-between border-b border-outline-variant/20 pb-4">
+          <div>
+            <span className="font-label text-[10px] font-bold uppercase tracking-[0.14em] text-primary-container">
+              Booking Details
+            </span>
+            <h2 className="font-headline text-2xl font-medium text-on-surface">
+              {clientName}
+            </h2>
+          </div>
+          <button type="button" onClick={onClose} className="p-2 text-on-surface-variant hover:bg-surface-container">
+            <XCircle size={20} />
+          </button>
+        </div>
+
+        {error && <p className="mb-4 bg-red-50 p-3 font-body text-sm text-red-600">{error}</p>}
+
+        <div className="space-y-4 font-body text-sm">
+          <div className="grid grid-cols-2 gap-4 border-b border-outline-variant/10 pb-4">
+            <div>
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Service</p>
+              <p className="font-semibold text-on-surface">{serviceName}</p>
+            </div>
+            <div>
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Date & Time</p>
+              <p className="text-on-surface">{booking.appointment_date} at {booking.appointment_time}</p>
+            </div>
+            <div>
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Email</p>
+              <p className="text-on-surface">{clientEmail}</p>
+            </div>
+            <div>
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Phone</p>
+              <p className="text-on-surface">{clientPhone}</p>
+            </div>
+            <div>
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Total Amount</p>
+              <p className="font-bold text-on-surface">{formatPrice(totalAmt)}</p>
+            </div>
+            <div>
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Deposit Paid</p>
+              <p className="font-bold text-primary-container">{formatPrice(depositAmt)}</p>
+            </div>
+          </div>
+
+          {booking.notes && (
+            <div className="rounded border border-outline-variant/20 bg-surface-container-low p-3">
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Notes & Details</p>
+              <p className="mt-1 text-xs text-on-surface whitespace-pre-wrap">{booking.notes}</p>
+            </div>
+          )}
+
+          {proofUrl && (
+            <div className="border border-outline-variant/30 p-3 bg-surface-container-lowest">
+              <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2">Payment Proof Screenshot</p>
+              <a href={proofUrl} target="_blank" rel="noreferrer" className="block max-h-48 overflow-hidden rounded border hover:opacity-90">
+                <img src={proofUrl} alt="Payment proof" className="w-full h-full object-contain" />
+              </a>
+            </div>
+          )}
+
+          <div>
+            <label className="block font-label text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant mb-2">
+              Update Status
+            </label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="h-11 w-full border border-outline-variant/40 bg-surface-container-lowest px-4 font-body text-sm text-on-surface outline-none focus:border-primary-container"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-3 border-t border-outline-variant/20 pt-4">
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={saving}
+            className="h-11 border border-red-200 px-4 font-label text-xs font-semibold uppercase tracking-[0.12em] text-red-600 hover:bg-red-50 disabled:opacity-50"
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-11 flex-1 border border-outline-variant font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant hover:bg-surface-container"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveStatus}
+            disabled={saving}
+            className="h-11 flex-1 bg-primary-container font-label text-xs font-semibold uppercase tracking-[0.12em] text-on-primary hover:bg-primary disabled:opacity-50"
+          >
+            {saving ? "Saving..." : "Save Status"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -77,6 +218,7 @@ export default function AdminBookings() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [editingBooking, setEditingBooking] = useState(null);
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
@@ -92,24 +234,24 @@ export default function AdminBookings() {
     const normalizedQuery = query.trim().toLowerCase();
 
     return bookings.filter((booking) => {
+      const statusStr = (booking.status || "Pending").toLowerCase();
       const matchesFilter =
-        activeFilter === "All" || booking.status === activeFilter;
-      // Support both API field names (client_name, service_name) and legacy (client, service)
+        activeFilter === "All" || statusStr === activeFilter.toLowerCase();
+      
       const clientName = booking.client_name || booking.client || "";
       const serviceName = booking.service_name || booking.service || "";
-      const initials = clientName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase();
+      const clientEmail = booking.email || booking.client_email || "";
+      const clientPhone = booking.phone || booking.client_phone || "";
+
       const searchableText = [
         booking.id,
         clientName,
-        booking.email,
-        booking.phone,
+        clientEmail,
+        clientPhone,
         serviceName,
         booking.specialist,
         booking.status,
+        booking.notes,
       ]
         .join(" ")
         .toLowerCase();
@@ -119,13 +261,17 @@ export default function AdminBookings() {
   }, [activeFilter, query, bookings]);
 
   const confirmedCount = bookings.filter(
-    (booking) => booking.status === "Confirmed",
+    (b) => (b.status || "").toLowerCase() === "confirmed",
   ).length;
-  const pendingCount = bookings.filter((booking) => booking.status === "Pending")
-    .length;
+  const pendingCount = bookings.filter(
+    (b) => (b.status || "").toLowerCase() === "pending",
+  ).length;
   const projectedRevenue = bookings.reduce(
-    (total, booking) =>
-      booking.status === "Cancelled" ? total : total + (booking.amount || 0),
+    (total, b) => {
+      const isCancelled = (b.status || "").toLowerCase() === "cancelled";
+      const amt = b.amount ?? b.total_amount ?? 0;
+      return isCancelled ? total : total + amt;
+    },
     0,
   );
 
@@ -353,12 +499,18 @@ export default function AdminBookings() {
                       </td>
                       <td className="p-5">
                         <div className="flex items-center justify-end gap-3">
-                          <button className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container">
+                          <button
+                            type="button"
+                            onClick={() => setEditingBooking(booking)}
+                            className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container hover:underline"
+                          >
                             Edit
                           </button>
                           <button
+                            type="button"
+                            onClick={() => setEditingBooking(booking)}
                             className="h-9 w-9 text-on-surface-variant transition-colors hover:bg-surface-container"
-                            aria-label={`More actions for ${booking.client}`}
+                            aria-label={`More actions for ${clientName}`}
                           >
                             <MoreHorizontal className="mx-auto" size={18} />
                           </button>
@@ -380,6 +532,7 @@ export default function AdminBookings() {
                   ? new Date(booking.appointment_date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
                   : booking.date || "—";
                 const timeLabel = booking.appointment_time || booking.time || "—";
+                const amt = booking.amount ?? booking.total_amount ?? 0;
                 return (
                 <article key={booking.id} className="p-4 sm:p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -392,7 +545,7 @@ export default function AdminBookings() {
                           {clientName}
                         </h2>
                         <p className="truncate text-xs text-on-surface-variant">
-                          {booking.email || "—"}
+                          {booking.email || booking.client_email || "—"}
                         </p>
                       </div>
                     </div>
@@ -412,7 +565,7 @@ export default function AdminBookings() {
                     </div>
                     <div>
                       <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Amount</p>
-                      <p className="mt-1 font-body font-bold text-on-surface">{formatPrice(booking.amount || 0)}</p>
+                      <p className="mt-1 font-body font-bold text-on-surface">{formatPrice(amt)}</p>
                     </div>
                     <div>
                       <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Specialist</p>
@@ -423,7 +576,11 @@ export default function AdminBookings() {
                     <span className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
                       {String(booking.id).slice(0, 8).toUpperCase()}
                     </span>
-                    <button className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container">
+                    <button
+                      type="button"
+                      onClick={() => setEditingBooking(booking)}
+                      className="font-label text-xs font-semibold uppercase tracking-[0.12em] text-primary-container hover:underline"
+                    >
                       Edit
                     </button>
                   </div>
@@ -455,6 +612,19 @@ export default function AdminBookings() {
             </p>
           </div>
         </div>
+
+        {editingBooking && (
+          <BookingModal
+            booking={editingBooking}
+            onClose={() => setEditingBooking(null)}
+            onUpdated={(updated) => {
+              setBookings((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
+            }}
+            onDeleted={(id) => {
+              setBookings((prev) => prev.filter((b) => b.id !== id));
+            }}
+          />
+        )}
 
         <footer className="mt-16 border-t border-outline-variant/20 bg-surface-container-low px-6 py-10">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
