@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Hero({ content }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const hero = content ?? {
     eyebrow: "Abeokuta Luxury Suite",
     headline: "Best Nails for Best Moments",
@@ -10,6 +13,8 @@ export default function Hero({ content }) {
     primaryCta: "Book Appointment",
     secondaryCta: "View Portfolio",
   };
+
+  const imageSrc = hero.imageUrl || hero.image || "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif";
 
   return (
     <section className="relative flex min-h-[auto] items-center overflow-hidden bg-surface lg:min-h-[calc(100vh-73px)]">
@@ -51,10 +56,19 @@ export default function Hero({ content }) {
 
         <div className="order-1 relative flex items-center justify-center lg:order-2 lg:col-span-6">
           <div className="group relative aspect-[4/5] max-h-[620px] w-full overflow-hidden bg-surface-container-high sm:aspect-[5/4] lg:aspect-[4/5]">
+            {/* Skeleton loader */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 z-10 animate-pulse">
+                <div className="h-full w-full bg-gradient-to-r from-surface-container-high via-surface-container to-surface-container-high bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite]" />
+              </div>
+            )}
             <img
-              src={hero.imageUrl || hero.image || "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif"}
+              src={imageSrc}
               alt={hero.headline || "Luxury nude manicure"}
-              className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+              className={`h-full w-full object-cover object-top transition-all duration-700 group-hover:scale-105 ${
+                imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
+              onLoad={() => setImageLoaded(true)}
             />
             {hero.showBadge !== false && (
               <div className="editorial-shadow absolute bottom-8 left-0 hidden max-w-xs bg-white p-6 lg:block">

@@ -66,6 +66,13 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
+    // Token expired or invalid — clear session and redirect to login
+    if (response.status === 401 && window.location.pathname.startsWith("/admin")) {
+      logoutAdmin();
+      window.location.href = "/admin/login?expired=1";
+      return;
+    }
+
     const text = await response.text();
     const errorMsg = `API error ${response.status}: ${text || response.statusText}`;
     console.error("API Request Failed:", errorMsg);
@@ -243,6 +250,11 @@ export async function uploadMedia(file) {
   });
 
   if (!response.ok) {
+    if (response.status === 401 && window.location.pathname.startsWith("/admin")) {
+      logoutAdmin();
+      window.location.href = "/admin/login?expired=1";
+      return;
+    }
     throw new Error("Upload failed");
   }
 

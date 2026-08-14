@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { AlertCircle, ArrowLeft, Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AlertCircle, ArrowLeft, Clock, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { loginAdmin } from "../lib/content";
 import SeoHead from "../components/SeoHead";
 
@@ -11,6 +11,8 @@ export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", remember: true });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [searchParams] = useSearchParams();
+  const sessionExpired = searchParams.get("expired") === "1";
 
   const redirectTo = location.state?.from?.pathname ?? "/admin";
 
@@ -82,6 +84,22 @@ export default function AdminLogin() {
               Sign in to manage the CMS and beauty suite operations.
             </p>
           </div>
+
+          {/* Session expired banner */}
+          {sessionExpired && !error && (
+            <div
+              role="status"
+              className="mb-6 flex items-start gap-3 border border-secondary/30 bg-secondary/10 px-4 py-3"
+            >
+              <Clock
+                size={18}
+                className="mt-0.5 shrink-0 text-secondary"
+              />
+              <p className="font-body text-sm text-on-surface-variant">
+                Your session has expired. Please sign in again to continue.
+              </p>
+            </div>
+          )}
 
           {/* Error banner */}
           {error && (
