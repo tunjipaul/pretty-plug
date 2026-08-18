@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import TestimonialsPage from "./pages/TestimonialsPage";
@@ -16,14 +17,30 @@ import AdminGallery from "./pages/AdminGallery";
 import AdminTestimonials from "./pages/AdminTestimonials";
 import AdminFAQ from "./pages/AdminFAQ";
 import AdminLogin from "./pages/AdminLogin";
+import {
+  isTokenExpired,
+  logoutAdmin,
+  initSessionWatcher,
+  stopSessionWatcher,
+} from "./lib/content";
 
 function RequireAdmin({ children }) {
   const location = useLocation();
   const isAuthenticated =
     window.localStorage.getItem("theprettyplug_admin_session") === "active";
 
-  if (!isAuthenticated) {
-    return <Navigate to="/admin/login" replace state={{ from: location }} />;
+  // Start proactive session watcher when inside admin pages
+  useEffect(() => {
+    if (isAuthenticated) {
+      initSessionWatcher();
+    }
+    return () => stopSessionWatcher();
+  }, [isAuthenticated]);
+
+  // Immediately kick out if token is already expired
+  if (!isAuthenticated || isTokenExpired()) {
+    if (isAuthenticated) logoutAdmin(); // clean up stale session flag
+    return <Navigate to="/admin/login?expired=1" replace state={{ from: location }} />;
   }
 
   return children;

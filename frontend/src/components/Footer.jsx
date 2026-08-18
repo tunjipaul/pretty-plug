@@ -7,7 +7,7 @@ import { getSetting } from "../lib/content";
 
 const studioLinks = [
   { label: "Services", path: "/services" },
-  { label: "Portfolio", path: "/portfolio" },
+  { label: "Our Work", path: "/portfolio" },
   { label: "FAQ", path: "/faq" },
   { label: "Book Online", path: "/book" },
 ];

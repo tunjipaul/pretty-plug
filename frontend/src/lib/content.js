@@ -56,6 +56,68 @@ export function logoutAdmin() {
 }
 
 // ---------------------------------------------------------------------------
+// Proactive session expiry detection
+// ---------------------------------------------------------------------------
+/** Decode JWT payload without verifying signature (client-side check only). */
+function decodeTokenPayload(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+/** Returns true if the stored token is missing or past its `exp` claim. */
+export function isTokenExpired() {
+  const token = getStoredToken();
+  if (!token) return true;
+  const payload = decodeTokenPayload(token);
+  if (!payload || !payload.exp) return true;
+  // exp is in seconds; add a 30-second buffer so we log out just before it truly expires
+  return Date.now() >= (payload.exp - 30) * 1000;
+}
+
+let _sessionWatcherInterval = null;
+
+/**
+ * Start a periodic check (every 30 s) that auto-logs out when the JWT expires.
+ * Safe to call multiple times — only one interval runs at a time.
+ */
+export function initSessionWatcher() {
+  if (_sessionWatcherInterval) return;
+
+  _sessionWatcherInterval = setInterval(() => {
+    // Only act when the user is on an admin page and has a session flag
+    const hasSession =
+      window.localStorage.getItem(SESSION_KEY) === "active";
+    const onAdmin = window.location.pathname.startsWith("/admin");
+
+    if (hasSession && onAdmin && isTokenExpired()) {
+      clearInterval(_sessionWatcherInterval);
+      _sessionWatcherInterval = null;
+      logoutAdmin();
+      window.location.href = "/admin/login?expired=1";
+    }
+  }, 30_000); // check every 30 seconds
+}
+
+/** Stop the session watcher (e.g. on manual logout). */
+export function stopSessionWatcher() {
+  if (_sessionWatcherInterval) {
+    clearInterval(_sessionWatcherInterval);
+    _sessionWatcherInterval = null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Base request helpers
 // ---------------------------------------------------------------------------
 async function request(path, options = {}) {

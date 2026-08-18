@@ -4,10 +4,9 @@ import { Menu, X } from "lucide-react";
 import { getSetting } from "../lib/content";
 
 const navLinks = [
-  { label: "Portfolio", path: "/portfolio" },
+  { label: "Our Work", path: "/portfolio" },
   { label: "Services", path: "/services" },
   { label: "Testimonials", path: "/testimonials" },
-  { label: "FAQ", path: "/faq" },
 ];
 
 export default function Navbar() {
