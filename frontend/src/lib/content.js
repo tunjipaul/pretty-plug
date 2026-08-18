@@ -1,11 +1,83 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 // ---------------------------------------------------------------------------
-// Cache
+// Stale-While-Revalidate (SWR) localStorage Cache
 // ---------------------------------------------------------------------------
-let _cachedContent = null;
-let _cachedContentExpiresAt = 0;
-const _CONTENT_TTL_MS = 30_000;
+// Data is cached in localStorage so it survives page reloads and new tabs.
+// On each call: return cached data instantly → fetch fresh data in background
+// → update cache. This eliminates the blank-screen wait on repeat visits.
+const SWR_PREFIX = "pp_cache_";
+const SWR_FRESH_MS = 60_000; // data is "fresh" for 60 s (no refetch at all)
+
+/** Read cached entry from localStorage. Returns { data, timestamp } or null. */
+function swrRead(key) {
+  try {
+    const raw = localStorage.getItem(SWR_PREFIX + key);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/** Write data + timestamp to localStorage cache. */
+function swrWrite(key, data) {
+  try {
+    localStorage.setItem(
+      SWR_PREFIX + key,
+      JSON.stringify({ data, timestamp: Date.now() })
+    );
+  } catch {
+    // localStorage full — silently ignore
+  }
+}
+
+/**
+ * SWR-fetch: returns cached data instantly if available, then revalidates in
+ * the background. If no cache exists, falls back to a normal await.
+ *
+ * @param {string}   cacheKey  Unique key for this endpoint
+ * @param {Function} fetcher   Async function that returns fresh data
+ * @param {Function} [onUpdate] Optional callback fired when background refresh
+ *                              returns newer data (lets React setState again)
+ */
+async function swrFetch(cacheKey, fetcher, onUpdate) {
+  const cached = swrRead(cacheKey);
+  const now = Date.now();
+
+  // If cache is fresh enough, return it directly — no fetch at all
+  if (cached && now - cached.timestamp < SWR_FRESH_MS) {
+    return cached.data;
+  }
+
+  // If cache exists but is stale, return it instantly and revalidate in bg
+  if (cached) {
+    fetcher()
+      .then((freshData) => {
+        swrWrite(cacheKey, freshData);
+        if (onUpdate) onUpdate(freshData);
+      })
+      .catch(() => {}); // background refresh failed — stale data is still fine
+    return cached.data;
+  }
+
+  // No cache at all (first visit) — must await the fetch
+  const freshData = await fetcher();
+  swrWrite(cacheKey, freshData);
+  return freshData;
+}
+
+/** Invalidate a specific cache key (e.g. after admin saves). */
+export function invalidateCache(key) {
+  localStorage.removeItem(SWR_PREFIX + key);
+}
+
+/** Invalidate ALL SWR caches (e.g. after bulk admin changes). */
+export function invalidateAllCaches() {
+  Object.keys(localStorage)
+    .filter((k) => k.startsWith(SWR_PREFIX))
+    .forEach((k) => localStorage.removeItem(k));
+}
 
 // ---------------------------------------------------------------------------
 // Auth helpers
@@ -158,21 +230,12 @@ async function authRequest(path, options = {}) {
 // ---------------------------------------------------------------------------
 // Content API
 // ---------------------------------------------------------------------------
-export async function getContent() {
-  const now = Date.now();
-  if (_cachedContent && now < _cachedContentExpiresAt) {
-    return _cachedContent;
-  }
-
-  try {
-    const result = await request(`/api/content`);
-    _cachedContent = result.data;
-    _cachedContentExpiresAt = now + _CONTENT_TTL_MS;
+export async function getContent(onUpdate) {
+  const fetcher = async () => {
+    const result = await request("/api/content");
     return result.data;
-  } catch (error) {
-    console.error("Failed to load content:", error.message);
-    throw error;
-  }
+  };
+  return swrFetch("content", fetcher, onUpdate);
 }
 
 export async function saveContent(content) {
@@ -181,8 +244,7 @@ export async function saveContent(content) {
       method: "PUT",
       body: JSON.stringify(content),
     });
-    _cachedContent = result.data;
-    _cachedContentExpiresAt = Date.now() + _CONTENT_TTL_MS;
+    invalidateCache("content");
     return result.data;
   } catch (error) {
     console.error("Failed to save content:", error.message);
@@ -193,10 +255,13 @@ export async function saveContent(content) {
 // ---------------------------------------------------------------------------
 // Settings API
 // ---------------------------------------------------------------------------
-export async function getSetting(settingKey) {
-  try {
+export async function getSetting(settingKey, onUpdate) {
+  const fetcher = async () => {
     const result = await request(`/api/settings/${settingKey}`);
     return result.data;
+  };
+  try {
+    return await swrFetch(`setting_${settingKey}`, fetcher, onUpdate);
   } catch (error) {
     console.warn(`Could not load setting ${settingKey}:`, error.message);
     return null;
@@ -209,6 +274,7 @@ export async function saveSetting(settingKey, settingValue) {
       method: "PUT",
       body: JSON.stringify({ value: settingValue }),
     });
+    invalidateCache(`setting_${settingKey}`);
     return result.data;
   } catch (error) {
     console.error(`Failed to save setting ${settingKey}:`, error.message);
@@ -219,9 +285,12 @@ export async function saveSetting(settingKey, settingValue) {
 // ---------------------------------------------------------------------------
 // Testimonials API
 // ---------------------------------------------------------------------------
-export async function getTestimonials() {
-  const result = await request("/api/testimonials");
-  return result.data;
+export async function getTestimonials(onUpdate) {
+  const fetcher = async () => {
+    const result = await request("/api/testimonials");
+    return result.data;
+  };
+  return swrFetch("testimonials", fetcher, onUpdate);
 }
 
 export async function saveTestimonial(testimonial) {
@@ -233,19 +302,25 @@ export async function saveTestimonial(testimonial) {
     method,
     body: JSON.stringify(testimonial),
   });
+  invalidateCache("testimonials");
   return result.data;
 }
 
 export async function deleteTestimonial(id) {
-  return await authRequest(`/api/testimonials/${id}`, { method: "DELETE" });
+  const result = await authRequest(`/api/testimonials/${id}`, { method: "DELETE" });
+  invalidateCache("testimonials");
+  return result;
 }
 
 // ---------------------------------------------------------------------------
 // FAQs API
 // ---------------------------------------------------------------------------
-export async function getFAQs() {
-  const result = await request("/api/faqs");
-  return result.data;
+export async function getFAQs(onUpdate) {
+  const fetcher = async () => {
+    const result = await request("/api/faqs");
+    return result.data;
+  };
+  return swrFetch("faqs", fetcher, onUpdate);
 }
 
 export async function saveFAQ(faq) {
@@ -255,19 +330,25 @@ export async function saveFAQ(faq) {
     method,
     body: JSON.stringify(faq),
   });
+  invalidateCache("faqs");
   return result.data;
 }
 
 export async function deleteFAQ(id) {
-  return await authRequest(`/api/faqs/${id}`, { method: "DELETE" });
+  const result = await authRequest(`/api/faqs/${id}`, { method: "DELETE" });
+  invalidateCache("faqs");
+  return result;
 }
 
 // ---------------------------------------------------------------------------
 // Gallery API
 // ---------------------------------------------------------------------------
-export async function getGallery() {
-  const result = await request("/api/gallery");
-  return result.data;
+export async function getGallery(onUpdate) {
+  const fetcher = async () => {
+    const result = await request("/api/gallery");
+    return result.data;
+  };
+  return swrFetch("gallery", fetcher, onUpdate);
 }
 
 export async function saveGalleryItem(item) {
@@ -277,11 +358,14 @@ export async function saveGalleryItem(item) {
     method,
     body: JSON.stringify(item),
   });
+  invalidateCache("gallery");
   return result.data;
 }
 
 export async function deleteGalleryItem(id) {
-  return await authRequest(`/api/gallery/${id}`, { method: "DELETE" });
+  const result = await authRequest(`/api/gallery/${id}`, { method: "DELETE" });
+  invalidateCache("gallery");
+  return result;
 }
 
 export async function deleteGalleryItems(ids) {
@@ -290,6 +374,7 @@ export async function deleteGalleryItems(ids) {
       method: "DELETE",
       body: JSON.stringify(ids),
     });
+    invalidateCache("gallery");
     return result;
   } catch (error) {
     console.error("Failed to bulk delete gallery items:", error);
@@ -327,9 +412,12 @@ export async function uploadMedia(file) {
 // ---------------------------------------------------------------------------
 // Services API
 // ---------------------------------------------------------------------------
-export async function getServices() {
-  const result = await request("/api/services");
-  return result.data;
+export async function getServices(onUpdate) {
+  const fetcher = async () => {
+    const result = await request("/api/services");
+    return result.data;
+  };
+  return swrFetch("services", fetcher, onUpdate);
 }
 
 export async function saveService(service) {
@@ -339,11 +427,14 @@ export async function saveService(service) {
     method,
     body: JSON.stringify(service),
   });
+  invalidateCache("services");
   return result.data;
 }
 
 export async function deleteService(id) {
-  return await authRequest(`/api/services/${id}`, { method: "DELETE" });
+  const result = await authRequest(`/api/services/${id}`, { method: "DELETE" });
+  invalidateCache("services");
+  return result;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import SmoothImage from "../SmoothImage";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -78,7 +79,7 @@ export default function ServiceChapter({ services: dynamicServices }) {
               className={`group block ${idx === 1 ? "lg:mt-20" : ""}`}
             >
               <div className="relative mb-6 aspect-[4/3] overflow-hidden bg-surface-container-high sm:aspect-[3/4]">
-                <img
+                <SmoothImage
                   src={resolveImageUrl(service.image_url || service.image_path) || service.image}
                   alt={service.alt || service.name}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"

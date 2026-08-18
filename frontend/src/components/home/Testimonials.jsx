@@ -1,3 +1,5 @@
+import SmoothImage from "../SmoothImage";
+
 export default function Testimonials({ testimonials: dynamicTestimonials, sideImageUrl }) {
   const displayTestimonials = dynamicTestimonials?.length > 0 ? dynamicTestimonials : [
     {
@@ -61,7 +63,7 @@ export default function Testimonials({ testimonials: dynamicTestimonials, sideIm
 
         <div className="hidden lg:block">
           <div className="relative h-[520px] w-full rotate-2 overflow-hidden rounded-full border-8 border-white bg-surface-container-high shadow-2xl xl:h-[600px]">
-            <img
+            <SmoothImage
               src={sideImageUrl || "/images/studio.jpg"}
               alt="ThePrettyPlug studio interior"
               className="h-full w-full -rotate-2 scale-110 object-cover"

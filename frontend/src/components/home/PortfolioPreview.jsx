@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import SmoothImage from "../SmoothImage";
 
 function resolveImageUrl(p) {
   if (!p) return "";
@@ -118,7 +119,7 @@ export default function PortfolioPreview({ items: dynamicItems }) {
                 work.offset || (idx % 3 === 1 ? "lg:mt-12" : "")
               }`}
             >
-              <img
+              <SmoothImage
                 src={resolveImageUrl(work.image_url || work.image_path) || work.src}
                 alt={work.alt || work.title || "Portfolio work"}
                 className="h-full w-full object-cover transition-all duration-700 group-hover:scale-105"

@@ -98,7 +98,7 @@ export default function Portfolio() {
 
   const breadcrumbSchema = getBreadcrumbSchema([
     { name: "Home", path: "/" },
-    { name: "Portfolio", path: "/portfolio" },
+    { name: "Our Work", path: "/portfolio" },
   ]);
 
   const filters = useMemo(() => {
@@ -120,7 +120,7 @@ export default function Portfolio() {
   return (
     <>
       <SeoHead
-        title={headerContent?.title || "Editorial Portfolio | Manicures & Nail Art Abeokuta"}
+        title={headerContent?.title || "Our Work | Manicures & Nail Art Abeokuta"}
         description={headerContent?.subtitle || "Explore our curated gallery of handcrafted nail art, luxury gel manicures, and editorial lash extensions in Abeokuta."}
         canonicalPath="/portfolio"
         schema={breadcrumbSchema}
@@ -133,7 +133,7 @@ export default function Portfolio() {
               Curated Artistry
             </span>
             <h1 className="mb-6 font-display text-[40px] font-semibold leading-tight text-on-surface md:text-[64px]">
-              {headerContent?.title || "Our Portfolio"}
+              {headerContent?.title || "Our Work"}
             </h1>
             {headerContent?.subtitle && (
               <p className="mx-auto mb-8 max-w-2xl font-body text-base leading-7 text-on-surface-variant md:text-lg">

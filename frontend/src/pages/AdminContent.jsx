@@ -94,7 +94,7 @@ const draftContent = {
       image2Url: "/images/Timeless Nude Nails Neutral Manicure with Soft Luxury Style.jfif",
     },
     portfolio: {
-      title: "Our Portfolio",
+      title: "Our Work",
       subtitle: "Explore our curated collection of editorial beauty work, hand-painted finishes, and luxury treatments.",
     },
     testimonials: {
